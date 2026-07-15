@@ -60,23 +60,14 @@ export function taskApiContract(name: string, buildApp: BuildApp) {
       ).toMatchObject({ assigneeId: 'user-1' });
 
       const completed = await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
-      expect(completed.json()).toMatchObject({ status: 'COMPLETED', isOverdue: false });
+      expect(completed.json()).toMatchObject({ status: 'COMPLETED' });
       expect(
         (await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` })).statusCode,
       ).toBe(409);
 
-      expect(
-        (await app.inject({ method: 'POST', url: `/tasks/${task.id}/archive` })).json(),
-      ).toMatchObject({ status: 'ARCHIVED' });
-      expect(
-        (await app.inject({ method: 'GET', url: `/tasks/${task.id}/history` })).json(),
-      ).toMatchObject([
-        { action: 'CREATED' },
-        { action: 'UPDATED' },
-        { action: 'ASSIGNEE_CHANGED' },
-        { action: 'COMPLETED' },
-        { action: 'ARCHIVED' },
-      ]);
+      expect((await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` })).statusCode).toBe(
+        204,
+      );
       expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual([]);
       expect((await app.inject({ method: 'GET', url: '/tasks/missing' })).statusCode).toBe(404);
       await app.close();

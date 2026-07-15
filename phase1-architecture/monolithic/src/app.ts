@@ -15,32 +15,19 @@ type Task = {
 };
 type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
 type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
-type TaskEvent = { id: string; taskId: string; action: string; createdAt: string };
 
 export function buildApp() {
   const app = Fastify();
   const tasks = new Map<string, Task>();
-  const history = new Map<string, TaskEvent[]>();
   let sequence = 0;
-  let eventSequence = 0;
   const now = () => new Date().toISOString();
-  const isOverdue = (task: Task) =>
-    Boolean(
-      task.dueDate &&
-      task.status !== 'COMPLETED' &&
-      task.status !== 'ARCHIVED' &&
-      task.dueDate < now().slice(0, 10),
-    );
+  const isOverdue = (task: Task) => Boolean(task.dueDate && task.dueDate < now().slice(0, 10));
   const response = (task: Task) => ({
     ...task,
     isOverdue: isOverdue(task),
     warnings: task.dueDate && task.dueDate < now().slice(0, 10) ? ['due date is in the past'] : [],
   });
   const hasUser = (id: string) => id === 'user-1' || id === 'user-2';
-  const record = (taskId: string, action: string) => {
-    const event = { id: String(++eventSequence), taskId, action, createdAt: now() };
-    history.set(taskId, [...(history.get(taskId) ?? []), event]);
-  };
 
   app.post<{ Body: CreateTask }>('/tasks', async (request, reply) => {
     if (!request.body?.title?.trim()) return reply.code(400).send({ error: 'title is required' });
@@ -56,7 +43,6 @@ export function buildApp() {
       updatedAt: timestamp,
     };
     tasks.set(task.id, task);
-    record(task.id, 'CREATED');
     return reply.code(201).send(response(task));
   });
   app.get('/tasks', async () =>
@@ -77,7 +63,6 @@ export function buildApp() {
       title: request.body.title?.trim() ?? task.title,
       updatedAt: now(),
     });
-    record(task.id, request.body.assigneeId === undefined ? 'UPDATED' : 'ASSIGNEE_CHANGED');
     return response(task);
   });
   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (request, reply) => {
@@ -87,20 +72,13 @@ export function buildApp() {
       return reply.code(409).send({ error: 'task is already completed' });
     task.status = 'COMPLETED';
     task.updatedAt = now();
-    record(task.id, 'COMPLETED');
     return response(task);
   });
-  app.post<{ Params: { id: string } }>('/tasks/:id/archive', async (request, reply) => {
+  app.delete<{ Params: { id: string } }>('/tasks/:id', async (request, reply) => {
     const task = tasks.get(request.params.id);
     if (!task) return reply.code(404).send({ error: 'task not found' });
-    task.status = 'ARCHIVED';
-    task.updatedAt = now();
-    record(task.id, 'ARCHIVED');
-    return response(task);
-  });
-  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (request, reply) => {
-    if (!tasks.has(request.params.id)) return reply.code(404).send({ error: 'task not found' });
-    return history.get(request.params.id) ?? [];
+    tasks.delete(task.id);
+    return reply.code(204).send();
   });
   return app;
 }
