@@ -14,13 +14,20 @@ export class TaskService {
       warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
     };
   }
-  create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
+  create(input: {
+    title?: string;
+    description?: string;
+    category?: string;
+    priority?: Priority;
+    dueDate?: string;
+  }) {
     if (!input.title?.trim()) throw new Error('title is required');
     const time = this.clock();
     const task = this.repository.save({
       id: this.repository.nextId(),
       title: input.title.trim(),
       description: input.description,
+      category: input.category,
       priority: input.priority ?? 'MEDIUM',
       dueDate: input.dueDate,
       status: 'TODO',
@@ -50,6 +57,7 @@ export class TaskService {
     input: {
       title?: string;
       description?: string;
+      category?: string;
       priority?: Priority;
       dueDate?: string;
       assigneeId?: string;
