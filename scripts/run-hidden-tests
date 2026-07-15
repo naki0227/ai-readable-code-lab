@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+set -eu
+
+if [ "$#" -ne 2 ]; then
+  echo "usage: $0 <monolithic|layered|feature-based> <result-file>" >&2
+  exit 64
+fi
+
+target=$1
+result_file=$2
+
+case "$target" in
+  monolithic|layered|feature-based) ;;
+  *)
+    echo "unsupported target: $target" >&2
+    exit 64
+    ;;
+esac
+
+test_file="hidden-tests/phase1/task-01-category.${target}.test.ts"
+if [ ! -f "$test_file" ]; then
+  echo "hidden test is unavailable: $test_file" >&2
+  exit 66
+fi
+
+mkdir -p "$(dirname "$result_file")"
+npx vitest run "$test_file" > "$result_file" 2>&1
