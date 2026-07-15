@@ -22,4 +22,8 @@
 - `baseline/p1-layered` / `p1-layered-v1.0.0`
 - `baseline/p1-feature-based` / `p1-feature-based-v1.0.0`
 
+## Experiment entry points
+
+- [Task 01: Add category](tasks/phase1/task-01-category/README.md) — Dry Run comparison only; excluded from main results.
+
 実験は必ず固定タグのBaselineから分岐し、Baselineへマージしません。詳細は `docs/` を参照してください。

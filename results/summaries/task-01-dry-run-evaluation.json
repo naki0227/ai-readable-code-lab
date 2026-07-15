@@ -1,0 +1,38 @@
+{
+  "taskId": "task-01",
+  "kind": "dry-run",
+  "includedInMainResults": false,
+  "reason": "All runs were executed by the Builder to validate the experiment pipeline.",
+  "runs": [
+    {
+      "experimentId": "P1-MONOLITHIC-T01-DRY-RUN-01",
+      "publicTests": { "passed": 8, "total": 8 },
+      "hiddenTests": "PASS",
+      "filesChanged": 2,
+      "linesAdded": 35,
+      "linesDeleted": 1,
+      "score": null,
+      "failureClassification": null
+    },
+    {
+      "experimentId": "P1-LAYERED-T01-DRY-RUN-01",
+      "publicTests": { "passed": 8, "total": 8 },
+      "hiddenTests": "PASS",
+      "filesChanged": 4,
+      "linesAdded": 37,
+      "linesDeleted": 1,
+      "score": null,
+      "failureClassification": null
+    },
+    {
+      "experimentId": "P1-FEATURE-BASED-T01-DRY-RUN-01",
+      "publicTests": { "passed": 8, "total": 8 },
+      "hiddenTests": "PASS",
+      "filesChanged": 3,
+      "linesAdded": 29,
+      "linesDeleted": 0,
+      "score": null,
+      "failureClassification": null
+    }
+  ]
+}
