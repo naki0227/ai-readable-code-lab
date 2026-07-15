@@ -1,0 +1,17 @@
+{
+  "experimentId": "P1-FEATURE-BASED-T01-DRY-RUN-01",
+  "phase": 1,
+  "targetType": "architecture",
+  "target": "feature-based",
+  "taskId": "task-01",
+  "run": null,
+  "kind": "dry-run",
+  "baselineTag": "p1-feature-based-v1.0.0",
+  "baselineCommit": "ce0ca087fb0ad40a0ab0e7f3a29879fdc806a3f5",
+  "resultCommit": "0ded1f5e812021ce3b3f610a294d37d1e8f7c981",
+  "pullRequest": null,
+  "startedAt": null,
+  "finishedAt": null,
+  "humanCodeCorrections": false,
+  "includedInMainResults": false
+}
