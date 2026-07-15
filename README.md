@@ -22,6 +22,12 @@
 - `baseline/p1-layered` / `p1-layered-v1.0.0`
 - `baseline/p1-feature-based` / `p1-feature-based-v1.0.0`
 
+Task 01のDry Runは上記 `v1.0.0` を使用する。Task 02〜06には、履歴・アーカイブ実装を含まない新しいBaselineを使用する。
+
+- `baseline/p1-monolithic-v1.0.1` / `p1-monolithic-v1.0.1`
+- `baseline/p1-layered-v1.0.1` / `p1-layered-v1.0.1`
+- `baseline/p1-feature-based-v1.0.1` / `p1-feature-based-v1.0.1`
+
 ## Experiment entry points
 
 - [Task 01: Add category](tasks/phase1/task-01-category/README.md) — Dry Run comparison only; excluded from main results.
