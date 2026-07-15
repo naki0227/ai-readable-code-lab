@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+set -eu
+
+if [ "$#" -ne 5 ]; then
+  echo "usage: $0 <phase> <target> <task> <run> <baseline-ref>" >&2
+  exit 64
+fi
+
+phase=$1 target=$2 task=$3 run=$4 baseline=$5
+branch="experiment/${phase}/${target}/${task}/${run}"
+git check-ref-format --branch "$branch" >/dev/null
+git show-ref --verify --quiet "refs/tags/$baseline" || git rev-parse --verify "$baseline^{commit}" >/dev/null
+git switch --detach "$baseline"
+git switch -c "$branch"
+printf 'Created %s from %s\n' "$branch" "$baseline"

@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+set -eu
+
+if [ "$#" -ne 2 ]; then
+  echo "usage: $0 <baseline-ref> <output-directory>" >&2
+  exit 64
+fi
+
+baseline=$1 output=$2
+mkdir -p "$output"
+git diff --name-only "$baseline"...HEAD > "$output/changed-files.txt"
+git diff --stat "$baseline"...HEAD > "$output/git-stat.txt"
+git diff --binary "$baseline"...HEAD > "$output/changes.patch"
