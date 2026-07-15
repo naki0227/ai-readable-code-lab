@@ -1,0 +1,4 @@
+scripts/create-experiment-branch p1 monolithic task-01 dry-run-01 p1-monolithic-v1.0.0
+npx prettier --write phase1-architecture/monolithic
+npm run validate
+scripts/collect-git-metrics p1-monolithic-v1.0.0 results/raw/P1-MONOLITHIC-T01-DRY-RUN-01

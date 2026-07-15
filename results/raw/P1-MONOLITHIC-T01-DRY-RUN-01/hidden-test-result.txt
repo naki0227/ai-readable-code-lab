@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/nagaseibuki/Documents/ai-readable-code-lab
+
+ ✓ hidden-tests/phase1/task-01-category.monolithic.test.ts (1 test) 66ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  10:28:57
+   Duration  382ms (transform 57ms, setup 0ms, collect 83ms, tests 66ms, environment 0ms, prepare 46ms)
+
