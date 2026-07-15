@@ -11,6 +11,28 @@
       "resultCommit": "9f0a20ac34a40e3938c57674f47856c9b25b0851",
       "taskId": "task-01",
       "target": "monolithic"
+    },
+    {
+      "experimentId": "P1-LAYERED-T01-DRY-RUN-01",
+      "kind": "dry-run",
+      "includedInMainResults": false,
+      "baselineTag": "p1-layered-v1.0.0",
+      "baselineCommit": "ce0ca087fb0ad40a0ab0e7f3a29879fdc806a3f5",
+      "branch": "experiment/p1/layered/task-01/dry-run-01",
+      "resultCommit": "deee6ee5e22ea2b6a4e2bf105ce17a9bc64febf9",
+      "taskId": "task-01",
+      "target": "layered"
+    },
+    {
+      "experimentId": "P1-FEATURE-BASED-T01-DRY-RUN-01",
+      "kind": "dry-run",
+      "includedInMainResults": false,
+      "baselineTag": "p1-feature-based-v1.0.0",
+      "baselineCommit": "ce0ca087fb0ad40a0ab0e7f3a29879fdc806a3f5",
+      "branch": "experiment/p1/feature-based/task-01/dry-run-01",
+      "resultCommit": "ba28a1e254b934e78fc4a7cf6222030af42c3f6f",
+      "taskId": "task-01",
+      "target": "feature-based"
     }
   ]
 }
