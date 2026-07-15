@@ -16,6 +16,7 @@
 - 3件のTask 01 Dry Runで隠しテストを実行し、結果を保存
 - Task 01のDry Run比較ページと評価JSONを追加
 - 本番実験用のPRテンプレートと評価記録テンプレートを追加
+- Task 01の3件のDry RunをBaseline比較のDraft PRとして公開
 
 ## 未着手
 
