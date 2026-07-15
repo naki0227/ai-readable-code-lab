@@ -9,6 +9,7 @@
       "baselineCommit": "ce0ca087fb0ad40a0ab0e7f3a29879fdc806a3f5",
       "branch": "experiment/p1/monolithic/task-01/dry-run-01",
       "resultCommit": "9f0a20ac34a40e3938c57674f47856c9b25b0851",
+      "evaluatorResultCommit": "f20c190",
       "taskId": "task-01",
       "target": "monolithic"
     },
@@ -20,6 +21,7 @@
       "baselineCommit": "ce0ca087fb0ad40a0ab0e7f3a29879fdc806a3f5",
       "branch": "experiment/p1/layered/task-01/dry-run-01",
       "resultCommit": "deee6ee5e22ea2b6a4e2bf105ce17a9bc64febf9",
+      "evaluatorResultCommit": "aa0a751",
       "taskId": "task-01",
       "target": "layered"
     },
@@ -31,6 +33,7 @@
       "baselineCommit": "ce0ca087fb0ad40a0ab0e7f3a29879fdc806a3f5",
       "branch": "experiment/p1/feature-based/task-01/dry-run-01",
       "resultCommit": "ba28a1e254b934e78fc4a7cf6222030af42c3f6f",
+      "evaluatorResultCommit": "c4f9462",
       "taskId": "task-01",
       "target": "feature-based"
     }

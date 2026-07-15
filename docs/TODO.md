@@ -13,13 +13,14 @@
 - Task 01のmonolithic Dry Runで分岐・検証・差分保存を確認
 - Task 01を3構成すべてでDry Runし、結果形式を確認
 - 隠しテストをGit管理外のEvaluator専用領域へ隔離する実行基盤を追加
+- 3件のTask 01 Dry Runで隠しテストを実行し、結果を保存
 
 ## 未着手
 
-- 3件のTask 01 Dry Runで隠しテストを実行し、結果保存を確認する
+- Task 01の評価JSONと比較ページを生成する
 - 隠しテスト、実験作成・収集スクリプト、課題定義を追加する
 - Baselineタグ作成後にRunner/Evaluatorを分離して本実験を行う
 
 ## 次回最初に着手するタスク
 
-- Task 01のDry Run隠しテスト結果を3実験ブランチへ保存する
+- Task 01のDry Run比較ページと評価JSONを追加する
