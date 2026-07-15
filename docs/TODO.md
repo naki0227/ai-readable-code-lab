@@ -10,13 +10,14 @@
 - 担当者の存在検証と操作履歴を共通契約テストで一致させた
 - 過去期限の警告応答を共通契約テストで一致させた
 - Phase 1のBaselineブランチとv1.0.0タグを固定
+- Task 01のmonolithic Dry Runで分岐・検証・差分保存を確認
 
 ## 未着手
 
-- 固定タグから試験用Dry Runを1件実行し、結果収集を確認する
+- Task 01のDry Runをlayered・feature-basedでも実行する
 - 隠しテスト、実験作成・収集スクリプト、課題定義を追加する
 - Baselineタグ作成後にRunner/Evaluatorを分離して本実験を行う
 
 ## 次回最初に着手するタスク
 
-- Task 01のDry Runをmonolithicで実行する
+- 2構成のDry Run結果を確認し、隠しテスト実行基盤を追加する
