@@ -1,0 +1,41 @@
+{
+  "experimentId": "P1-TARGET-TXX-RXX",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": null,
+    "evaluatedAt": null,
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": null,
+    "typecheck": null,
+    "format": null,
+    "lint": null,
+    "publicTests": { "passed": null, "total": null },
+    "hiddenTests": { "passed": null, "total": null }
+  },
+  "metrics": {
+    "filesChanged": null,
+    "linesAdded": null,
+    "linesDeleted": null,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "requirementSatisfaction": null,
+    "hiddenTests": null,
+    "regressionPrevention": null,
+    "responsibilityPlacement": null,
+    "architecturalConsistency": null,
+    "minimalChanges": null,
+    "addedTests": null,
+    "namingAndReadability": null,
+    "total": null
+  },
+  "failureClassification": [],
+  "evidence": [],
+  "notes": null
+}
