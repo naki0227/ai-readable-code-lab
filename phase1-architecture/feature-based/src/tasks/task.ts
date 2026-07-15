@@ -2,6 +2,7 @@ export type Task = {
   id: string;
   title: string;
   description?: string;
+  category?: string;
   status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
   priority: 'LOW' | 'MEDIUM' | 'HIGH';
   dueDate?: string;

@@ -1,0 +1,4 @@
+scripts/create-experiment-branch p1 feature-based task-01 dry-run-01 p1-feature-based-v1.0.0
+npx prettier --write phase1-architecture/feature-based
+npm run validate
+scripts/collect-git-metrics p1-feature-based-v1.0.0 results/raw/P1-FEATURE-BASED-T01-DRY-RUN-01
