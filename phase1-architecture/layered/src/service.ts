@@ -7,7 +7,12 @@ export class TaskService {
     private readonly clock = () => new Date().toISOString(),
   ) {}
   view(task: Task) {
-    return { ...task, isOverdue: isOverdue(task, this.clock().slice(0, 10)) };
+    const today = this.clock().slice(0, 10);
+    return {
+      ...task,
+      isOverdue: isOverdue(task, today),
+      warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
+    };
   }
   create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
     if (!input.title?.trim()) throw new Error('title is required');

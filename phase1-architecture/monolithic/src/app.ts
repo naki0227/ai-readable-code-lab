@@ -31,7 +31,11 @@ export function buildApp() {
       task.status !== 'ARCHIVED' &&
       task.dueDate < now().slice(0, 10),
     );
-  const response = (task: Task) => ({ ...task, isOverdue: isOverdue(task) });
+  const response = (task: Task) => ({
+    ...task,
+    isOverdue: isOverdue(task),
+    warnings: task.dueDate && task.dueDate < now().slice(0, 10) ? ['due date is in the past'] : [],
+  });
   const hasUser = (id: string) => id === 'user-1' || id === 'user-2';
   const record = (taskId: string, action: string) => {
     const event = { id: String(++eventSequence), taskId, action, createdAt: now() };

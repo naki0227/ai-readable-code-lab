@@ -22,4 +22,8 @@ export const asResponse = (task: Task) => ({
     task.status !== 'COMPLETED' &&
     task.status !== 'ARCHIVED' &&
     (task.dueDate as string) < new Date().toISOString().slice(0, 10),
+  warnings:
+    task.dueDate && task.dueDate < new Date().toISOString().slice(0, 10)
+      ? ['due date is in the past']
+      : [],
 });

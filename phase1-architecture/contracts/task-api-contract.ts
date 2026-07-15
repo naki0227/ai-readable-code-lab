@@ -27,6 +27,7 @@ export function taskApiContract(name: string, buildApp: BuildApp) {
         priority: 'HIGH',
         isOverdue: true,
         status: 'TODO',
+        warnings: ['due date is in the past'],
       });
 
       const updated = await app.inject({
