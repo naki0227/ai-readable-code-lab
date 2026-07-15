@@ -75,5 +75,12 @@ export function buildApp() {
     task.updatedAt = now();
     return response(task);
   });
+  app.post<{ Params: { id: string } }>('/tasks/:id/archive', async (request, reply) => {
+    const task = tasks.get(request.params.id);
+    if (!task) return reply.code(404).send({ error: 'task not found' });
+    task.status = 'ARCHIVED';
+    task.updatedAt = now();
+    return response(task);
+  });
   return app;
 }
