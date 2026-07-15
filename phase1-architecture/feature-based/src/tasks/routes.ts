@@ -13,19 +13,18 @@ export function registerTaskRoutes(app: FastifyInstance) {
     };
   }>('/tasks', async (r, reply) => {
     if (!r.body?.title?.trim()) return reply.code(400).send({ error: 'title is required' });
-    return reply.code(201).send(
-      asResponse(
-        repository.create({
-          title: r.body.title.trim(),
-          description: r.body.description,
-          priority: r.body.priority ?? 'MEDIUM',
-          dueDate: r.body.dueDate,
-          status: 'TODO',
-          createdAt: now(),
-          updatedAt: now(),
-        }),
-      ),
-    );
+    const timestamp = now();
+    const task = repository.create({
+      title: r.body.title.trim(),
+      description: r.body.description,
+      priority: r.body.priority ?? 'MEDIUM',
+      dueDate: r.body.dueDate,
+      status: 'TODO',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    });
+    repository.addEvent(task.id, 'CREATED', timestamp);
+    return reply.code(201).send(asResponse(task));
   });
   app.get('/tasks', async () =>
     repository
@@ -44,13 +43,21 @@ export function registerTaskRoutes(app: FastifyInstance) {
       description?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       dueDate?: string;
+      assigneeId?: string;
     };
   }>('/tasks/:id', async (r, reply) => {
     const task = repository.find(r.params.id);
     if (!task) return reply.code(404).send({ error: 'task not found' });
     if (r.body.title !== undefined && !r.body.title.trim())
       return reply.code(400).send({ error: 'title is required' });
+    if (r.body.assigneeId !== undefined && !['user-1', 'user-2'].includes(r.body.assigneeId))
+      return reply.code(404).send({ error: 'assignee not found' });
     Object.assign(task, r.body, { title: r.body.title?.trim() ?? task.title, updatedAt: now() });
+    repository.addEvent(
+      task.id,
+      r.body.assigneeId === undefined ? 'UPDATED' : 'ASSIGNEE_CHANGED',
+      task.updatedAt,
+    );
     return asResponse(task);
   });
   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (r, reply) => {
@@ -60,6 +67,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
       return reply.code(409).send({ error: 'task is already completed' });
     task.status = 'COMPLETED';
     task.updatedAt = now();
+    repository.addEvent(task.id, 'COMPLETED', task.updatedAt);
     return asResponse(task);
   });
   app.post<{ Params: { id: string } }>('/tasks/:id/archive', async (r, reply) => {
@@ -67,6 +75,11 @@ export function registerTaskRoutes(app: FastifyInstance) {
     if (!task) return reply.code(404).send({ error: 'task not found' });
     task.status = 'ARCHIVED';
     task.updatedAt = now();
+    repository.addEvent(task.id, 'ARCHIVED', task.updatedAt);
     return asResponse(task);
+  });
+  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (r, reply) => {
+    if (!repository.find(r.params.id)) return reply.code(404).send({ error: 'task not found' });
+    return repository.history(r.params.id);
   });
 }

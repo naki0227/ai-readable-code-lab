@@ -1,4 +1,4 @@
-import type { Priority, Task } from './domain.js';
+import type { Priority, Task, TaskEvent } from './domain.js';
 import { isOverdue } from './domain.js';
 import { TaskRepository } from './repository.js';
 export class TaskService {
@@ -12,7 +12,7 @@ export class TaskService {
   create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
     if (!input.title?.trim()) throw new Error('title is required');
     const time = this.clock();
-    return this.repository.save({
+    const task = this.repository.save({
       id: this.repository.nextId(),
       title: input.title.trim(),
       description: input.description,
@@ -22,6 +22,8 @@ export class TaskService {
       createdAt: time,
       updatedAt: time,
     });
+    this.repository.addEvent(task.id, 'CREATED', time);
+    return task;
   }
   get(id: string) {
     return this.repository.find(id);
@@ -35,19 +37,33 @@ export class TaskService {
     if (task.status === 'COMPLETED') throw new Error('task is already completed');
     task.status = 'COMPLETED';
     task.updatedAt = this.clock();
+    this.repository.addEvent(task.id, 'COMPLETED', task.updatedAt);
     return task;
   }
   update(
     id: string,
-    input: { title?: string; description?: string; priority?: Priority; dueDate?: string },
+    input: {
+      title?: string;
+      description?: string;
+      priority?: Priority;
+      dueDate?: string;
+      assigneeId?: string;
+    },
   ) {
     const task = this.get(id);
     if (!task) throw new Error('task not found');
     if (input.title !== undefined && !input.title.trim()) throw new Error('title is required');
+    if (input.assigneeId !== undefined && !this.hasUser(input.assigneeId))
+      throw new Error('assignee not found');
     Object.assign(task, input, {
       title: input.title?.trim() ?? task.title,
       updatedAt: this.clock(),
     });
+    this.repository.addEvent(
+      task.id,
+      input.assigneeId === undefined ? 'UPDATED' : 'ASSIGNEE_CHANGED',
+      task.updatedAt,
+    );
     return task;
   }
   archive(id: string) {
@@ -55,6 +71,14 @@ export class TaskService {
     if (!task) throw new Error('task not found');
     task.status = 'ARCHIVED';
     task.updatedAt = this.clock();
+    this.repository.addEvent(task.id, 'ARCHIVED', task.updatedAt);
     return task;
+  }
+  history(id: string): TaskEvent[] {
+    if (!this.get(id)) throw new Error('task not found');
+    return this.repository.history(id);
+  }
+  private hasUser(id: string) {
+    return id === 'user-1' || id === 'user-2';
   }
 }

@@ -14,10 +14,13 @@
 | PATCH  | `/tasks/:id`          | 200                   | 空タイトル400、未存在404 |
 | POST   | `/tasks/:id/complete` | 200                   | 二重完了409、未存在404   |
 | POST   | `/tasks/:id/archive`  | 200                   | 未存在404                |
+| GET    | `/tasks/:id/history`  | 200                   | 未存在404                |
 
 完了済み・アーカイブ済みは期限切れにしない。時刻はISO 8601、期限日は `YYYY-MM-DD` とする。
 
-`phase1-architecture/contracts/` の契約テストは上記の作成、更新、完了、アーカイブ、エラー応答を全構成に対して検証する。担当者の存在検証と操作履歴は、後続のBaseline拡張で追加する。
+`phase1-architecture/contracts/` の契約テストは上記の作成、更新、完了、アーカイブ、エラー応答、担当者検証、操作履歴を全構成に対して検証する。
+
+担当者は `PATCH /tasks/:id` の `assigneeId` で設定する。Baselineに存在する担当者は `user-1` と `user-2` のみで、その他は404を返す。履歴は `CREATED`、`UPDATED`、`ASSIGNEE_CHANGED`、`COMPLETED`、`ARCHIVED` の順に追記される。
 
 ## 比較上の制約
 

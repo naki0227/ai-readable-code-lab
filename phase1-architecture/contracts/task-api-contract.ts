@@ -39,6 +39,24 @@ export function taskApiContract(name: string, buildApp: BuildApp) {
         (await app.inject({ method: 'PATCH', url: `/tasks/${task.id}`, payload: { title: '' } }))
           .statusCode,
       ).toBe(400);
+      expect(
+        (
+          await app.inject({
+            method: 'PATCH',
+            url: `/tasks/${task.id}`,
+            payload: { assigneeId: 'missing' },
+          })
+        ).statusCode,
+      ).toBe(404);
+      expect(
+        (
+          await app.inject({
+            method: 'PATCH',
+            url: `/tasks/${task.id}`,
+            payload: { assigneeId: 'user-1' },
+          })
+        ).json(),
+      ).toMatchObject({ assigneeId: 'user-1' });
 
       const completed = await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
       expect(completed.json()).toMatchObject({ status: 'COMPLETED', isOverdue: false });
@@ -49,6 +67,15 @@ export function taskApiContract(name: string, buildApp: BuildApp) {
       expect(
         (await app.inject({ method: 'POST', url: `/tasks/${task.id}/archive` })).json(),
       ).toMatchObject({ status: 'ARCHIVED' });
+      expect(
+        (await app.inject({ method: 'GET', url: `/tasks/${task.id}/history` })).json(),
+      ).toMatchObject([
+        { action: 'CREATED' },
+        { action: 'UPDATED' },
+        { action: 'ASSIGNEE_CHANGED' },
+        { action: 'COMPLETED' },
+        { action: 'ARCHIVED' },
+      ]);
       expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual([]);
       expect((await app.inject({ method: 'GET', url: '/tasks/missing' })).statusCode).toBe(404);
       await app.close();

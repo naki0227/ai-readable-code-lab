@@ -5,8 +5,15 @@ export type Task = {
   status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
   priority: 'LOW' | 'MEDIUM' | 'HIGH';
   dueDate?: string;
+  assigneeId?: string;
   createdAt: string;
   updatedAt: string;
+};
+export type TaskEvent = {
+  id: string;
+  taskId: string;
+  action: 'CREATED' | 'UPDATED' | 'ASSIGNEE_CHANGED' | 'COMPLETED' | 'ARCHIVED';
+  createdAt: string;
 };
 export const asResponse = (task: Task) => ({
   ...task,
