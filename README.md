@@ -14,4 +14,12 @@
 
 `npm run validate` は型検査、整形、lint、公開テスト、ビルドを実行します。
 
+## Phase 1 baselines
+
+すべて commit `ce0ca087fb0ad40a0ab0e7f3a29879fdc806a3f5` を指す不変参照です。
+
+- `baseline/p1-monolithic` / `p1-monolithic-v1.0.0`
+- `baseline/p1-layered` / `p1-layered-v1.0.0`
+- `baseline/p1-feature-based` / `p1-feature-based-v1.0.0`
+
 実験は必ず固定タグのBaselineから分岐し、Baselineへマージしません。詳細は `docs/` を参照してください。
