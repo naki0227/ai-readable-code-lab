@@ -1,0 +1,4 @@
+scripts/create-experiment-branch p1 layered task-01 dry-run-01 p1-layered-v1.0.0
+npx prettier --write phase1-architecture/layered
+npm run validate
+scripts/collect-git-metrics p1-layered-v1.0.0 results/raw/P1-LAYERED-T01-DRY-RUN-01
