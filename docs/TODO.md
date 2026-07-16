@@ -19,13 +19,14 @@
 - Task 01の3件のDry RunをBaseline比較のDraft PRとして公開
 - Task 02〜06向けのv1.0.1 Baselineを固定
 - Task 02〜06の課題文・期待動作・公開テストケースを追加
+- Task 02〜06の隠しテストをEvaluator専用領域へ追加
 
 ## 未着手
 
-- Task 02〜06の隠しテストをEvaluator専用領域へ追加する
+- Task 02〜06のDry Runをv1.0.1 Baselineから実行する
 - 実験結果の集計スクリプトを追加する
 - Baselineタグ作成後にRunner/Evaluatorを分離して本実験を行う
 
 ## 次回最初に着手するタスク
 
-- Task 02〜06の隠しテストをEvaluator専用領域へ追加する
+- Task 02〜06のDry Runをv1.0.1 Baselineから実行する

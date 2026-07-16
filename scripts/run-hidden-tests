@@ -1,13 +1,22 @@
 #!/usr/bin/env sh
 set -eu
 
-if [ "$#" -ne 2 ]; then
-  echo "usage: $0 <monolithic|layered|feature-based> <result-file>" >&2
+if [ "$#" -ne 3 ]; then
+  echo "usage: $0 <task-id> <monolithic|layered|feature-based> <result-file>" >&2
   exit 64
 fi
 
-target=$1
-result_file=$2
+task_id=$1
+target=$2
+result_file=$3
+
+case "$task_id" in
+  task-01-category|task-02-completed-assignee|task-03-history|task-04-overdue-bug|task-05-archive|task-06-duplicate) ;;
+  *)
+    echo "unsupported task: $task_id" >&2
+    exit 64
+    ;;
+esac
 
 case "$target" in
   monolithic|layered|feature-based) ;;
@@ -17,11 +26,11 @@ case "$target" in
     ;;
 esac
 
-test_file="hidden-tests/phase1/task-01-category.${target}.test.ts"
+test_file="hidden-tests/phase1/${task_id}.test.ts"
 if [ ! -f "$test_file" ]; then
   echo "hidden test is unavailable: $test_file" >&2
   exit 66
 fi
 
 mkdir -p "$(dirname "$result_file")"
-npx vitest run "$test_file" > "$result_file" 2>&1
+HIDDEN_TEST_TARGET="$target" npx vitest run "$test_file" > "$result_file" 2>&1
