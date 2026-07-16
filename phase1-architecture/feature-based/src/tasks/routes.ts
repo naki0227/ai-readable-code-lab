@@ -63,6 +63,21 @@ export function registerTaskRoutes(app: FastifyInstance) {
     task.updatedAt = now();
     return asResponse(task);
   });
+  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (r, reply) => {
+    const source = repository.find(r.params.id);
+    if (!source) return reply.code(404).send({ error: 'task not found' });
+    const timestamp = now();
+    const copy = repository.create({
+      title: source.title,
+      description: source.description,
+      priority: source.priority,
+      dueDate: source.dueDate,
+      status: 'TODO',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    });
+    return reply.code(201).send(asResponse(copy));
+  });
   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
     const task = repository.find(r.params.id);
     if (!task) return reply.code(404).send({ error: 'task not found' });
