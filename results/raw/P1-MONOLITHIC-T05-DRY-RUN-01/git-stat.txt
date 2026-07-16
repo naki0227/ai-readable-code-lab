@@ -1,0 +1,4 @@
+ phase1-architecture/contracts/task-api-contract.ts |  4 ++--
+ phase1-architecture/monolithic/src/app.ts          | 13 ++++++++---
+ .../monolithic/tests/archive.test.ts               | 27 ++++++++++++++++++++++
+ 3 files changed, 39 insertions(+), 5 deletions(-)

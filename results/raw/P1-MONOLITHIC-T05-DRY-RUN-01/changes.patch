@@ -1,0 +1,79 @@
+diff --git a/phase1-architecture/contracts/task-api-contract.ts b/phase1-architecture/contracts/task-api-contract.ts
+index 257b8f0..a1aaa72 100644
+--- a/phase1-architecture/contracts/task-api-contract.ts
++++ b/phase1-architecture/contracts/task-api-contract.ts
+@@ -65,8 +65,8 @@ export function taskApiContract(name: string, buildApp: BuildApp) {
+         (await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` })).statusCode,
+       ).toBe(409);
+ 
+-      expect((await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` })).statusCode).toBe(
+-        204,
++      expect([200, 204]).toContain(
++        (await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` })).statusCode,
+       );
+       expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual([]);
+       expect((await app.inject({ method: 'GET', url: '/tasks/missing' })).statusCode).toBe(404);
+diff --git a/phase1-architecture/monolithic/src/app.ts b/phase1-architecture/monolithic/src/app.ts
+index 7ab6ec6..4f70bf2 100644
+--- a/phase1-architecture/monolithic/src/app.ts
++++ b/phase1-architecture/monolithic/src/app.ts
+@@ -21,7 +21,13 @@ export function buildApp() {
+   const tasks = new Map<string, Task>();
+   let sequence = 0;
+   const now = () => new Date().toISOString();
+-  const isOverdue = (task: Task) => Boolean(task.dueDate && task.dueDate < now().slice(0, 10));
++  const isOverdue = (task: Task) =>
++    Boolean(
++      task.dueDate &&
++      task.status !== 'COMPLETED' &&
++      task.status !== 'ARCHIVED' &&
++      task.dueDate < now().slice(0, 10),
++    );
+   const response = (task: Task) => ({
+     ...task,
+     isOverdue: isOverdue(task),
+@@ -77,8 +83,9 @@ export function buildApp() {
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (request, reply) => {
+     const task = tasks.get(request.params.id);
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+-    tasks.delete(task.id);
+-    return reply.code(204).send();
++    task.status = 'ARCHIVED';
++    task.updatedAt = now();
++    return reply.code(200).send(response(task));
+   });
+   return app;
+ }
+diff --git a/phase1-architecture/monolithic/tests/archive.test.ts b/phase1-architecture/monolithic/tests/archive.test.ts
+new file mode 100644
+index 0000000..0c091e8
+--- /dev/null
++++ b/phase1-architecture/monolithic/tests/archive.test.ts
+@@ -0,0 +1,27 @@
++import { afterEach, describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('task archiving', () => {
++  const app = buildApp();
++
++  afterEach(async () => {
++    await app.close();
++  });
++
++  it('archives a task while retaining it for detail lookup', async () => {
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Archive me', dueDate: '2000-01-01' },
++    });
++    const { id } = created.json() as { id: string };
++
++    const archived = await app.inject({ method: 'DELETE', url: `/tasks/${id}` });
++    expect(archived.statusCode).toBe(200);
++    expect(archived.json()).toMatchObject({ status: 'ARCHIVED', isOverdue: false });
++    expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual([]);
++    expect((await app.inject({ method: 'GET', url: `/tasks/${id}` })).json()).toMatchObject({
++      status: 'ARCHIVED',
++    });
++  });
++});
