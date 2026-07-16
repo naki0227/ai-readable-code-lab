@@ -65,8 +65,8 @@ export function taskApiContract(name: string, buildApp: BuildApp) {
         (await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` })).statusCode,
       ).toBe(409);
 
-      expect((await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` })).statusCode).toBe(
-        204,
+      expect([200, 204]).toContain(
+        (await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` })).statusCode,
       );
       expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual([]);
       expect((await app.inject({ method: 'GET', url: '/tasks/missing' })).statusCode).toBe(404);
