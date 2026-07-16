@@ -74,6 +74,23 @@ export function buildApp() {
     task.updatedAt = now();
     return response(task);
   });
+  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (request, reply) => {
+    const source = tasks.get(request.params.id);
+    if (!source) return reply.code(404).send({ error: 'task not found' });
+    const timestamp = now();
+    const copy: Task = {
+      id: String(++sequence),
+      title: source.title,
+      description: source.description,
+      priority: source.priority,
+      dueDate: source.dueDate,
+      status: 'TODO',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    tasks.set(copy.id, copy);
+    return reply.code(201).send(response(copy));
+  });
   app.delete<{ Params: { id: string } }>('/tasks/:id', async (request, reply) => {
     const task = tasks.get(request.params.id);
     if (!task) return reply.code(404).send({ error: 'task not found' });
