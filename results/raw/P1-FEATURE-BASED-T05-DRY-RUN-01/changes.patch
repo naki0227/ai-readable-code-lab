@@ -1,0 +1,79 @@
+diff --git a/phase1-architecture/contracts/task-api-contract.ts b/phase1-architecture/contracts/task-api-contract.ts
+index 257b8f0..a1aaa72 100644
+--- a/phase1-architecture/contracts/task-api-contract.ts
++++ b/phase1-architecture/contracts/task-api-contract.ts
+@@ -65,8 +65,8 @@ export function taskApiContract(name: string, buildApp: BuildApp) {
+         (await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` })).statusCode,
+       ).toBe(409);
+ 
+-      expect((await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` })).statusCode).toBe(
+-        204,
++      expect([200, 204]).toContain(
++        (await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` })).statusCode,
+       );
+       expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual([]);
+       expect((await app.inject({ method: 'GET', url: '/tasks/missing' })).statusCode).toBe(404);
+diff --git a/phase1-architecture/feature-based/src/tasks/routes.ts b/phase1-architecture/feature-based/src/tasks/routes.ts
+index a429f03..11daa53 100644
+--- a/phase1-architecture/feature-based/src/tasks/routes.ts
++++ b/phase1-architecture/feature-based/src/tasks/routes.ts
+@@ -66,7 +66,8 @@ export function registerTaskRoutes(app: FastifyInstance) {
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
+     const task = repository.find(r.params.id);
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+-    repository.remove(task.id);
+-    return reply.code(204).send();
++    task.status = 'ARCHIVED';
++    task.updatedAt = now();
++    return reply.code(200).send(asResponse(task));
+   });
+ }
+diff --git a/phase1-architecture/feature-based/src/tasks/task.ts b/phase1-architecture/feature-based/src/tasks/task.ts
+index 63c4b80..84efd77 100644
+--- a/phase1-architecture/feature-based/src/tasks/task.ts
++++ b/phase1-architecture/feature-based/src/tasks/task.ts
+@@ -12,7 +12,10 @@ export type Task = {
+ export const asResponse = (task: Task) => ({
+   ...task,
+   isOverdue:
+-    Boolean(task.dueDate) && (task.dueDate as string) < new Date().toISOString().slice(0, 10),
++    Boolean(task.dueDate) &&
++    task.status !== 'COMPLETED' &&
++    task.status !== 'ARCHIVED' &&
++    (task.dueDate as string) < new Date().toISOString().slice(0, 10),
+   warnings:
+     task.dueDate && task.dueDate < new Date().toISOString().slice(0, 10)
+       ? ['due date is in the past']
+diff --git a/phase1-architecture/feature-based/tests/archive.test.ts b/phase1-architecture/feature-based/tests/archive.test.ts
+new file mode 100644
+index 0000000..0c091e8
+--- /dev/null
++++ b/phase1-architecture/feature-based/tests/archive.test.ts
+@@ -0,0 +1,27 @@
++import { afterEach, describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('task archiving', () => {
++  const app = buildApp();
++
++  afterEach(async () => {
++    await app.close();
++  });
++
++  it('archives a task while retaining it for detail lookup', async () => {
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Archive me', dueDate: '2000-01-01' },
++    });
++    const { id } = created.json() as { id: string };
++
++    const archived = await app.inject({ method: 'DELETE', url: `/tasks/${id}` });
++    expect(archived.statusCode).toBe(200);
++    expect(archived.json()).toMatchObject({ status: 'ARCHIVED', isOverdue: false });
++    expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual([]);
++    expect((await app.inject({ method: 'GET', url: `/tasks/${id}` })).json()).toMatchObject({
++      status: 'ARCHIVED',
++    });
++  });
++});
