@@ -22,13 +22,14 @@
 - Task 02〜06の隠しテストをEvaluator専用領域へ追加
 - Task 02の3構成Dry Run・隠しテスト・Draft PRを完了
 - Task 03の3構成Dry Run・隠しテスト・Draft PRを完了
+- Task 04の3構成Dry Run・隠しテスト・Draft PRを完了
 
 ## 未着手
 
-- Task 02〜06のDry Runをv1.0.1 Baselineから実行する
+- Task 05〜06のDry Runをv1.0.1 Baselineから実行する
 - 実験結果の集計スクリプトを追加する
 - Baselineタグ作成後にRunner/Evaluatorを分離して本実験を行う
 
 ## 次回最初に着手するタスク
 
-- Task 02〜06のDry Runをv1.0.1 Baselineから実行する
+- Task 05の3構成Dry Runをv1.0.1 Baselineから実行する
