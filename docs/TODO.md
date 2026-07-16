@@ -26,6 +26,7 @@
 - Task 05の3構成Dry Run・隠しテスト・Draft PRを完了
 - Task 06の3構成Dry Run・隠しテスト・Draft PRを完了
 - Task 01〜06のDry Run結果を集計するスクリプトと概要JSONを追加
+- 本実験54 Runの固定順序とRunner/Evaluator隔離手順を追加
 
 ## 未着手
 
@@ -33,4 +34,4 @@
 
 ## 次回最初に着手するタスク
 
-- Runner/Evaluatorを分離した本実験の実行順と担当を確定する
+- 隔離clone・別セッションで、本実験のRun 01から開始する

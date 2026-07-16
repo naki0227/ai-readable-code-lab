@@ -1,0 +1,1147 @@
+{
+  "schemaVersion": 1,
+  "status": "ready-for-isolated-execution",
+  "randomSeed": 20260716,
+  "repetitionsPerCondition": 3,
+  "runCount": 54,
+  "constraints": {
+    "runnerCannotAccess": ["hidden-tests", "results", "other targets", "dry-run branches"],
+    "evaluatorCannotModify": ["runner source code", "runner result commit"]
+  },
+  "runs": [
+    {
+      "sequence": 1,
+      "experimentId": "P1-LAYERED-T01-R02",
+      "phase": "p1",
+      "taskId": "task-01",
+      "target": "layered",
+      "run": 2,
+      "baselineTag": "p1-layered-v1.0.0",
+      "branch": "experiment/p1/layered/task-01/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 2,
+      "experimentId": "P1-MONOLITHIC-T04-R01",
+      "phase": "p1",
+      "taskId": "task-04",
+      "target": "monolithic",
+      "run": 1,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-04/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 3,
+      "experimentId": "P1-LAYERED-T04-R01",
+      "phase": "p1",
+      "taskId": "task-04",
+      "target": "layered",
+      "run": 1,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-04/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 4,
+      "experimentId": "P1-MONOLITHIC-T06-R01",
+      "phase": "p1",
+      "taskId": "task-06",
+      "target": "monolithic",
+      "run": 1,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-06/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 5,
+      "experimentId": "P1-MONOLITHIC-T05-R01",
+      "phase": "p1",
+      "taskId": "task-05",
+      "target": "monolithic",
+      "run": 1,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-05/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 6,
+      "experimentId": "P1-LAYERED-T01-R01",
+      "phase": "p1",
+      "taskId": "task-01",
+      "target": "layered",
+      "run": 1,
+      "baselineTag": "p1-layered-v1.0.0",
+      "branch": "experiment/p1/layered/task-01/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 7,
+      "experimentId": "P1-FEATURE-BASED-T02-R03",
+      "phase": "p1",
+      "taskId": "task-02",
+      "target": "feature-based",
+      "run": 3,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-02/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 8,
+      "experimentId": "P1-LAYERED-T05-R02",
+      "phase": "p1",
+      "taskId": "task-05",
+      "target": "layered",
+      "run": 2,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-05/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 9,
+      "experimentId": "P1-MONOLITHIC-T02-R02",
+      "phase": "p1",
+      "taskId": "task-02",
+      "target": "monolithic",
+      "run": 2,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-02/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 10,
+      "experimentId": "P1-FEATURE-BASED-T03-R03",
+      "phase": "p1",
+      "taskId": "task-03",
+      "target": "feature-based",
+      "run": 3,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-03/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 11,
+      "experimentId": "P1-MONOLITHIC-T06-R02",
+      "phase": "p1",
+      "taskId": "task-06",
+      "target": "monolithic",
+      "run": 2,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-06/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 12,
+      "experimentId": "P1-FEATURE-BASED-T05-R01",
+      "phase": "p1",
+      "taskId": "task-05",
+      "target": "feature-based",
+      "run": 1,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-05/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 13,
+      "experimentId": "P1-FEATURE-BASED-T02-R02",
+      "phase": "p1",
+      "taskId": "task-02",
+      "target": "feature-based",
+      "run": 2,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-02/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 14,
+      "experimentId": "P1-MONOLITHIC-T04-R02",
+      "phase": "p1",
+      "taskId": "task-04",
+      "target": "monolithic",
+      "run": 2,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-04/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 15,
+      "experimentId": "P1-MONOLITHIC-T02-R01",
+      "phase": "p1",
+      "taskId": "task-02",
+      "target": "monolithic",
+      "run": 1,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-02/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 16,
+      "experimentId": "P1-MONOLITHIC-T06-R03",
+      "phase": "p1",
+      "taskId": "task-06",
+      "target": "monolithic",
+      "run": 3,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-06/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 17,
+      "experimentId": "P1-FEATURE-BASED-T02-R01",
+      "phase": "p1",
+      "taskId": "task-02",
+      "target": "feature-based",
+      "run": 1,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-02/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 18,
+      "experimentId": "P1-LAYERED-T02-R03",
+      "phase": "p1",
+      "taskId": "task-02",
+      "target": "layered",
+      "run": 3,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-02/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 19,
+      "experimentId": "P1-FEATURE-BASED-T04-R02",
+      "phase": "p1",
+      "taskId": "task-04",
+      "target": "feature-based",
+      "run": 2,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-04/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 20,
+      "experimentId": "P1-MONOLITHIC-T03-R02",
+      "phase": "p1",
+      "taskId": "task-03",
+      "target": "monolithic",
+      "run": 2,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-03/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 21,
+      "experimentId": "P1-LAYERED-T03-R03",
+      "phase": "p1",
+      "taskId": "task-03",
+      "target": "layered",
+      "run": 3,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-03/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 22,
+      "experimentId": "P1-MONOLITHIC-T04-R03",
+      "phase": "p1",
+      "taskId": "task-04",
+      "target": "monolithic",
+      "run": 3,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-04/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 23,
+      "experimentId": "P1-FEATURE-BASED-T01-R01",
+      "phase": "p1",
+      "taskId": "task-01",
+      "target": "feature-based",
+      "run": 1,
+      "baselineTag": "p1-feature-based-v1.0.0",
+      "branch": "experiment/p1/feature-based/task-01/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 24,
+      "experimentId": "P1-MONOLITHIC-T05-R03",
+      "phase": "p1",
+      "taskId": "task-05",
+      "target": "monolithic",
+      "run": 3,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-05/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 25,
+      "experimentId": "P1-LAYERED-T04-R03",
+      "phase": "p1",
+      "taskId": "task-04",
+      "target": "layered",
+      "run": 3,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-04/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 26,
+      "experimentId": "P1-MONOLITHIC-T01-R03",
+      "phase": "p1",
+      "taskId": "task-01",
+      "target": "monolithic",
+      "run": 3,
+      "baselineTag": "p1-monolithic-v1.0.0",
+      "branch": "experiment/p1/monolithic/task-01/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 27,
+      "experimentId": "P1-FEATURE-BASED-T05-R02",
+      "phase": "p1",
+      "taskId": "task-05",
+      "target": "feature-based",
+      "run": 2,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-05/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 28,
+      "experimentId": "P1-MONOLITHIC-T02-R03",
+      "phase": "p1",
+      "taskId": "task-02",
+      "target": "monolithic",
+      "run": 3,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-02/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 29,
+      "experimentId": "P1-MONOLITHIC-T03-R01",
+      "phase": "p1",
+      "taskId": "task-03",
+      "target": "monolithic",
+      "run": 1,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-03/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 30,
+      "experimentId": "P1-FEATURE-BASED-T05-R03",
+      "phase": "p1",
+      "taskId": "task-05",
+      "target": "feature-based",
+      "run": 3,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-05/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 31,
+      "experimentId": "P1-FEATURE-BASED-T06-R02",
+      "phase": "p1",
+      "taskId": "task-06",
+      "target": "feature-based",
+      "run": 2,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-06/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 32,
+      "experimentId": "P1-FEATURE-BASED-T01-R02",
+      "phase": "p1",
+      "taskId": "task-01",
+      "target": "feature-based",
+      "run": 2,
+      "baselineTag": "p1-feature-based-v1.0.0",
+      "branch": "experiment/p1/feature-based/task-01/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 33,
+      "experimentId": "P1-LAYERED-T03-R02",
+      "phase": "p1",
+      "taskId": "task-03",
+      "target": "layered",
+      "run": 2,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-03/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 34,
+      "experimentId": "P1-LAYERED-T02-R02",
+      "phase": "p1",
+      "taskId": "task-02",
+      "target": "layered",
+      "run": 2,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-02/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 35,
+      "experimentId": "P1-LAYERED-T02-R01",
+      "phase": "p1",
+      "taskId": "task-02",
+      "target": "layered",
+      "run": 1,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-02/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 36,
+      "experimentId": "P1-LAYERED-T05-R03",
+      "phase": "p1",
+      "taskId": "task-05",
+      "target": "layered",
+      "run": 3,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-05/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 37,
+      "experimentId": "P1-FEATURE-BASED-T01-R03",
+      "phase": "p1",
+      "taskId": "task-01",
+      "target": "feature-based",
+      "run": 3,
+      "baselineTag": "p1-feature-based-v1.0.0",
+      "branch": "experiment/p1/feature-based/task-01/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 38,
+      "experimentId": "P1-MONOLITHIC-T03-R03",
+      "phase": "p1",
+      "taskId": "task-03",
+      "target": "monolithic",
+      "run": 3,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-03/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 39,
+      "experimentId": "P1-MONOLITHIC-T01-R02",
+      "phase": "p1",
+      "taskId": "task-01",
+      "target": "monolithic",
+      "run": 2,
+      "baselineTag": "p1-monolithic-v1.0.0",
+      "branch": "experiment/p1/monolithic/task-01/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 40,
+      "experimentId": "P1-MONOLITHIC-T01-R01",
+      "phase": "p1",
+      "taskId": "task-01",
+      "target": "monolithic",
+      "run": 1,
+      "baselineTag": "p1-monolithic-v1.0.0",
+      "branch": "experiment/p1/monolithic/task-01/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 41,
+      "experimentId": "P1-FEATURE-BASED-T06-R03",
+      "phase": "p1",
+      "taskId": "task-06",
+      "target": "feature-based",
+      "run": 3,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-06/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 42,
+      "experimentId": "P1-MONOLITHIC-T05-R02",
+      "phase": "p1",
+      "taskId": "task-05",
+      "target": "monolithic",
+      "run": 2,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-05/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 43,
+      "experimentId": "P1-LAYERED-T06-R03",
+      "phase": "p1",
+      "taskId": "task-06",
+      "target": "layered",
+      "run": 3,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-06/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 44,
+      "experimentId": "P1-LAYERED-T05-R01",
+      "phase": "p1",
+      "taskId": "task-05",
+      "target": "layered",
+      "run": 1,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-05/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 45,
+      "experimentId": "P1-FEATURE-BASED-T03-R01",
+      "phase": "p1",
+      "taskId": "task-03",
+      "target": "feature-based",
+      "run": 1,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-03/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 46,
+      "experimentId": "P1-LAYERED-T06-R01",
+      "phase": "p1",
+      "taskId": "task-06",
+      "target": "layered",
+      "run": 1,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-06/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 47,
+      "experimentId": "P1-LAYERED-T04-R02",
+      "phase": "p1",
+      "taskId": "task-04",
+      "target": "layered",
+      "run": 2,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-04/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 48,
+      "experimentId": "P1-FEATURE-BASED-T04-R01",
+      "phase": "p1",
+      "taskId": "task-04",
+      "target": "feature-based",
+      "run": 1,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-04/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 49,
+      "experimentId": "P1-LAYERED-T03-R01",
+      "phase": "p1",
+      "taskId": "task-03",
+      "target": "layered",
+      "run": 1,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-03/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 50,
+      "experimentId": "P1-FEATURE-BASED-T04-R03",
+      "phase": "p1",
+      "taskId": "task-04",
+      "target": "feature-based",
+      "run": 3,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-04/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 51,
+      "experimentId": "P1-LAYERED-T01-R03",
+      "phase": "p1",
+      "taskId": "task-01",
+      "target": "layered",
+      "run": 3,
+      "baselineTag": "p1-layered-v1.0.0",
+      "branch": "experiment/p1/layered/task-01/r03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 52,
+      "experimentId": "P1-LAYERED-T06-R02",
+      "phase": "p1",
+      "taskId": "task-06",
+      "target": "layered",
+      "run": 2,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-06/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 53,
+      "experimentId": "P1-FEATURE-BASED-T03-R02",
+      "phase": "p1",
+      "taskId": "task-03",
+      "target": "feature-based",
+      "run": 2,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-03/r02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    },
+    {
+      "sequence": 54,
+      "experimentId": "P1-FEATURE-BASED-T06-R01",
+      "phase": "p1",
+      "taskId": "task-06",
+      "target": "feature-based",
+      "run": 1,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-06/r01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "runner": {
+        "isolation": "separate clone and fresh session",
+        "model": null,
+        "reasoningLevel": null
+      },
+      "evaluator": {
+        "isolation": "separate clone and session from runner",
+        "independentFromRunner": true
+      }
+    }
+  ]
+}
