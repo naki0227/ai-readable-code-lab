@@ -25,12 +25,12 @@
 - Task 04の3構成Dry Run・隠しテスト・Draft PRを完了
 - Task 05の3構成Dry Run・隠しテスト・Draft PRを完了
 - Task 06の3構成Dry Run・隠しテスト・Draft PRを完了
+- Task 01〜06のDry Run結果を集計するスクリプトと概要JSONを追加
 
 ## 未着手
 
-- 実験結果の集計スクリプトを追加する
 - Baselineタグ作成後にRunner/Evaluatorを分離して本実験を行う
 
 ## 次回最初に着手するタスク
 
-- 3構成・Task 01〜06のDry Run結果を集計し、本実験の実行順を確定する
+- Runner/Evaluatorを分離した本実験の実行順と担当を確定する

@@ -1,0 +1,43 @@
+{
+  "kind": "dry-run-overview",
+  "includedInMainResults": false,
+  "taskCount": 6,
+  "runCount": 18,
+  "publicTests": "ALL_PASS",
+  "hiddenTests": "ALL_PASS",
+  "scoredRunCount": 0,
+  "unscoredRunCount": 18,
+  "targets": ["feature-based", "layered", "monolithic"],
+  "taskSummaries": [
+    {
+      "taskId": "task-01",
+      "runCount": 3,
+      "includedInMainResults": false
+    },
+    {
+      "taskId": "task-02",
+      "runCount": 3,
+      "includedInMainResults": false
+    },
+    {
+      "taskId": "task-03",
+      "runCount": 3,
+      "includedInMainResults": false
+    },
+    {
+      "taskId": "task-04",
+      "runCount": 3,
+      "includedInMainResults": false
+    },
+    {
+      "taskId": "task-05",
+      "runCount": 3,
+      "includedInMainResults": false
+    },
+    {
+      "taskId": "task-06",
+      "runCount": 3,
+      "includedInMainResults": false
+    }
+  ]
+}
