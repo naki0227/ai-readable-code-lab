@@ -1,0 +1,9 @@
+{
+  "experimentId": "P1-MONOLITHIC-T02-DRY-RUN-01",
+  "kind": "dry-run",
+  "includedInMainResults": false,
+  "baselineTag": "p1-monolithic-v1.0.1",
+  "baselineCommit": "4ae13048bff735fa52219adbeb5075d4c04dbe43",
+  "resultCommit": "18dc2ca",
+  "humanCodeCorrections": false
+}
