@@ -57,6 +57,8 @@ export function buildApp() {
     if (!task) return reply.code(404).send({ error: 'task not found' });
     if (request.body.title !== undefined && !request.body.title.trim())
       return reply.code(400).send({ error: 'title is required' });
+    if (request.body.assigneeId !== undefined && task.status === 'COMPLETED')
+      return reply.code(409).send({ error: 'completed task assignee cannot be changed' });
     if (request.body.assigneeId !== undefined && !hasUser(request.body.assigneeId))
       return reply.code(404).send({ error: 'assignee not found' });
     Object.assign(task, request.body, {

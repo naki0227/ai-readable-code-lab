@@ -1,0 +1,2 @@
+PASS: npm run validate
+Test Files: 8 passed (8)
