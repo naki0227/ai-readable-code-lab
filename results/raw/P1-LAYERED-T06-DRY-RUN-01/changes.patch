@@ -1,0 +1,88 @@
+diff --git a/phase1-architecture/layered/src/app.ts b/phase1-architecture/layered/src/app.ts
+index 924240b..4a7a4a5 100644
+--- a/phase1-architecture/layered/src/app.ts
++++ b/phase1-architecture/layered/src/app.ts
+@@ -49,6 +49,13 @@ export function buildApp() {
+       return reply.code(message === 'task not found' ? 404 : 409).send({ error: message });
+     }
+   });
++  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (r, reply) => {
++    try {
++      return reply.code(201).send(respond(service.view(service.duplicate(r.params.id))));
++    } catch (e) {
++      return reply.code(404).send({ error: (e as Error).message });
++    }
++  });
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
+     try {
+       service.remove(r.params.id);
+diff --git a/phase1-architecture/layered/src/service.ts b/phase1-architecture/layered/src/service.ts
+index 124fc11..8c803f7 100644
+--- a/phase1-architecture/layered/src/service.ts
++++ b/phase1-architecture/layered/src/service.ts
+@@ -43,6 +43,21 @@ export class TaskService {
+     task.updatedAt = this.clock();
+     return task;
+   }
++  duplicate(id: string) {
++    const source = this.get(id);
++    if (!source) throw new Error('task not found');
++    const time = this.clock();
++    return this.repository.save({
++      id: this.repository.nextId(),
++      title: source.title,
++      description: source.description,
++      priority: source.priority,
++      dueDate: source.dueDate,
++      status: 'TODO',
++      createdAt: time,
++      updatedAt: time,
++    });
++  }
+   update(
+     id: string,
+     input: {
+diff --git a/phase1-architecture/layered/tests/duplicate.test.ts b/phase1-architecture/layered/tests/duplicate.test.ts
+new file mode 100644
+index 0000000..68d3428
+--- /dev/null
++++ b/phase1-architecture/layered/tests/duplicate.test.ts
+@@ -0,0 +1,38 @@
++import { afterEach, describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('task duplication', () => {
++  const app = buildApp();
++
++  afterEach(async () => {
++    await app.close();
++  });
++
++  it('creates an independent unassigned TODO copy', async () => {
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: {
++        title: 'Copy me',
++        description: 'details',
++        priority: 'HIGH',
++        dueDate: '2030-01-01',
++      },
++    });
++    const original = created.json() as { id: string };
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${original.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++
++    const duplicated = await app.inject({ method: 'POST', url: `/tasks/${original.id}/duplicate` });
++    expect(duplicated.statusCode).toBe(201);
++    expect(duplicated.json()).toMatchObject({ title: 'Copy me', status: 'TODO' });
++    expect(duplicated.json()).not.toHaveProperty('assigneeId');
++    expect(duplicated.json().id).not.toBe(original.id);
++    expect(
++      (await app.inject({ method: 'GET', url: `/tasks/${original.id}` })).json(),
++    ).toMatchObject({ assigneeId: 'user-1' });
++  });
++});

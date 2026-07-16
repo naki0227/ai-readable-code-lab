@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /Users/nagaseibuki/Documents/ai-readable-code-lab
+
+ ✓ hidden-tests/phase1/task-06-duplicate.test.ts (1 test) 115ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:19:35
+   Duration  328ms (transform 24ms, setup 0ms, collect 11ms, tests 115ms, environment 0ms, prepare 33ms)
+
