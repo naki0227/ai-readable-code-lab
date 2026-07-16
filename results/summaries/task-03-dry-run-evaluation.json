@@ -1,0 +1,25 @@
+{
+  "taskId": "task-03",
+  "kind": "dry-run",
+  "includedInMainResults": false,
+  "runs": [
+    {
+      "experimentId": "P1-MONOLITHIC-T03-DRY-RUN-01",
+      "publicTests": "8/8",
+      "hiddenTests": "PASS",
+      "score": null
+    },
+    {
+      "experimentId": "P1-LAYERED-T03-DRY-RUN-01",
+      "publicTests": "8/8",
+      "hiddenTests": "PASS",
+      "score": null
+    },
+    {
+      "experimentId": "P1-FEATURE-BASED-T03-DRY-RUN-01",
+      "publicTests": "8/8",
+      "hiddenTests": "PASS",
+      "score": null
+    }
+  ]
+}
