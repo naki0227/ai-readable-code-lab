@@ -1,0 +1,55 @@
+diff --git a/phase1-architecture/feature-based/src/tasks/routes.ts b/phase1-architecture/feature-based/src/tasks/routes.ts
+index a429f03..9ea3bca 100644
+--- a/phase1-architecture/feature-based/src/tasks/routes.ts
++++ b/phase1-architecture/feature-based/src/tasks/routes.ts
+@@ -49,6 +49,8 @@ export function registerTaskRoutes(app: FastifyInstance) {
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+     if (r.body.title !== undefined && !r.body.title.trim())
+       return reply.code(400).send({ error: 'title is required' });
++    if (r.body.assigneeId !== undefined && task.status === 'COMPLETED')
++      return reply.code(409).send({ error: 'completed task assignee cannot be changed' });
+     if (r.body.assigneeId !== undefined && !['user-1', 'user-2'].includes(r.body.assigneeId))
+       return reply.code(404).send({ error: 'assignee not found' });
+     Object.assign(task, r.body, { title: r.body.title?.trim() ?? task.title, updatedAt: now() });
+diff --git a/phase1-architecture/feature-based/tests/completed-assignee.test.ts b/phase1-architecture/feature-based/tests/completed-assignee.test.ts
+new file mode 100644
+index 0000000..daaeeb7
+--- /dev/null
++++ b/phase1-architecture/feature-based/tests/completed-assignee.test.ts
+@@ -0,0 +1,36 @@
++import { describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('Task 02: completed task assignee', () => {
++  it('rejects assignee changes after completion without blocking title updates', async () => {
++    const app = buildApp();
++    const task = (
++      await app.inject({ method: 'POST', url: '/tasks', payload: { title: 'Task' } })
++    ).json() as { id: string };
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++    await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${task.id}`,
++          payload: { assigneeId: 'user-2' },
++        })
++      ).statusCode,
++    ).toBe(409);
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${task.id}`,
++          payload: { title: 'Renamed' },
++        })
++      ).json(),
++    ).toMatchObject({ title: 'Renamed', assigneeId: 'user-1' });
++    await app.close();
++  });
++});

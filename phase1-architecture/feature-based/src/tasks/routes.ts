@@ -49,6 +49,8 @@ export function registerTaskRoutes(app: FastifyInstance) {
     if (!task) return reply.code(404).send({ error: 'task not found' });
     if (r.body.title !== undefined && !r.body.title.trim())
       return reply.code(400).send({ error: 'title is required' });
+    if (r.body.assigneeId !== undefined && task.status === 'COMPLETED')
+      return reply.code(409).send({ error: 'completed task assignee cannot be changed' });
     if (r.body.assigneeId !== undefined && !['user-1', 'user-2'].includes(r.body.assigneeId))
       return reply.code(404).send({ error: 'assignee not found' });
     Object.assign(task, r.body, { title: r.body.title?.trim() ?? task.title, updatedAt: now() });
