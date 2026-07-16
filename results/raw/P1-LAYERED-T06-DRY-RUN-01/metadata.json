@@ -1,0 +1,8 @@
+{
+  "experimentId": "P1-LAYERED-T06-DRY-RUN-01",
+  "kind": "dry-run",
+  "includedInMainResults": false,
+  "baselineTag": "p1-layered-v1.0.1",
+  "resultCommit": "bd05480",
+  "humanCodeCorrections": false
+}
