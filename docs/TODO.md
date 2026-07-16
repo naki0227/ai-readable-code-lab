@@ -24,13 +24,13 @@
 - Task 03の3構成Dry Run・隠しテスト・Draft PRを完了
 - Task 04の3構成Dry Run・隠しテスト・Draft PRを完了
 - Task 05の3構成Dry Run・隠しテスト・Draft PRを完了
+- Task 06の3構成Dry Run・隠しテスト・Draft PRを完了
 
 ## 未着手
 
-- Task 06のDry Runをv1.0.1 Baselineから実行する
 - 実験結果の集計スクリプトを追加する
 - Baselineタグ作成後にRunner/Evaluatorを分離して本実験を行う
 
 ## 次回最初に着手するタスク
 
-- Task 06の3構成Dry Runをv1.0.1 Baselineから実行する
+- 3構成・Task 01〜06のDry Run結果を集計し、本実験の実行順を確定する
