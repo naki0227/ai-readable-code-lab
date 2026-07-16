@@ -1,4 +1,4 @@
-import type { Priority, Task } from './domain.js';
+import type { Priority, Task, TaskEvent } from './domain.js';
 import { isOverdue } from './domain.js';
 import { TaskRepository } from './repository.js';
 export class TaskService {
@@ -27,6 +27,7 @@ export class TaskService {
       createdAt: time,
       updatedAt: time,
     });
+    this.repository.addEvent(task.id, 'CREATED', time);
     return task;
   }
   get(id: string) {
@@ -41,6 +42,7 @@ export class TaskService {
     if (task.status === 'COMPLETED') throw new Error('task is already completed');
     task.status = 'COMPLETED';
     task.updatedAt = this.clock();
+    this.repository.addEvent(task.id, 'COMPLETED', task.updatedAt);
     return task;
   }
   update(
@@ -62,10 +64,19 @@ export class TaskService {
       title: input.title?.trim() ?? task.title,
       updatedAt: this.clock(),
     });
+    this.repository.addEvent(
+      task.id,
+      input.assigneeId === undefined ? 'UPDATED' : 'ASSIGNEE_CHANGED',
+      task.updatedAt,
+    );
     return task;
   }
   remove(id: string) {
     if (!this.repository.remove(id)) throw new Error('task not found');
+  }
+  history(id: string): TaskEvent[] {
+    if (!this.get(id)) throw new Error('task not found');
+    return this.repository.history(id);
   }
   private hasUser(id: string) {
     return id === 'user-1' || id === 'user-2';
