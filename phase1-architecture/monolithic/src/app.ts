@@ -21,7 +21,13 @@ export function buildApp() {
   const tasks = new Map<string, Task>();
   let sequence = 0;
   const now = () => new Date().toISOString();
-  const isOverdue = (task: Task) => Boolean(task.dueDate && task.dueDate < now().slice(0, 10));
+  const isOverdue = (task: Task) =>
+    Boolean(
+      task.dueDate &&
+      task.status !== 'COMPLETED' &&
+      task.status !== 'ARCHIVED' &&
+      task.dueDate < now().slice(0, 10),
+    );
   const response = (task: Task) => ({
     ...task,
     isOverdue: isOverdue(task),
