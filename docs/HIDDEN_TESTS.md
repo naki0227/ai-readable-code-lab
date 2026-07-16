@@ -2,7 +2,7 @@
 
 隠しテストの実装は `hidden-tests/` に置くが、Gitで無視し、公開リポジトリへcommitしない。EvaluatorはRunnerと異なるクローンまたは隔離環境で、同じ実験ブランチをcheckoutしてから実行する。
 
-通常のVitest実行は `vitest.config.ts` で `hidden-tests/**` を明示的に除外する。Evaluatorだけが `scripts/run-hidden-tests` を使って、対象の隠しテストを直接指定して実行する。
+通常のVitest実行は `vitest.config.ts` で `hidden-tests/**` を明示的に除外する。Evaluatorだけが `scripts/run-hidden-tests` を使い、Evaluator専用の `hidden-tests/vitest.config.ts` で対象テストを直接指定して実行する。
 
 ```sh
 scripts/run-hidden-tests task-01-category monolithic results/raw/P1-MONOLITHIC-T01-R01/hidden-test-result.txt

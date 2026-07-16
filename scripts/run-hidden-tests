@@ -33,4 +33,4 @@ if [ ! -f "$test_file" ]; then
 fi
 
 mkdir -p "$(dirname "$result_file")"
-HIDDEN_TEST_TARGET="$target" npx vitest run "$test_file" > "$result_file" 2>&1
+HIDDEN_TEST_TARGET="$target" npx vitest run --config hidden-tests/vitest.config.ts "$test_file" > "$result_file" 2>&1
