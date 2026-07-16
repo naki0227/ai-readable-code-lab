@@ -20,6 +20,7 @@
 - Task 02〜06向けのv1.0.1 Baselineを固定
 - Task 02〜06の課題文・期待動作・公開テストケースを追加
 - Task 02〜06の隠しテストをEvaluator専用領域へ追加
+- Task 02の3構成Dry Run・隠しテスト・Draft PRを完了
 
 ## 未着手
 

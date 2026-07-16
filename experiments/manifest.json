@@ -39,6 +39,39 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/3",
       "taskId": "task-01",
       "target": "feature-based"
+    },
+    {
+      "experimentId": "P1-MONOLITHIC-T02-DRY-RUN-01",
+      "kind": "dry-run",
+      "includedInMainResults": false,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-02/dry-run-01",
+      "resultCommit": "9417fa20a9b2aab1844632fc3bfe496ca531e3c8",
+      "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/4",
+      "taskId": "task-02",
+      "target": "monolithic"
+    },
+    {
+      "experimentId": "P1-LAYERED-T02-DRY-RUN-01",
+      "kind": "dry-run",
+      "includedInMainResults": false,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-02/dry-run-01",
+      "resultCommit": "4e91ffa334dd5680b856a5ce4274e8eb50ae9aae",
+      "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/5",
+      "taskId": "task-02",
+      "target": "layered"
+    },
+    {
+      "experimentId": "P1-FEATURE-BASED-T02-DRY-RUN-01",
+      "kind": "dry-run",
+      "includedInMainResults": false,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-02/dry-run-01",
+      "resultCommit": "7dc8a2720238a882674f82314ae19174cfb41817",
+      "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/6",
+      "taskId": "task-02",
+      "target": "feature-based"
     }
   ]
 }
