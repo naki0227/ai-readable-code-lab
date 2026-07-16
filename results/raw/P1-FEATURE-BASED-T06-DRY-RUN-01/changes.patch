@@ -1,0 +1,70 @@
+diff --git a/phase1-architecture/feature-based/src/tasks/routes.ts b/phase1-architecture/feature-based/src/tasks/routes.ts
+index a429f03..b21f17b 100644
+--- a/phase1-architecture/feature-based/src/tasks/routes.ts
++++ b/phase1-architecture/feature-based/src/tasks/routes.ts
+@@ -63,6 +63,21 @@ export function registerTaskRoutes(app: FastifyInstance) {
+     task.updatedAt = now();
+     return asResponse(task);
+   });
++  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (r, reply) => {
++    const source = repository.find(r.params.id);
++    if (!source) return reply.code(404).send({ error: 'task not found' });
++    const timestamp = now();
++    const copy = repository.create({
++      title: source.title,
++      description: source.description,
++      priority: source.priority,
++      dueDate: source.dueDate,
++      status: 'TODO',
++      createdAt: timestamp,
++      updatedAt: timestamp,
++    });
++    return reply.code(201).send(asResponse(copy));
++  });
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
+     const task = repository.find(r.params.id);
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+diff --git a/phase1-architecture/feature-based/tests/duplicate.test.ts b/phase1-architecture/feature-based/tests/duplicate.test.ts
+new file mode 100644
+index 0000000..68d3428
+--- /dev/null
++++ b/phase1-architecture/feature-based/tests/duplicate.test.ts
+@@ -0,0 +1,38 @@
++import { afterEach, describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('task duplication', () => {
++  const app = buildApp();
++
++  afterEach(async () => {
++    await app.close();
++  });
++
++  it('creates an independent unassigned TODO copy', async () => {
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: {
++        title: 'Copy me',
++        description: 'details',
++        priority: 'HIGH',
++        dueDate: '2030-01-01',
++      },
++    });
++    const original = created.json() as { id: string };
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${original.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++
++    const duplicated = await app.inject({ method: 'POST', url: `/tasks/${original.id}/duplicate` });
++    expect(duplicated.statusCode).toBe(201);
++    expect(duplicated.json()).toMatchObject({ title: 'Copy me', status: 'TODO' });
++    expect(duplicated.json()).not.toHaveProperty('assigneeId');
++    expect(duplicated.json().id).not.toBe(original.id);
++    expect(
++      (await app.inject({ method: 'GET', url: `/tasks/${original.id}` })).json(),
++    ).toMatchObject({ assigneeId: 'user-1' });
++  });
++});
