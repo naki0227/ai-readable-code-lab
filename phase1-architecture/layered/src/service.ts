@@ -43,6 +43,21 @@ export class TaskService {
     task.updatedAt = this.clock();
     return task;
   }
+  duplicate(id: string) {
+    const source = this.get(id);
+    if (!source) throw new Error('task not found');
+    const time = this.clock();
+    return this.repository.save({
+      id: this.repository.nextId(),
+      title: source.title,
+      description: source.description,
+      priority: source.priority,
+      dueDate: source.dueDate,
+      status: 'TODO',
+      createdAt: time,
+      updatedAt: time,
+    });
+  }
   update(
     id: string,
     input: {
