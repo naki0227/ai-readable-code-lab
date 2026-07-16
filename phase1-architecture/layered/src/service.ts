@@ -64,8 +64,12 @@ export class TaskService {
     });
     return task;
   }
-  remove(id: string) {
-    if (!this.repository.remove(id)) throw new Error('task not found');
+  archive(id: string) {
+    const task = this.get(id);
+    if (!task) throw new Error('task not found');
+    task.status = 'ARCHIVED';
+    task.updatedAt = this.clock();
+    return task;
   }
   private hasUser(id: string) {
     return id === 'user-1' || id === 'user-2';
