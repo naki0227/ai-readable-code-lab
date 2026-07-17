@@ -1,0 +1,41 @@
+{
+  "experimentId": "P1-FEATURE-BASED-T02-R02",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-17T21:38:55+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": true,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 8, "total": 8 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 2,
+    "linesAdded": 38,
+    "linesDeleted": 0,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "requirementSatisfaction": null,
+    "hiddenTests": null,
+    "regressionPrevention": null,
+    "responsibilityPlacement": null,
+    "architecturalConsistency": null,
+    "minimalChanges": null,
+    "addedTests": null,
+    "namingAndReadability": null,
+    "total": null
+  },
+  "failureClassification": [],
+  "evidence": ["npm run validate passed.", "Evaluator-only hidden completed-assignee test passed."],
+  "notes": "Runner source was not edited by the evaluator."
+}
