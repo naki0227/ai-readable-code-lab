@@ -1,0 +1,164 @@
+diff --git a/docs/TODO.md b/docs/TODO.md
+index 277b612..fbd4e28 100644
+--- a/docs/TODO.md
++++ b/docs/TODO.md
+@@ -9,6 +9,7 @@
+ - 3構成の基本タスクライフサイクルを共通契約テストで一致させた
+ - 担当者の存在検証と操作履歴を共通契約テストで一致させた
+ - 過去期限の警告応答を共通契約テストで一致させた
++- Task 02: monolithicで完了済みタスクの担当者更新を409で拒否し、タイトルのみの更新と未存在タスクの404をテストした
+ 
+ ## 未着手
+ 
+diff --git a/docs/reports/2026-07-17-monolithic-task-02-report.md b/docs/reports/2026-07-17-monolithic-task-02-report.md
+new file mode 100644
+index 0000000..177b74f
+--- /dev/null
++++ b/docs/reports/2026-07-17-monolithic-task-02-report.md
+@@ -0,0 +1,68 @@
++# 作業報告書
++
++## 作業日時
++
++2026年07月17日 22時01分10秒
++
++## 作業対象
++
++`phase1-architecture/monolithic` の完了済みタスクに対する `PATCH /tasks/:id`。
++
++## 作業目的
++
++完了済みタスクの担当者変更を409で拒否し、タイトルのみの更新と未存在タスクの404を維持する。
++
++## 変更内容
++
++完了済みタスクへの `assigneeId` を含むPATCHを、担当者の存在検証や更新前に409で拒否するガードを追加した。タイトルのみのPATCHは従来どおり更新できる。APIテストで拒否、許可、未存在を確認した。
++
++## 変更したファイル
++
++- `phase1-architecture/monolithic/src/app.ts`
++- `phase1-architecture/monolithic/tests/app.test.ts`
++- `docs/TODO.md`
++- `docs/reports/2026-07-17-monolithic-task-02-report.md`
++
++## 変更意図
++
++完了済みタスクの担当者を後から変更できないようにし、状態確定後の担当責任が変わることを防ぐ。
++
++## 設計上の意図
++
++既存のFastify・インメモリ構成を維持し、ルート内の既存バリデーション順序で実装した。タスクの存在を最初に確認するため、未存在時は常に404となる。新規依存や構造変更は不要で、テストはHTTP API境界で振る舞いを検証する。
++
++## 影響範囲
++
++monolithic構成の完了済みタスクに対する担当者を含むPATCHのみ。作成、一覧、取得、完了、削除は変更なし。
++
++## 追加・更新したテスト
++
++- 完了済みタスクの担当者更新が409になること
++- 完了済みタスクのタイトルのみ更新が200になること
++- 未存在タスクへの担当者更新が404になること
++
++## 実行した確認コマンド
++
++- `npm ci`（lockfile固定の211パッケージを導入）
++- `npx prettier --write phase1-architecture/monolithic/tests/app.test.ts`
++- `npm run validate`（typecheck、format check、lint、Vitest 9件、buildがすべて成功）
++
++## CIで確認される内容
++
++GitHub ActionsでNode 22上の typecheck、Prettier check、ESLint、Vitest、TypeScript buildを実行する。
++
++## 未解決の課題
++
++なし。
++
++## 次にやること
++
++次の割り当て済み実験タスクに着手する。
++
++## 次回最初に見るべきファイル
++
++`docs/TODO.md` と対象タスクのプロンプト。
++
++## 引き継ぎ事項
++
++担当者を含む完了済みタスクのPATCHは409、タイトルのみのPATCHは200というTask 02の契約を維持する。
+diff --git a/phase1-architecture/monolithic/src/app.ts b/phase1-architecture/monolithic/src/app.ts
+index 7ab6ec6..b9c60f1 100644
+--- a/phase1-architecture/monolithic/src/app.ts
++++ b/phase1-architecture/monolithic/src/app.ts
+@@ -57,6 +57,8 @@ export function buildApp() {
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+     if (request.body.title !== undefined && !request.body.title.trim())
+       return reply.code(400).send({ error: 'title is required' });
++    if (task.status === 'COMPLETED' && request.body.assigneeId !== undefined)
++      return reply.code(409).send({ error: 'completed task assignee cannot be changed' });
+     if (request.body.assigneeId !== undefined && !hasUser(request.body.assigneeId))
+       return reply.code(404).send({ error: 'assignee not found' });
+     Object.assign(task, request.body, {
+diff --git a/phase1-architecture/monolithic/tests/app.test.ts b/phase1-architecture/monolithic/tests/app.test.ts
+index 2a21723..832a1c7 100644
+--- a/phase1-architecture/monolithic/tests/app.test.ts
++++ b/phase1-architecture/monolithic/tests/app.test.ts
+@@ -18,4 +18,60 @@ describe('monolithic baseline', () => {
+     ).toBe(409);
+     await app.close();
+   });
++
++  it('prevents assignee updates after completion while allowing title-only updates', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Assign before completion' },
++    });
++    const task = created.json() as { id: string };
++
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${task.id}`,
++          payload: { assigneeId: 'user-1' },
++        })
++      ).statusCode,
++    ).toBe(200);
++    expect(
++      (await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` })).statusCode,
++    ).toBe(200);
++
++    const assigneeUpdate = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-2' },
++    });
++    expect(assigneeUpdate.statusCode).toBe(409);
++    expect(assigneeUpdate.json()).toEqual({ error: 'completed task assignee cannot be changed' });
++
++    const titleUpdate = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { title: 'Renamed after completion' },
++    });
++    expect(titleUpdate.statusCode).toBe(200);
++    expect(titleUpdate.json()).toMatchObject({
++      title: 'Renamed after completion',
++      assigneeId: 'user-1',
++      status: 'COMPLETED',
++    });
++    await app.close();
++  });
++
++  it('returns 404 when updating an assignee on a missing task', async () => {
++    const app = buildApp();
++    const response = await app.inject({
++      method: 'PATCH',
++      url: '/tasks/missing',
++      payload: { assigneeId: 'user-1' },
++    });
++    expect(response.statusCode).toBe(404);
++    expect(response.json()).toEqual({ error: 'task not found' });
++    await app.close();
++  });
+ });

@@ -1,0 +1,5 @@
+ docs/TODO.md                                       |  1 +
+ .../2026-07-17-monolithic-task-02-report.md        | 68 ++++++++++++++++++++++
+ phase1-architecture/monolithic/src/app.ts          |  2 +
+ phase1-architecture/monolithic/tests/app.test.ts   | 56 ++++++++++++++++++
+ 4 files changed, 127 insertions(+)
