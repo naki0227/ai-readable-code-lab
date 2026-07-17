@@ -1,0 +1,54 @@
+diff --git a/phase1-architecture/layered/src/domain.ts b/phase1-architecture/layered/src/domain.ts
+index 3d3c739..d9f73ff 100644
+--- a/phase1-architecture/layered/src/domain.ts
++++ b/phase1-architecture/layered/src/domain.ts
+@@ -12,4 +12,4 @@ export type Task = {
+   updatedAt: string;
+ };
+ export const isOverdue = (task: Task, today: string) =>
+-  Boolean(task.dueDate && task.dueDate < today);
++  task.status !== 'COMPLETED' && Boolean(task.dueDate && task.dueDate < today);
+diff --git a/phase1-architecture/layered/src/service.ts b/phase1-architecture/layered/src/service.ts
+index 124fc11..065d394 100644
+--- a/phase1-architecture/layered/src/service.ts
++++ b/phase1-architecture/layered/src/service.ts
+@@ -8,10 +8,11 @@ export class TaskService {
+   ) {}
+   view(task: Task) {
+     const today = this.clock().slice(0, 10);
++    const overdue = isOverdue(task, today);
+     return {
+       ...task,
+-      isOverdue: isOverdue(task, today),
+-      warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
++      isOverdue: overdue,
++      warnings: overdue ? ['due date is in the past'] : [],
+     };
+   }
+   create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
+diff --git a/phase1-architecture/layered/tests/app.test.ts b/phase1-architecture/layered/tests/app.test.ts
+index 3528c99..fbaa782 100644
+--- a/phase1-architecture/layered/tests/app.test.ts
++++ b/phase1-architecture/layered/tests/app.test.ts
+@@ -11,4 +11,21 @@ describe('layered baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it('does not mark a completed task with a past due date as overdue', async () => {
++    const app = buildApp();
++    const task = (
++      await app.inject({
++        method: 'POST',
++        url: '/tasks',
++        payload: { title: 'Completed task', dueDate: '2020-01-01' },
++      })
++    ).json() as { id: string };
++
++    expect(
++      (await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` })).json(),
++    ).toMatchObject({ isOverdue: false, warnings: [] });
++
++    await app.close();
++  });
+ });

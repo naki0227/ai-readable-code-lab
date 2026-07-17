@@ -1,0 +1,13 @@
+{
+  "experimentId": "P1-LAYERED-T04-R01",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "target": "layered",
+  "taskId": "task-04",
+  "run": 1,
+  "model": "gpt-5.6-terra",
+  "reasoningLevel": "medium",
+  "baselineTag": "p1-layered-v1.0.1",
+  "resultCommit": "4be8ce0e8bd0ecdbe3168035d289a1ebc1f514b4",
+  "humanCodeCorrections": false
+}
