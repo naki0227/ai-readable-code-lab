@@ -12,4 +12,4 @@ export type Task = {
   updatedAt: string;
 };
 export const isOverdue = (task: Task, today: string) =>
-  Boolean(task.dueDate && task.dueDate < today);
+  task.status !== 'COMPLETED' && Boolean(task.dueDate && task.dueDate < today);
