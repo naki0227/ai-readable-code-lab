@@ -56,6 +56,8 @@ export class TaskService {
     const task = this.get(id);
     if (!task) throw new Error('task not found');
     if (input.title !== undefined && !input.title.trim()) throw new Error('title is required');
+    if (input.assigneeId !== undefined && task.status === 'COMPLETED')
+      throw new Error('completed task assignee cannot be changed');
     if (input.assigneeId !== undefined && !this.hasUser(input.assigneeId))
       throw new Error('assignee not found');
     Object.assign(task, input, {
