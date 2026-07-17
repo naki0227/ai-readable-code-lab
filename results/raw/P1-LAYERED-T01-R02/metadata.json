@@ -1,0 +1,18 @@
+{
+  "experimentId": "P1-LAYERED-T01-R02",
+  "phase": 1,
+  "targetType": "architecture",
+  "target": "layered",
+  "taskId": "task-01",
+  "run": 2,
+  "model": "gpt-5.6-terra",
+  "reasoningLevel": "medium",
+  "environment": "codex-cli",
+  "baselineTag": "p1-layered-v1.0.0",
+  "baselineCommit": "c0488134a3f9e698b9aad891b83eca26269b0e15",
+  "resultCommit": "4323047e9ae77d57b22845e535e248bb50eb01ca",
+  "pullRequest": null,
+  "startedAt": null,
+  "finishedAt": null,
+  "humanCodeCorrections": false
+}

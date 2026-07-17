@@ -8,6 +8,7 @@ export function buildApp() {
     Body: {
       title?: string;
       description?: string;
+      category?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       dueDate?: string;
       assigneeId?: string;
@@ -29,6 +30,7 @@ export function buildApp() {
     Body: {
       title?: string;
       description?: string;
+      category?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       dueDate?: string;
       assigneeId?: string;
