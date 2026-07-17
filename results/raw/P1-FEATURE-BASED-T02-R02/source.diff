@@ -1,0 +1,58 @@
+diff --git a/phase1-architecture/feature-based/src/tasks/routes.ts b/phase1-architecture/feature-based/src/tasks/routes.ts
+index a429f03..103c145 100644
+--- a/phase1-architecture/feature-based/src/tasks/routes.ts
++++ b/phase1-architecture/feature-based/src/tasks/routes.ts
+@@ -47,6 +47,8 @@ export function registerTaskRoutes(app: FastifyInstance) {
+   }>('/tasks/:id', async (r, reply) => {
+     const task = repository.find(r.params.id);
+     if (!task) return reply.code(404).send({ error: 'task not found' });
++    if (task.status === 'COMPLETED' && r.body.assigneeId !== undefined)
++      return reply.code(409).send({ error: 'cannot change assignee of a completed task' });
+     if (r.body.title !== undefined && !r.body.title.trim())
+       return reply.code(400).send({ error: 'title is required' });
+     if (r.body.assigneeId !== undefined && !['user-1', 'user-2'].includes(r.body.assigneeId))
+diff --git a/phase1-architecture/feature-based/tests/app.test.ts b/phase1-architecture/feature-based/tests/app.test.ts
+index 835e2ee..1d0a895 100644
+--- a/phase1-architecture/feature-based/tests/app.test.ts
++++ b/phase1-architecture/feature-based/tests/app.test.ts
+@@ -11,4 +11,40 @@ describe('feature baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it('rejects assignee updates for completed tasks while allowing title-only updates', async () => {
++    const app = buildApp();
++    const task = (
++      await app.inject({ method: 'POST', url: '/tasks', payload: { title: 'Test' } })
++    ).json() as { id: string };
++    await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
++
++    const rejected = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++    expect(rejected.statusCode).toBe(409);
++    expect(rejected.json()).toEqual({ error: 'cannot change assignee of a completed task' });
++
++    const updated = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { title: 'Retitled completed task' },
++    });
++    expect(updated.statusCode).toBe(200);
++    expect(updated.json()).toMatchObject({
++      title: 'Retitled completed task',
++      status: 'COMPLETED',
++    });
++
++    const missing = await app.inject({
++      method: 'PATCH',
++      url: '/tasks/missing',
++      payload: { assigneeId: 'user-1' },
++    });
++    expect(missing.statusCode).toBe(404);
++    expect(missing.json()).toEqual({ error: 'task not found' });
++    await app.close();
++  });
+ });

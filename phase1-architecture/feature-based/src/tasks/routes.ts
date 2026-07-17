@@ -47,6 +47,8 @@ export function registerTaskRoutes(app: FastifyInstance) {
   }>('/tasks/:id', async (r, reply) => {
     const task = repository.find(r.params.id);
     if (!task) return reply.code(404).send({ error: 'task not found' });
+    if (task.status === 'COMPLETED' && r.body.assigneeId !== undefined)
+      return reply.code(409).send({ error: 'cannot change assignee of a completed task' });
     if (r.body.title !== undefined && !r.body.title.trim())
       return reply.code(400).send({ error: 'title is required' });
     if (r.body.assigneeId !== undefined && !['user-1', 'user-2'].includes(r.body.assigneeId))
