@@ -57,5 +57,12 @@ export function buildApp() {
       return reply.code(404).send({ error: (e as Error).message });
     }
   });
+  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (r, reply) => {
+    try {
+      return service.history(r.params.id);
+    } catch (e) {
+      return reply.code(404).send({ error: (e as Error).message });
+    }
+  });
   return app;
 }
