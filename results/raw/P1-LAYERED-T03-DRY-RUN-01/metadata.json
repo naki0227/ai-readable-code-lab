@@ -1,1 +1,8 @@
-{"experimentId":"P1-LAYERED-T03-DRY-RUN-01","kind":"dry-run","includedInMainResults":false,"baselineTag":"p1-layered-v1.0.1","resultCommit":"e882aa3","humanCodeCorrections":false}
+{
+  "experimentId": "P1-LAYERED-T03-DRY-RUN-01",
+  "kind": "dry-run",
+  "includedInMainResults": false,
+  "baselineTag": "p1-layered-v1.0.1",
+  "resultCommit": "e882aa3",
+  "humanCodeCorrections": false
+}
