@@ -1,0 +1,5 @@
+docs/TODO.md
+docs/reports/2026-07-17-monolithic-task-06-duplicate-report.md
+phase1-architecture/monolithic/src/app.ts
+phase1-architecture/monolithic/tests/app.test.ts
+phase1-architecture/monolithic/tests/duplicate.test.ts
