@@ -52,6 +52,23 @@ export function buildApp() {
     const task = tasks.get(request.params.id);
     return task ? response(task) : reply.code(404).send({ error: 'task not found' });
   });
+  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (request, reply) => {
+    const source = tasks.get(request.params.id);
+    if (!source) return reply.code(404).send({ error: 'task not found' });
+    const timestamp = now();
+    const duplicate: Task = {
+      id: String(++sequence),
+      title: source.title,
+      description: source.description,
+      status: 'TODO',
+      priority: source.priority,
+      dueDate: source.dueDate,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    tasks.set(duplicate.id, duplicate);
+    return reply.code(201).send(response(duplicate));
+  });
   app.patch<{ Params: { id: string }; Body: UpdateTask }>('/tasks/:id', async (request, reply) => {
     const task = tasks.get(request.params.id);
     if (!task) return reply.code(404).send({ error: 'task not found' });
