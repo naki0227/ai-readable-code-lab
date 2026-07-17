@@ -1,0 +1,5 @@
+docs/TODO.md
+docs/reports/2026-07-17-feature-based-task-05-archive-report.md
+phase1-architecture/feature-based/src/tasks/routes.ts
+phase1-architecture/feature-based/src/tasks/task.ts
+phase1-architecture/feature-based/tests/app.test.ts

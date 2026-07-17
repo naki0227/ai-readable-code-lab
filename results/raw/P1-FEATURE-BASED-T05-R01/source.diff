@@ -1,0 +1,61 @@
+diff --git a/phase1-architecture/feature-based/src/tasks/routes.ts b/phase1-architecture/feature-based/src/tasks/routes.ts
+index a429f03..6590933 100644
+--- a/phase1-architecture/feature-based/src/tasks/routes.ts
++++ b/phase1-architecture/feature-based/src/tasks/routes.ts
+@@ -66,7 +66,8 @@ export function registerTaskRoutes(app: FastifyInstance) {
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
+     const task = repository.find(r.params.id);
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+-    repository.remove(task.id);
++    task.status = 'ARCHIVED';
++    task.updatedAt = now();
+     return reply.code(204).send();
+   });
+ }
+diff --git a/phase1-architecture/feature-based/src/tasks/task.ts b/phase1-architecture/feature-based/src/tasks/task.ts
+index 63c4b80..9448f7f 100644
+--- a/phase1-architecture/feature-based/src/tasks/task.ts
++++ b/phase1-architecture/feature-based/src/tasks/task.ts
+@@ -12,7 +12,9 @@ export type Task = {
+ export const asResponse = (task: Task) => ({
+   ...task,
+   isOverdue:
+-    Boolean(task.dueDate) && (task.dueDate as string) < new Date().toISOString().slice(0, 10),
++    task.status !== 'ARCHIVED' &&
++    Boolean(task.dueDate) &&
++    (task.dueDate as string) < new Date().toISOString().slice(0, 10),
+   warnings:
+     task.dueDate && task.dueDate < new Date().toISOString().slice(0, 10)
+       ? ['due date is in the past']
+diff --git a/phase1-architecture/feature-based/tests/app.test.ts b/phase1-architecture/feature-based/tests/app.test.ts
+index 835e2ee..88542c5 100644
+--- a/phase1-architecture/feature-based/tests/app.test.ts
++++ b/phase1-architecture/feature-based/tests/app.test.ts
+@@ -11,4 +11,27 @@ describe('feature baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it('archives tasks instead of deleting them', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Archive me', dueDate: '2000-01-01' },
++    });
++    const task = created.json() as { id: string };
++
++    const archived = await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` });
++    expect(archived.statusCode).toBe(204);
++
++    expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual([]);
++    expect((await app.inject({ method: 'GET', url: `/tasks/${task.id}` })).json()).toMatchObject({
++      id: task.id,
++      title: 'Archive me',
++      status: 'ARCHIVED',
++      isOverdue: false,
++    });
++    expect((await app.inject({ method: 'DELETE', url: '/tasks/missing' })).statusCode).toBe(404);
++    await app.close();
++  });
+ });

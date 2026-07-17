@@ -1,0 +1,44 @@
+{
+  "experimentId": "P1-FEATURE-BASED-T05-R01",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-17T21:23:28+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": true,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 8, "total": 8 },
+    "hiddenTests": { "passed": 0, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 5,
+    "linesAdded": 94,
+    "linesDeleted": 2,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "requirementSatisfaction": null,
+    "hiddenTests": null,
+    "regressionPrevention": null,
+    "responsibilityPlacement": null,
+    "architecturalConsistency": null,
+    "minimalChanges": null,
+    "addedTests": null,
+    "namingAndReadability": null,
+    "total": null
+  },
+  "failureClassification": ["implementation omission"],
+  "evidence": [
+    "npm run validate passed.",
+    "Hidden archive test failed because DELETE returned 204 with an empty response instead of the required 200 ARCHIVED task response."
+  ],
+  "notes": "Runner source was not edited by the evaluator."
+}
