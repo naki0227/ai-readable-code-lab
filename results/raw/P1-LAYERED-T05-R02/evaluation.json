@@ -1,0 +1,44 @@
+{
+  "experimentId": "P1-LAYERED-T05-R02",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-17T20:23:04+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": null,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 7, "total": 8 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 4,
+    "linesAdded": 43,
+    "linesDeleted": 7,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "requirementSatisfaction": null,
+    "hiddenTests": null,
+    "regressionPrevention": null,
+    "responsibilityPlacement": null,
+    "architecturalConsistency": null,
+    "minimalChanges": null,
+    "addedTests": null,
+    "namingAndReadability": null,
+    "total": null
+  },
+  "failureClassification": ["implementation omission"],
+  "evidence": [
+    "npm run validate reached the public test stage and failed only because the shared contract still expects DELETE 204 instead of the requested archive response 200.",
+    "Evaluator-only hidden archive test passed."
+  ],
+  "notes": "Runner source was not edited by the evaluator. The evaluator did not update the out-of-scope shared public contract."
+}
