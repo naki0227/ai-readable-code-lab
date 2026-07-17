@@ -266,6 +266,18 @@
       "target": "monolithic"
     },
     {
+      "experimentId": "P1-LAYERED-T01-R01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "baselineTag": "p1-layered-v1.0.0",
+      "branch": "experiment/p1/layered/task-01/r01",
+      "runnerResultCommit": "2614ea5c1cd03d67758e0b16867067642e8ea692",
+      "resultCommit": "732606b",
+      "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/26",
+      "taskId": "task-01",
+      "target": "layered"
+    },
+    {
       "experimentId": "P1-FEATURE-BASED-T02-R03",
       "kind": "main-experiment",
       "includedInMainResults": true,
@@ -276,6 +288,18 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/24",
       "taskId": "task-02",
       "target": "feature-based"
+    },
+    {
+      "experimentId": "P1-LAYERED-T05-R02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-05/r02",
+      "runnerResultCommit": "63c07af8a091d838a38c97c43dbb916b0ca2a9c3",
+      "resultCommit": "d6c4d1d",
+      "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/25",
+      "taskId": "task-05",
+      "target": "layered"
     }
   ]
 }

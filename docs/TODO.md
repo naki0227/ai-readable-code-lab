@@ -31,11 +31,15 @@
 - 本実験 P1-MONOLITHIC-T04-R01 を独立Runner/Evaluatorで完了
 - 本実験 P1-LAYERED-T04-R01 を独立Runner/Evaluatorで完了
 - 本実験 P1-MONOLITHIC-T06-R01 を独立Runner/Evaluatorで完了
+- 本実験 P1-MONOLITHIC-T05-R01 を独立Runner/Evaluatorで完了（公開契約の旧DELETE仕様により公開検証7/8、隠し評価1/1）
+- 本実験 P1-LAYERED-T01-R01 を独立Runner/Evaluatorで完了（Runnerテストの整形不備により公開検証7/8、隠し評価1/1）
+- 本実験 P1-FEATURE-BASED-T02-R03 を独立Runner/Evaluatorで完了
+- 本実験 P1-LAYERED-T05-R02 を独立Runner/Evaluatorで完了（公開契約の旧DELETE仕様により公開検証7/8、隠し評価1/1）
 
 ## 未着手
 
-- Baselineタグ作成後にRunner/Evaluatorを分離して本実験を行う
+- 固定順序で残り46件の本実験をRunner/Evaluator分離で実行する
 
 ## 次回最初に着手するタスク
 
-- 隔離clone・別セッションで、計画sequence 2以降の本実験を実行する
+- `experiments/phase1-main-run-order.json` の sequence 9 から実行する
