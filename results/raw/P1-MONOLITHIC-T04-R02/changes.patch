@@ -1,0 +1,66 @@
+diff --git a/phase1-architecture/monolithic/src/app.ts b/phase1-architecture/monolithic/src/app.ts
+index 7ab6ec6..425c219 100644
+--- a/phase1-architecture/monolithic/src/app.ts
++++ b/phase1-architecture/monolithic/src/app.ts
+@@ -21,11 +21,14 @@ export function buildApp() {
+   const tasks = new Map<string, Task>();
+   let sequence = 0;
+   const now = () => new Date().toISOString();
+-  const isOverdue = (task: Task) => Boolean(task.dueDate && task.dueDate < now().slice(0, 10));
++  const isOverdue = (task: Task) =>
++    task.status !== 'COMPLETED' &&
++    task.status !== 'ARCHIVED' &&
++    Boolean(task.dueDate && task.dueDate < now().slice(0, 10));
+   const response = (task: Task) => ({
+     ...task,
+     isOverdue: isOverdue(task),
+-    warnings: task.dueDate && task.dueDate < now().slice(0, 10) ? ['due date is in the past'] : [],
++    warnings: isOverdue(task) ? ['due date is in the past'] : [],
+   });
+   const hasUser = (id: string) => id === 'user-1' || id === 'user-2';
+ 
+diff --git a/phase1-architecture/monolithic/tests/app.test.ts b/phase1-architecture/monolithic/tests/app.test.ts
+index 2a21723..72d2fa5 100644
+--- a/phase1-architecture/monolithic/tests/app.test.ts
++++ b/phase1-architecture/monolithic/tests/app.test.ts
+@@ -18,4 +18,40 @@ describe('monolithic baseline', () => {
+     ).toBe(409);
+     await app.close();
+   });
++
++  it('does not mark completed or archived tasks with past due dates as overdue', async () => {
++    const app = buildApp();
++    const completedTask = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Completed past-due task', dueDate: '2000-01-01' },
++    });
++    const archivedTask = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Archived past-due task', dueDate: '2000-01-01' },
++    });
++
++    const completed = await app.inject({
++      method: 'POST',
++      url: `/tasks/${(completedTask.json() as { id: string }).id}/complete`,
++    });
++    const archived = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${(archivedTask.json() as { id: string }).id}`,
++      payload: { status: 'ARCHIVED' },
++    });
++
++    expect(completed.json()).toMatchObject({
++      status: 'COMPLETED',
++      isOverdue: false,
++      warnings: [],
++    });
++    expect(archived.json()).toMatchObject({
++      status: 'ARCHIVED',
++      isOverdue: false,
++      warnings: [],
++    });
++    await app.close();
++  });
+ });
