@@ -1,0 +1,44 @@
+{
+  "experimentId": "P1-MONOLITHIC-T05-R01",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-17T19:59:22+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": null,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 7, "total": 8 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 2,
+    "linesAdded": 35,
+    "linesDeleted": 4,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "requirementSatisfaction": null,
+    "hiddenTests": null,
+    "regressionPrevention": null,
+    "responsibilityPlacement": null,
+    "architecturalConsistency": null,
+    "minimalChanges": null,
+    "addedTests": null,
+    "namingAndReadability": null,
+    "total": null
+  },
+  "failureClassification": ["implementation omission"],
+  "evidence": [
+    "Hidden test passed.",
+    "Public contract expected DELETE 204 but implementation returned 200."
+  ],
+  "notes": "No evaluator source correction was made."
+}
