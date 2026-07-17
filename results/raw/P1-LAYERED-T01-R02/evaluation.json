@@ -1,0 +1,45 @@
+{
+  "experimentId": "P1-LAYERED-T01-R02",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "codex-cli-evaluator-session-019f6dde-bc7e-7761-99a7-fe75e1cc6a57",
+    "evaluatedAt": "2026-07-17T11:31:02+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": true,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 8, "total": 8 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 4,
+    "linesAdded": 40,
+    "linesDeleted": 1,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "requirementSatisfaction": null,
+    "hiddenTests": null,
+    "regressionPrevention": null,
+    "responsibilityPlacement": null,
+    "architecturalConsistency": null,
+    "minimalChanges": null,
+    "addedTests": null,
+    "namingAndReadability": null,
+    "total": null
+  },
+  "failureClassification": [],
+  "evidence": [
+    "npm run validate: typecheck, format, lint, public tests, and build passed.",
+    "Evaluator-only hidden test passed.",
+    "Runner result commit changes four tracked Layered files and no evaluator source changes were made."
+  ],
+  "notes": "Runner CLI could not create its local commit because its sandbox denied .git writes. The parent created the runner-result commit without editing the Runner source."
+}
