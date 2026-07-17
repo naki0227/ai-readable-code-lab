@@ -66,7 +66,8 @@ export function registerTaskRoutes(app: FastifyInstance) {
   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
     const task = repository.find(r.params.id);
     if (!task) return reply.code(404).send({ error: 'task not found' });
-    repository.remove(task.id);
+    task.status = 'ARCHIVED';
+    task.updatedAt = now();
     return reply.code(204).send();
   });
 }
