@@ -30,6 +30,7 @@
 - 本実験 P1-LAYERED-T01-R02 を独立Runner/Evaluatorで完了
 - 本実験 P1-MONOLITHIC-T04-R01 を独立Runner/Evaluatorで完了
 - 本実験 P1-LAYERED-T04-R01 を独立Runner/Evaluatorで完了
+- 本実験 P1-MONOLITHIC-T06-R01 を独立Runner/Evaluatorで完了
 
 ## 未着手
 
