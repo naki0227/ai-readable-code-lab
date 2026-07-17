@@ -9,11 +9,18 @@ type Task = {
   status: Status;
   priority: Priority;
   dueDate?: string;
+  category?: string;
   assigneeId?: string;
   createdAt: string;
   updatedAt: string;
 };
-type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
+type CreateTask = {
+  title: string;
+  description?: string;
+  priority?: Priority;
+  dueDate?: string;
+  category?: string;
+};
 type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
 
 export function buildApp() {
@@ -38,6 +45,7 @@ export function buildApp() {
       description: request.body.description,
       priority: request.body.priority ?? 'MEDIUM',
       dueDate: request.body.dueDate,
+      category: request.body.category,
       status: 'TODO',
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -64,6 +72,24 @@ export function buildApp() {
       updatedAt: now(),
     });
     return response(task);
+  });
+  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (request, reply) => {
+    const source = tasks.get(request.params.id);
+    if (!source) return reply.code(404).send({ error: 'task not found' });
+    const timestamp = now();
+    const duplicate: Task = {
+      id: String(++sequence),
+      title: source.title,
+      description: source.description,
+      priority: source.priority,
+      dueDate: source.dueDate,
+      category: source.category,
+      status: 'TODO',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    tasks.set(duplicate.id, duplicate);
+    return reply.code(201).send(response(duplicate));
   });
   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (request, reply) => {
     const task = tasks.get(request.params.id);
