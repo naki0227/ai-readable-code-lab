@@ -1,0 +1,105 @@
+diff --git a/phase1-architecture/layered/src/app.ts b/phase1-architecture/layered/src/app.ts
+index 914d3d7..fd6723c 100644
+--- a/phase1-architecture/layered/src/app.ts
++++ b/phase1-architecture/layered/src/app.ts
+@@ -8,6 +8,7 @@ export function buildApp() {
+     Body: {
+       title?: string;
+       description?: string;
++      category?: string;
+       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
+       dueDate?: string;
+       assigneeId?: string;
+@@ -29,6 +30,7 @@ export function buildApp() {
+     Body: {
+       title?: string;
+       description?: string;
++      category?: string;
+       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
+       dueDate?: string;
+       assigneeId?: string;
+diff --git a/phase1-architecture/layered/src/domain.ts b/phase1-architecture/layered/src/domain.ts
+index 0636f24..e83207d 100644
+--- a/phase1-architecture/layered/src/domain.ts
++++ b/phase1-architecture/layered/src/domain.ts
+@@ -4,6 +4,7 @@ export type Task = {
+   id: string;
+   title: string;
+   description?: string;
++  category?: string;
+   status: Status;
+   priority: Priority;
+   dueDate?: string;
+diff --git a/phase1-architecture/layered/src/service.ts b/phase1-architecture/layered/src/service.ts
+index 9c595d4..2e30f44 100644
+--- a/phase1-architecture/layered/src/service.ts
++++ b/phase1-architecture/layered/src/service.ts
+@@ -14,13 +14,20 @@ export class TaskService {
+       warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
+     };
+   }
+-  create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
++  create(input: {
++    title?: string;
++    description?: string;
++    category?: string;
++    priority?: Priority;
++    dueDate?: string;
++  }) {
+     if (!input.title?.trim()) throw new Error('title is required');
+     const time = this.clock();
+     const task = this.repository.save({
+       id: this.repository.nextId(),
+       title: input.title.trim(),
+       description: input.description,
++      category: input.category,
+       priority: input.priority ?? 'MEDIUM',
+       dueDate: input.dueDate,
+       status: 'TODO',
+@@ -50,6 +57,7 @@ export class TaskService {
+     input: {
+       title?: string;
+       description?: string;
++      category?: string;
+       priority?: Priority;
+       dueDate?: string;
+       assigneeId?: string;
+diff --git a/phase1-architecture/layered/tests/app.test.ts b/phase1-architecture/layered/tests/app.test.ts
+index 3528c99..fd5f42a 100644
+--- a/phase1-architecture/layered/tests/app.test.ts
++++ b/phase1-architecture/layered/tests/app.test.ts
+@@ -1,6 +1,34 @@
+ import { describe, expect, it } from 'vitest';
+ import { buildApp } from '../src/app.js';
+ describe('layered baseline', () => {
++  it('creates, updates, and retrieves a task category', async () => {
++    const app = buildApp();
++    const created = (
++      await app.inject({
++        method: 'POST',
++        url: '/tasks',
++        payload: { title: 'Test', category: 'Work' },
++      })
++    ).json() as { id: string; category?: string };
++
++    expect(created).toMatchObject({ category: 'Work' });
++
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${created.id}`,
++          payload: { category: 'Personal' },
++        })
++      ).json(),
++    ).toMatchObject({ category: 'Personal' });
++
++    expect((await app.inject({ method: 'GET', url: `/tasks/${created.id}` })).json()).toMatchObject({
++      category: 'Personal',
++    });
++    await app.close();
++  });
++
+   it('uses the same public completion contract', async () => {
+     const app = buildApp();
+     const task = (

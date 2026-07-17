@@ -1,0 +1,44 @@
+{
+  "experimentId": "P1-LAYERED-T01-R01",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-17T20:07:30+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": null,
+    "typecheck": true,
+    "format": false,
+    "lint": null,
+    "publicTests": { "passed": 7, "total": 8 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 4,
+    "linesAdded": 40,
+    "linesDeleted": 1,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "requirementSatisfaction": null,
+    "hiddenTests": null,
+    "regressionPrevention": null,
+    "responsibilityPlacement": null,
+    "architecturalConsistency": null,
+    "minimalChanges": null,
+    "addedTests": null,
+    "namingAndReadability": null,
+    "total": null
+  },
+  "failureClassification": ["formatting"],
+  "evidence": [
+    "Prettier check failed on layered public test.",
+    "Evaluator-only hidden test passed."
+  ],
+  "notes": "No evaluator source correction was made."
+}
