@@ -1,0 +1,183 @@
+diff --git a/phase1-architecture/monolithic/src/app.ts b/phase1-architecture/monolithic/src/app.ts
+index 7ab6ec6..972351f 100644
+--- a/phase1-architecture/monolithic/src/app.ts
++++ b/phase1-architecture/monolithic/src/app.ts
+@@ -6,6 +6,7 @@ type Task = {
+   id: string;
+   title: string;
+   description?: string;
++  category?: string;
+   status: Status;
+   priority: Priority;
+   dueDate?: string;
+@@ -13,7 +14,13 @@ type Task = {
+   createdAt: string;
+   updatedAt: string;
+ };
+-type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
++type CreateTask = {
++  title: string;
++  description?: string;
++  category?: string;
++  priority?: Priority;
++  dueDate?: string;
++};
+ type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
+ 
+ export function buildApp() {
+@@ -36,6 +43,7 @@ export function buildApp() {
+       id: String(++sequence),
+       title: request.body.title.trim(),
+       description: request.body.description,
++      category: request.body.category,
+       priority: request.body.priority ?? 'MEDIUM',
+       dueDate: request.body.dueDate,
+       status: 'TODO',
+@@ -74,6 +82,24 @@ export function buildApp() {
+     task.updatedAt = now();
+     return response(task);
+   });
++  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (request, reply) => {
++    const source = tasks.get(request.params.id);
++    if (!source) return reply.code(404).send({ error: 'task not found' });
++    const timestamp = now();
++    const copy: Task = {
++      id: String(++sequence),
++      title: source.title,
++      description: source.description,
++      category: source.category,
++      priority: source.priority,
++      dueDate: source.dueDate,
++      status: 'TODO',
++      createdAt: timestamp,
++      updatedAt: timestamp,
++    };
++    tasks.set(copy.id, copy);
++    return reply.code(201).send(response(copy));
++  });
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (request, reply) => {
+     const task = tasks.get(request.params.id);
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+diff --git a/phase1-architecture/monolithic/tests/app.test.ts b/phase1-architecture/monolithic/tests/app.test.ts
+index 2a21723..e084d7c 100644
+--- a/phase1-architecture/monolithic/tests/app.test.ts
++++ b/phase1-architecture/monolithic/tests/app.test.ts
+@@ -18,4 +18,52 @@ describe('monolithic baseline', () => {
+     ).toBe(409);
+     await app.close();
+   });
++
++  it('duplicates a task without its assignee and resets its status', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: {
++        title: 'Prepare release notes',
++        description: 'Summarize the changes',
++        category: 'release',
++        priority: 'HIGH',
++        dueDate: '2030-01-15',
++      },
++    });
++    const original = created.json() as { id: string };
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${original.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++
++    const duplicated = await app.inject({ method: 'POST', url: `/tasks/${original.id}/duplicate` });
++
++    expect(duplicated.statusCode).toBe(201);
++    expect(duplicated.json()).toMatchObject({
++      title: 'Prepare release notes',
++      description: 'Summarize the changes',
++      category: 'release',
++      priority: 'HIGH',
++      dueDate: '2030-01-15',
++      status: 'TODO',
++    });
++    expect(duplicated.json()).not.toHaveProperty('assigneeId');
++    expect(duplicated.json().id).not.toBe(original.id);
++    expect(duplicated.json().createdAt).toEqual(expect.any(String));
++    expect(duplicated.json().updatedAt).toEqual(expect.any(String));
++    await app.close();
++  });
++
++  it('returns 404 when duplicating a missing task', async () => {
++    const app = buildApp();
++
++    const response = await app.inject({ method: 'POST', url: '/tasks/missing/duplicate' });
++
++    expect(response.statusCode).toBe(404);
++    expect(response.json()).toEqual({ error: 'task not found' });
++    await app.close();
++  });
+ });
+diff --git a/phase1-architecture/monolithic/tests/duplicate.test.ts b/phase1-architecture/monolithic/tests/duplicate.test.ts
+new file mode 100644
+index 0000000..16ea7bc
+--- /dev/null
++++ b/phase1-architecture/monolithic/tests/duplicate.test.ts
+@@ -0,0 +1,60 @@
++import { describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('task duplication', () => {
++  it('creates an independent unassigned TODO copy with copied task details', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: {
++        title: 'Copy me',
++        description: 'details',
++        category: 'planning',
++        priority: 'HIGH',
++        dueDate: '2030-01-01',
++      },
++    });
++    const original = created.json() as { id: string };
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${original.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++
++    const duplicated = await app.inject({ method: 'POST', url: `/tasks/${original.id}/duplicate` });
++
++    expect(duplicated.statusCode).toBe(201);
++    expect(duplicated.json()).toMatchObject({
++      title: 'Copy me',
++      description: 'details',
++      category: 'planning',
++      priority: 'HIGH',
++      dueDate: '2030-01-01',
++      status: 'TODO',
++    });
++    expect(duplicated.json()).not.toHaveProperty('assigneeId');
++    expect(duplicated.json().id).not.toBe(original.id);
++    expect(
++      (await app.inject({ method: 'GET', url: `/tasks/${original.id}` })).json(),
++    ).toMatchObject({
++      title: 'Copy me',
++      description: 'details',
++      category: 'planning',
++      priority: 'HIGH',
++      dueDate: '2030-01-01',
++      assigneeId: 'user-1',
++    });
++    await app.close();
++  });
++
++  it('returns 404 when duplicating a missing task', async () => {
++    const app = buildApp();
++
++    const response = await app.inject({ method: 'POST', url: '/tasks/missing/duplicate' });
++
++    expect(response.statusCode).toBe(404);
++    expect(response.json()).toEqual({ error: 'task not found' });
++    await app.close();
++  });
++});

@@ -6,6 +6,7 @@ type Task = {
   id: string;
   title: string;
   description?: string;
+  category?: string;
   status: Status;
   priority: Priority;
   dueDate?: string;
@@ -13,7 +14,13 @@ type Task = {
   createdAt: string;
   updatedAt: string;
 };
-type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
+type CreateTask = {
+  title: string;
+  description?: string;
+  category?: string;
+  priority?: Priority;
+  dueDate?: string;
+};
 type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
 
 export function buildApp() {
@@ -36,6 +43,7 @@ export function buildApp() {
       id: String(++sequence),
       title: request.body.title.trim(),
       description: request.body.description,
+      category: request.body.category,
       priority: request.body.priority ?? 'MEDIUM',
       dueDate: request.body.dueDate,
       status: 'TODO',
@@ -73,6 +81,24 @@ export function buildApp() {
     task.status = 'COMPLETED';
     task.updatedAt = now();
     return response(task);
+  });
+  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (request, reply) => {
+    const source = tasks.get(request.params.id);
+    if (!source) return reply.code(404).send({ error: 'task not found' });
+    const timestamp = now();
+    const copy: Task = {
+      id: String(++sequence),
+      title: source.title,
+      description: source.description,
+      category: source.category,
+      priority: source.priority,
+      dueDate: source.dueDate,
+      status: 'TODO',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    tasks.set(copy.id, copy);
+    return reply.code(201).send(response(copy));
   });
   app.delete<{ Params: { id: string } }>('/tasks/:id', async (request, reply) => {
     const task = tasks.get(request.params.id);
