@@ -1,0 +1,4 @@
+docs/TODO.md
+docs/reports/2026-07-17-monolithic-task-02-report.md
+phase1-architecture/monolithic/src/app.ts
+phase1-architecture/monolithic/tests/app.test.ts
