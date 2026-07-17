@@ -8,10 +8,11 @@ export class TaskService {
   ) {}
   view(task: Task) {
     const today = this.clock().slice(0, 10);
+    const overdue = isOverdue(task, today);
     return {
       ...task,
-      isOverdue: isOverdue(task, today),
-      warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
+      isOverdue: overdue,
+      warnings: overdue ? ['due date is in the past'] : [],
     };
   }
   create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
@@ -64,8 +65,12 @@ export class TaskService {
     });
     return task;
   }
-  remove(id: string) {
-    if (!this.repository.remove(id)) throw new Error('task not found');
+  archive(id: string) {
+    const task = this.get(id);
+    if (!task) throw new Error('task not found');
+    task.status = 'ARCHIVED';
+    task.updatedAt = this.clock();
+    return task;
   }
   private hasUser(id: string) {
     return id === 'user-1' || id === 'user-2';

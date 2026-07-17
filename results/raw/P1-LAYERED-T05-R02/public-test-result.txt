@@ -1,0 +1,8 @@
+Public validation: FAILED
+Typecheck: PASS
+Format: PASS
+Lint: PASS
+Public tests: 7/8 PASS
+Failure: shared layered API contract expects DELETE 204, while Task 05 requires DELETE 200 with ARCHIVED.
+Build: not run because npm run validate stops at the failing test stage.
+Hidden archive test: 1/1 PASS
