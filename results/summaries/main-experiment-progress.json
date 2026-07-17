@@ -1,7 +1,7 @@
 {
   "phase": "p1",
   "plannedRunCount": 54,
-  "completedRunCount": 4,
+  "completedRunCount": 7,
   "includedInMainResults": true,
   "runs": [
     {
@@ -35,6 +35,30 @@
       "score": null,
       "runnerResultCommit": "28f6f285c896c9825a2deb4640c9a248a680b1ef",
       "evaluatorResultCommit": "e09460d"
+    },
+    {
+      "experimentId": "P1-MONOLITHIC-T05-R01",
+      "publicTests": "7/8",
+      "hiddenTests": "1/1",
+      "score": null,
+      "runnerResultCommit": "d865e1c6f49ee664479b5ce3b65d82961d2bce33",
+      "evaluatorResultCommit": "c409860"
+    },
+    {
+      "experimentId": "P1-LAYERED-T01-R01",
+      "publicTests": "7/8",
+      "hiddenTests": "1/1",
+      "score": null,
+      "runnerResultCommit": "2614ea5c1cd03d67758e0b16867067642e8ea692",
+      "evaluatorResultCommit": "732606b"
+    },
+    {
+      "experimentId": "P1-FEATURE-BASED-T02-R03",
+      "publicTests": "8/8",
+      "hiddenTests": "1/1",
+      "score": null,
+      "runnerResultCommit": "382b10a940b7db4bc1f31384fa7688a7e7c632d3",
+      "evaluatorResultCommit": "15d3441"
     }
   ]
 }
