@@ -1,0 +1,218 @@
+diff --git a/docs/TODO.md b/docs/TODO.md
+index 277b612..0e0ef9e 100644
+--- a/docs/TODO.md
++++ b/docs/TODO.md
+@@ -9,6 +9,7 @@
+ - 3構成の基本タスクライフサイクルを共通契約テストで一致させた
+ - 担当者の存在検証と操作履歴を共通契約テストで一致させた
+ - 過去期限の警告応答を共通契約テストで一致させた
++- Task 03: feature-basedターゲットのタスク操作履歴を追加した
+ 
+ ## 未着手
+ 
+diff --git a/docs/reports/2026-07-17-task-03-history-report.md b/docs/reports/2026-07-17-task-03-history-report.md
+new file mode 100644
+index 0000000..8fa85e1
+--- /dev/null
++++ b/docs/reports/2026-07-17-task-03-history-report.md
+@@ -0,0 +1,66 @@
++# 作業報告書
++
++## 作業日時
++
++2026年07月17日 20時35分51秒
++
++## 作業対象
++
++`phase1-architecture/feature-based` のタスク操作履歴。
++
++## 作業目的
++
++Task 03として操作イベントを保存し、履歴APIから取得できるようにする。
++
++## 変更内容
++
++`CREATED`、`UPDATED`、`ASSIGNEE_CHANGED`、`COMPLETED`、`ARCHIVED` をタスクごとにインメモリ保存した。`GET /tasks/:id/history` を追加し、DELETE時にも`ARCHIVED`イベントを記録して、削除後の履歴を保持する。
++
++## 変更したファイル
++
++- `phase1-architecture/feature-based/src/tasks/task.ts`
++- `phase1-architecture/feature-based/src/tasks/repository.ts`
++- `phase1-architecture/feature-based/src/tasks/routes.ts`
++- `phase1-architecture/feature-based/tests/history.test.ts`
++- `docs/TODO.md`
++- `docs/reports/2026-07-17-task-03-history-report.md`
++
++## 変更意図
++
++イベントの保存責務をtasks機能内のRepositoryに限定し、既存のTaskレスポンスと共通契約を変更せずに履歴を追加する。
++
++## 設計上の意図
++
++Taskとイベントを別の型・保存領域に分ける。タスク削除後もイベントは独立して残すため、削除前までの操作履歴を取得できる。
++
++## 影響範囲
++
++feature-basedターゲットのみ。共通契約、他ターゲット、依存関係は変更していない。
++
++## 追加・更新したテスト
++
++操作順に応じた5種類のイベントと、未存在タスクの履歴取得時の404を検証した。
++
++## 実行した確認コマンド
++
++`npm run validate`。
++
++## CIで確認される内容
++
++Node 22でnpm ci、typecheck、format check、lint、test、build。
++
++## 未解決の課題
++
++なし。
++
++## 次にやること
++
++変更をレビューし、必要ならTask 03のコミットを作成する。
++
++## 次回最初に見るべきファイル
++
++`phase1-architecture/feature-based/src/tasks/routes.ts`
++
++## 引き継ぎ事項
++
++DELETEの公開契約は204のまま維持し、履歴は削除後も取得できる。時刻は操作時にISO 8601形式で保存する。
+diff --git a/phase1-architecture/feature-based/src/tasks/repository.ts b/phase1-architecture/feature-based/src/tasks/repository.ts
+index ed6d43b..eef1da5 100644
+--- a/phase1-architecture/feature-based/src/tasks/repository.ts
++++ b/phase1-architecture/feature-based/src/tasks/repository.ts
+@@ -1,7 +1,9 @@
+-import type { Task } from './task.js';
++import type { Task, TaskEvent } from './task.js';
+ export class TaskRepository {
+   private values = new Map<string, Task>();
+   private next = 0;
++  private eventNext = 0;
++  private events = new Map<string, TaskEvent[]>();
+   create(task: Omit<Task, 'id'>) {
+     const value = { ...task, id: String(++this.next) };
+     this.values.set(value.id, value);
+@@ -16,4 +18,11 @@ export class TaskRepository {
+   remove(id: string) {
+     return this.values.delete(id);
+   }
++  addEvent(taskId: string, action: TaskEvent['action'], createdAt: string) {
++    const event = { id: String(++this.eventNext), taskId, action, createdAt };
++    this.events.set(taskId, [...(this.events.get(taskId) ?? []), event]);
++  }
++  history(taskId: string) {
++    return this.events.get(taskId);
++  }
+ }
+diff --git a/phase1-architecture/feature-based/src/tasks/routes.ts b/phase1-architecture/feature-based/src/tasks/routes.ts
+index a429f03..f9a8a44 100644
+--- a/phase1-architecture/feature-based/src/tasks/routes.ts
++++ b/phase1-architecture/feature-based/src/tasks/routes.ts
+@@ -23,6 +23,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
+       createdAt: timestamp,
+       updatedAt: timestamp,
+     });
++    repository.addEvent(task.id, 'CREATED', timestamp);
+     return reply.code(201).send(asResponse(task));
+   });
+   app.get('/tasks', async () =>
+@@ -52,6 +53,11 @@ export function registerTaskRoutes(app: FastifyInstance) {
+     if (r.body.assigneeId !== undefined && !['user-1', 'user-2'].includes(r.body.assigneeId))
+       return reply.code(404).send({ error: 'assignee not found' });
+     Object.assign(task, r.body, { title: r.body.title?.trim() ?? task.title, updatedAt: now() });
++    repository.addEvent(
++      task.id,
++      r.body.assigneeId === undefined ? 'UPDATED' : 'ASSIGNEE_CHANGED',
++      task.updatedAt,
++    );
+     return asResponse(task);
+   });
+   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (r, reply) => {
+@@ -61,12 +67,18 @@ export function registerTaskRoutes(app: FastifyInstance) {
+       return reply.code(409).send({ error: 'task is already completed' });
+     task.status = 'COMPLETED';
+     task.updatedAt = now();
++    repository.addEvent(task.id, 'COMPLETED', task.updatedAt);
+     return asResponse(task);
+   });
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
+     const task = repository.find(r.params.id);
+     if (!task) return reply.code(404).send({ error: 'task not found' });
++    repository.addEvent(task.id, 'ARCHIVED', now());
+     repository.remove(task.id);
+     return reply.code(204).send();
+   });
++  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (r, reply) => {
++    const history = repository.history(r.params.id);
++    return history ?? reply.code(404).send({ error: 'task not found' });
++  });
+ }
+diff --git a/phase1-architecture/feature-based/src/tasks/task.ts b/phase1-architecture/feature-based/src/tasks/task.ts
+index 63c4b80..f12a4d6 100644
+--- a/phase1-architecture/feature-based/src/tasks/task.ts
++++ b/phase1-architecture/feature-based/src/tasks/task.ts
+@@ -9,6 +9,12 @@ export type Task = {
+   createdAt: string;
+   updatedAt: string;
+ };
++export type TaskEvent = {
++  id: string;
++  taskId: string;
++  action: 'CREATED' | 'UPDATED' | 'ASSIGNEE_CHANGED' | 'COMPLETED' | 'ARCHIVED';
++  createdAt: string;
++};
+ export const asResponse = (task: Task) => ({
+   ...task,
+   isOverdue:
+diff --git a/phase1-architecture/feature-based/tests/history.test.ts b/phase1-architecture/feature-based/tests/history.test.ts
+new file mode 100644
+index 0000000..c985a90
+--- /dev/null
++++ b/phase1-architecture/feature-based/tests/history.test.ts
+@@ -0,0 +1,41 @@
++import { describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('Task 03: history', () => {
++  it('returns task operations in order, including archival', async () => {
++    const app = buildApp();
++    const task = (
++      await app.inject({ method: 'POST', url: '/tasks', payload: { title: 'Task' } })
++    ).json() as { id: string };
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { description: 'Updated' },
++    });
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++    await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
++    await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` });
++
++    const history = await app.inject({ method: 'GET', url: `/tasks/${task.id}/history` });
++    expect(history.statusCode).toBe(200);
++    expect(history.json()).toMatchObject([
++      { action: 'CREATED' },
++      { action: 'UPDATED' },
++      { action: 'ASSIGNEE_CHANGED' },
++      { action: 'COMPLETED' },
++      { action: 'ARCHIVED' },
++    ]);
++    await app.close();
++  });
++
++  it('returns 404 when the task has no history', async () => {
++    const app = buildApp();
++    const response = await app.inject({ method: 'GET', url: '/tasks/missing/history' });
++    expect(response.statusCode).toBe(404);
++    await app.close();
++  });
++});

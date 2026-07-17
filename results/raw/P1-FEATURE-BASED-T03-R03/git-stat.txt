@@ -1,0 +1,7 @@
+ docs/TODO.md                                       |  1 +
+ docs/reports/2026-07-17-task-03-history-report.md  | 66 ++++++++++++++++++++++
+ .../feature-based/src/tasks/repository.ts          | 11 +++-
+ .../feature-based/src/tasks/routes.ts              | 12 ++++
+ .../feature-based/src/tasks/task.ts                |  6 ++
+ .../feature-based/tests/history.test.ts            | 41 ++++++++++++++
+ 6 files changed, 136 insertions(+), 1 deletion(-)
