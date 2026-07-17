@@ -18,4 +18,53 @@ describe('monolithic baseline', () => {
     ).toBe(409);
     await app.close();
   });
+
+  it('duplicates task details into a new unassigned TODO task without changing the source', async () => {
+    const app = buildApp();
+    const created = await app.inject({
+      method: 'POST',
+      url: '/tasks',
+      payload: {
+        title: 'Write experiment',
+        description: 'Record results',
+        priority: 'HIGH',
+        dueDate: '2030-01-01',
+        category: 'research',
+      },
+    });
+    const source = created.json() as { id: string };
+    await app.inject({
+      method: 'PATCH',
+      url: `/tasks/${source.id}`,
+      payload: { assigneeId: 'user-1' },
+    });
+
+    const duplicated = await app.inject({ method: 'POST', url: `/tasks/${source.id}/duplicate` });
+
+    expect(duplicated.statusCode).toBe(201);
+    expect(duplicated.json()).toMatchObject({
+      title: 'Write experiment',
+      description: 'Record results',
+      priority: 'HIGH',
+      dueDate: '2030-01-01',
+      category: 'research',
+      status: 'TODO',
+    });
+    expect(duplicated.json()).not.toHaveProperty('assigneeId');
+    expect(duplicated.json().id).not.toBe(source.id);
+    expect((await app.inject({ method: 'GET', url: `/tasks/${source.id}` })).json()).toMatchObject({
+      assigneeId: 'user-1',
+      status: 'TODO',
+    });
+    await app.close();
+  });
+
+  it('returns 404 when duplicating a missing task', async () => {
+    const app = buildApp();
+
+    expect((await app.inject({ method: 'POST', url: '/tasks/missing/duplicate' })).statusCode).toBe(
+      404,
+    );
+    await app.close();
+  });
 });
