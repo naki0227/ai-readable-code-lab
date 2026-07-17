@@ -79,7 +79,7 @@
       "includedInMainResults": false,
       "baselineTag": "p1-monolithic-v1.0.1",
       "branch": "experiment/p1/monolithic/task-03/dry-run-01",
-      "resultCommit": "ad9e0af",
+      "resultCommit": "4b294ae",
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/7",
       "taskId": "task-03",
       "target": "monolithic"
@@ -90,7 +90,7 @@
       "includedInMainResults": false,
       "baselineTag": "p1-layered-v1.0.1",
       "branch": "experiment/p1/layered/task-03/dry-run-01",
-      "resultCommit": "0ddea74",
+      "resultCommit": "c926a3a",
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/8",
       "taskId": "task-03",
       "target": "layered"
@@ -101,7 +101,7 @@
       "includedInMainResults": false,
       "baselineTag": "p1-feature-based-v1.0.1",
       "branch": "experiment/p1/feature-based/task-03/dry-run-01",
-      "resultCommit": "b5b3fbc",
+      "resultCommit": "3fc6f2a",
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/9",
       "taskId": "task-03",
       "target": "feature-based"
