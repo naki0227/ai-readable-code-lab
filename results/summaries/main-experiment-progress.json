@@ -1,0 +1,16 @@
+{
+  "phase": "p1",
+  "plannedRunCount": 54,
+  "completedRunCount": 1,
+  "includedInMainResults": true,
+  "runs": [
+    {
+      "experimentId": "P1-LAYERED-T01-R02",
+      "publicTests": "8/8",
+      "hiddenTests": "1/1",
+      "score": null,
+      "runnerResultCommit": "4323047e9ae77d57b22845e535e248bb50eb01ca",
+      "evaluatorResultCommit": "6c9c391"
+    }
+  ]
+}
