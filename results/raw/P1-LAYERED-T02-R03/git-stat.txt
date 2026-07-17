@@ -1,0 +1,6 @@
+ docs/TODO.md                                       |  1 +
+ docs/reports/2026-07-17-layered-task-02-report.md  | 65 ++++++++++++++++++++++
+ phase1-architecture/layered/src/app.ts             |  8 ++-
+ phase1-architecture/layered/src/service.ts         |  2 +
+ .../layered/tests/completed-assignee.test.ts       | 43 ++++++++++++++
+ 5 files changed, 118 insertions(+), 1 deletion(-)

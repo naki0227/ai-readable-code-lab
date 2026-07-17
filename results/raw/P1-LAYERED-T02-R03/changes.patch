@@ -1,0 +1,164 @@
+diff --git a/docs/TODO.md b/docs/TODO.md
+index 277b612..990a2b3 100644
+--- a/docs/TODO.md
++++ b/docs/TODO.md
+@@ -9,6 +9,7 @@
+ - 3構成の基本タスクライフサイクルを共通契約テストで一致させた
+ - 担当者の存在検証と操作履歴を共通契約テストで一致させた
+ - 過去期限の警告応答を共通契約テストで一致させた
++- Layered Task 02: 完了済みタスクの担当者変更を409で拒否し、タイトル更新と未存在タスクの404を検証した
+ 
+ ## 未着手
+ 
+diff --git a/docs/reports/2026-07-17-layered-task-02-report.md b/docs/reports/2026-07-17-layered-task-02-report.md
+new file mode 100644
+index 0000000..ef6c858
+--- /dev/null
++++ b/docs/reports/2026-07-17-layered-task-02-report.md
+@@ -0,0 +1,65 @@
++# 作業報告書
++
++## 作業日時
++
++2026年07月17日 22時13分44秒
++
++## 作業対象
++
++Layered構成の `PATCH /tasks/:id` における完了済みタスクの担当者更新。
++
++## 作業目的
++
++完了済みタスクの担当者変更を409で拒否しつつ、タイトルのみの更新と未存在タスクの404を維持する。
++
++## 変更内容
++
++`TaskService.update` に完了済みタスクの `assigneeId` を拒否するドメイン規則を追加し、PATCHハンドラーで既知の競合エラーを409に変換した。APIテストで409、タイトル更新、404を確認する。
++
++## 変更したファイル
++
++- `phase1-architecture/layered/src/service.ts`
++- `phase1-architecture/layered/src/app.ts`
++- `phase1-architecture/layered/tests/completed-assignee.test.ts`
++- `docs/TODO.md`
++- `docs/reports/2026-07-17-layered-task-02-report.md`
++
++## 変更意図
++
++担当者の変更可否はタスク状態に依存するためサービス層で判定し、HTTPステータスへの変換はアプリケーション層に限定する。
++
++## 設計上の意図
++
++既存のLayered構成を維持し、ドメイン規則をFastifyハンドラーに混在させない。既存の文字列エラー契約を変更せず、既存の404（未存在・不明な担当者）を明示的に保持する。
++
++## 影響範囲
++
++Layered構成のみ。公開APIでは、完了済みタスクに `assigneeId` を含むPATCHが409となる。
++
++## 追加・更新したテスト
++
++完了後の担当者変更が409、タイトルのみのPATCHが200相当の成功応答、未存在IDへのPATCHが404となるAPIテストを追加した。
++
++## 実行した確認コマンド
++
++依存関係が未導入だったため `npm ci` を実行後、`npm run validate` を実行して成功した。`validate` は typecheck、format check、lint、test、build をすべて通過した。
++
++## CIで確認される内容
++
++GitHub ActionsのCIは typecheck、Prettier format check、ESLint、Vitest、TypeScript build を実行する。
++
++## 未解決の課題
++
++実装上の未解決事項はない。作業環境の `.git` 書き込み制限により `.git/index.lock` を作成できず、ローカルコミットは作成していない。検証済みの変更は作業ツリーに残している。
++
++## 次にやること
++
++次のPhase 1実験タスクを開始する前に、対応するタスク仕様を確認する。
++
++## 次回最初に見るべきファイル
++
++`docs/TODO.md` と対象タスクの仕様ファイル。
++
++## 引き継ぎ事項
++
++この規則はLayered構成にのみ適用している。ほかの構成や共通契約テストは変更していない。
+diff --git a/phase1-architecture/layered/src/app.ts b/phase1-architecture/layered/src/app.ts
+index 924240b..2700e43 100644
+--- a/phase1-architecture/layered/src/app.ts
++++ b/phase1-architecture/layered/src/app.ts
+@@ -38,7 +38,13 @@ export function buildApp() {
+       return respond(service.view(service.update(r.params.id, r.body)));
+     } catch (e) {
+       const message = (e as Error).message;
+-      return reply.code(message === 'title is required' ? 400 : 404).send({ error: message });
++      const status =
++        message === 'title is required'
++          ? 400
++          : message === 'task not found' || message === 'assignee not found'
++            ? 404
++            : 409;
++      return reply.code(status).send({ error: message });
+     }
+   });
+   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (r, reply) => {
+diff --git a/phase1-architecture/layered/src/service.ts b/phase1-architecture/layered/src/service.ts
+index 124fc11..eeb0bf5 100644
+--- a/phase1-architecture/layered/src/service.ts
++++ b/phase1-architecture/layered/src/service.ts
+@@ -56,6 +56,8 @@ export class TaskService {
+     const task = this.get(id);
+     if (!task) throw new Error('task not found');
+     if (input.title !== undefined && !input.title.trim()) throw new Error('title is required');
++    if (input.assigneeId !== undefined && task.status === 'COMPLETED')
++      throw new Error('completed task assignee cannot be changed');
+     if (input.assigneeId !== undefined && !this.hasUser(input.assigneeId))
+       throw new Error('assignee not found');
+     Object.assign(task, input, {
+diff --git a/phase1-architecture/layered/tests/completed-assignee.test.ts b/phase1-architecture/layered/tests/completed-assignee.test.ts
+new file mode 100644
+index 0000000..591b742
+--- /dev/null
++++ b/phase1-architecture/layered/tests/completed-assignee.test.ts
+@@ -0,0 +1,43 @@
++import { describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('Task 02: completed task assignee', () => {
++  it('rejects assignee changes after completion without blocking title updates', async () => {
++    const app = buildApp();
++    const task = (
++      await app.inject({ method: 'POST', url: '/tasks', payload: { title: 'Task' } })
++    ).json() as { id: string };
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++    await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
++
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${task.id}`,
++          payload: { assigneeId: 'user-2' },
++        })
++      ).statusCode,
++    ).toBe(409);
++
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${task.id}`,
++          payload: { title: 'Renamed' },
++        })
++      ).json(),
++    ).toMatchObject({ title: 'Renamed', assigneeId: 'user-1' });
++
++    expect(
++      (await app.inject({ method: 'PATCH', url: '/tasks/missing', payload: { title: 'Renamed' } }))
++        .statusCode,
++    ).toBe(404);
++    await app.close();
++  });
++});

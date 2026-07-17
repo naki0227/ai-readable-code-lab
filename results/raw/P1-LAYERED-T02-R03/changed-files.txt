@@ -1,0 +1,5 @@
+docs/TODO.md
+docs/reports/2026-07-17-layered-task-02-report.md
+phase1-architecture/layered/src/app.ts
+phase1-architecture/layered/src/service.ts
+phase1-architecture/layered/tests/completed-assignee.test.ts
