@@ -1,0 +1,13 @@
+{
+  "experimentId": "P1-MONOLITHIC-T04-R02",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "target": "monolithic",
+  "taskId": "task-04",
+  "run": 2,
+  "model": "gpt-5.6-terra",
+  "reasoningLevel": "medium",
+  "baselineTag": "p1-monolithic-v1.0.1",
+  "resultCommit": "cd31c10727bd7587aac3a711d3a1cb0b5480a0fe",
+  "humanCodeCorrections": false
+}
