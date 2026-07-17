@@ -1,0 +1,8 @@
+{
+  "experimentId": "P1-FEATURE-BASED-T03-DRY-RUN-01",
+  "kind": "dry-run",
+  "includedInMainResults": false,
+  "baselineTag": "p1-feature-based-v1.0.1",
+  "resultCommit": "d98f091",
+  "humanCodeCorrections": false
+}

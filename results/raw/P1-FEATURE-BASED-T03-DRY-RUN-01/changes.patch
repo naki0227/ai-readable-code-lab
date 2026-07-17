@@ -1,0 +1,122 @@
+diff --git a/phase1-architecture/feature-based/src/tasks/repository.ts b/phase1-architecture/feature-based/src/tasks/repository.ts
+index ed6d43b..db49c27 100644
+--- a/phase1-architecture/feature-based/src/tasks/repository.ts
++++ b/phase1-architecture/feature-based/src/tasks/repository.ts
+@@ -1,7 +1,9 @@
+-import type { Task } from './task.js';
++import type { Task, TaskEvent } from './task.js';
+ export class TaskRepository {
+   private values = new Map<string, Task>();
+   private next = 0;
++  private eventNext = 0;
++  private events = new Map<string, TaskEvent[]>();
+   create(task: Omit<Task, 'id'>) {
+     const value = { ...task, id: String(++this.next) };
+     this.values.set(value.id, value);
+@@ -16,4 +18,11 @@ export class TaskRepository {
+   remove(id: string) {
+     return this.values.delete(id);
+   }
++  addEvent(taskId: string, action: TaskEvent['action'], createdAt: string) {
++    const event = { id: String(++this.eventNext), taskId, action, createdAt };
++    this.events.set(taskId, [...(this.events.get(taskId) ?? []), event]);
++  }
++  history(taskId: string) {
++    return this.events.get(taskId) ?? [];
++  }
+ }
+diff --git a/phase1-architecture/feature-based/src/tasks/routes.ts b/phase1-architecture/feature-based/src/tasks/routes.ts
+index a429f03..2a00281 100644
+--- a/phase1-architecture/feature-based/src/tasks/routes.ts
++++ b/phase1-architecture/feature-based/src/tasks/routes.ts
+@@ -23,6 +23,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
+       createdAt: timestamp,
+       updatedAt: timestamp,
+     });
++    repository.addEvent(task.id, 'CREATED', timestamp);
+     return reply.code(201).send(asResponse(task));
+   });
+   app.get('/tasks', async () =>
+@@ -52,6 +53,11 @@ export function registerTaskRoutes(app: FastifyInstance) {
+     if (r.body.assigneeId !== undefined && !['user-1', 'user-2'].includes(r.body.assigneeId))
+       return reply.code(404).send({ error: 'assignee not found' });
+     Object.assign(task, r.body, { title: r.body.title?.trim() ?? task.title, updatedAt: now() });
++    repository.addEvent(
++      task.id,
++      r.body.assigneeId === undefined ? 'UPDATED' : 'ASSIGNEE_CHANGED',
++      task.updatedAt,
++    );
+     return asResponse(task);
+   });
+   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (r, reply) => {
+@@ -61,6 +67,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
+       return reply.code(409).send({ error: 'task is already completed' });
+     task.status = 'COMPLETED';
+     task.updatedAt = now();
++    repository.addEvent(task.id, 'COMPLETED', task.updatedAt);
+     return asResponse(task);
+   });
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
+@@ -69,4 +76,8 @@ export function registerTaskRoutes(app: FastifyInstance) {
+     repository.remove(task.id);
+     return reply.code(204).send();
+   });
++  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (r, reply) => {
++    if (!repository.find(r.params.id)) return reply.code(404).send({ error: 'task not found' });
++    return repository.history(r.params.id);
++  });
+ }
+diff --git a/phase1-architecture/feature-based/src/tasks/task.ts b/phase1-architecture/feature-based/src/tasks/task.ts
+index 63c4b80..ed2ded4 100644
+--- a/phase1-architecture/feature-based/src/tasks/task.ts
++++ b/phase1-architecture/feature-based/src/tasks/task.ts
+@@ -9,6 +9,12 @@ export type Task = {
+   createdAt: string;
+   updatedAt: string;
+ };
++export type TaskEvent = {
++  id: string;
++  taskId: string;
++  action: 'CREATED' | 'UPDATED' | 'ASSIGNEE_CHANGED' | 'COMPLETED';
++  createdAt: string;
++};
+ export const asResponse = (task: Task) => ({
+   ...task,
+   isOverdue:
+diff --git a/phase1-architecture/feature-based/tests/history.test.ts b/phase1-architecture/feature-based/tests/history.test.ts
+new file mode 100644
+index 0000000..c31dce8
+--- /dev/null
++++ b/phase1-architecture/feature-based/tests/history.test.ts
+@@ -0,0 +1,31 @@
++import { describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('Task 03: history', () => {
++  it('returns task operations in order', async () => {
++    const app = buildApp();
++    const task = (
++      await app.inject({ method: 'POST', url: '/tasks', payload: { title: 'Task' } })
++    ).json() as { id: string };
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { description: 'Updated' },
++    });
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++    await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
++    expect(
++      (await app.inject({ method: 'GET', url: `/tasks/${task.id}/history` })).json(),
++    ).toMatchObject([
++      { action: 'CREATED' },
++      { action: 'UPDATED' },
++      { action: 'ASSIGNEE_CHANGED' },
++      { action: 'COMPLETED' },
++    ]);
++    await app.close();
++  });
++});
