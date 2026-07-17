@@ -28,6 +28,7 @@
 - Task 01〜06のDry Run結果を集計するスクリプトと概要JSONを追加
 - 本実験54 Runの固定順序とRunner/Evaluator隔離手順を追加
 - 本実験 P1-LAYERED-T01-R02 を独立Runner/Evaluatorで完了
+- 本実験 P1-MONOLITHIC-T04-R01 を独立Runner/Evaluatorで完了
 
 ## 未着手
 
