@@ -1,0 +1,43 @@
+
+ RUN  v3.2.7 /private/tmp/ai-readable-evaluator-p1-feature-based-t06-r01
+
+12:07:25 AM [vite] (ssr) warning: Duplicate key "category" in object literal
+23 |        dueDate: r.body.dueDate,
+24 |        category: r.body.category,
+25 |        category: r.body.category,
+   |        ^
+26 |        status: 'TODO',
+27 |        createdAt: timestamp,
+
+  Plugin: vite:esbuild
+  File: /private/tmp/ai-readable-evaluator-p1-feature-based-t06-r01/phase1-architecture/feature-based/src/tasks/routes.ts
+ ❯ hidden-tests/phase1/task-06-duplicate.test.ts (1 test | 1 failed) 115ms
+   × Task 06 hidden contract > creates an independent TODO copy without an assignee 115ms
+     → Method 'POST' already declared for route '/tasks/:id/duplicate'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  hidden-tests/phase1/task-06-duplicate.test.ts > Task 06 hidden contract > creates an independent TODO copy without an assignee
+FastifyError: Method 'POST' already declared for route '/tasks/:id/duplicate'
+ ❯ Object.addNewRoute node_modules/fastify/lib/route.js:368:19
+ ❯ Object.route node_modules/fastify/lib/route.js:269:19
+ ❯ Object.prepareRoute node_modules/fastify/lib/route.js:168:18
+ ❯ Object._post [as post] node_modules/fastify/fastify.js:195:34
+ ❯ registerTaskRoutes phase1-architecture/feature-based/src/tasks/routes.ts:67:7
+     65|     return asResponse(task);
+     66|   });
+     67|   app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (…
+       |       ^
+     68|     const source = repository.find(r.params.id);
+     69|     if (!source) return reply.code(404).send({ error: 'task not found'…
+ ❯ buildApp phase1-architecture/feature-based/src/app.ts:5:3
+ ❯ hidden-tests/phase1/task-06-duplicate.test.ts:6:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  00:07:24
+   Duration  318ms (transform 41ms, setup 0ms, collect 11ms, tests 115ms, environment 0ms, prepare 28ms)
+

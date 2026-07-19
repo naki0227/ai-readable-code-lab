@@ -1,0 +1,41 @@
+{
+  "experimentId": "P1-FEATURE-BASED-T06-R01",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-20T00:07:25+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": null,
+    "typecheck": false,
+    "format": null,
+    "lint": null,
+    "publicTests": { "passed": 5, "total": 9 },
+    "hiddenTests": { "passed": 0, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 4,
+    "linesAdded": 116,
+    "linesDeleted": 8,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "functionalCorrectness": null,
+    "maintainability": null,
+    "architecture": null,
+    "readability": null,
+    "total": null
+  },
+  "failureClassification": ["typecheck failure", "functional failure"],
+  "evidence": [
+    "Public validation stopped at TypeScript duplicate identifier and duplicate object-property errors in feature-based/src/tasks/routes.ts.",
+    "Separate public test execution passed 5/9 tests because Fastify rejects the duplicate POST /tasks/:id/duplicate route.",
+    "Task 06 hidden contract failed for the same duplicate route registration."
+  ],
+  "notes": "Runner source was not edited by the evaluator."
+}
