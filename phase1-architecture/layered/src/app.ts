@@ -49,10 +49,24 @@ export function buildApp() {
       return reply.code(message === 'task not found' ? 404 : 409).send({ error: message });
     }
   });
+  app.post<{ Params: { id: string } }>('/tasks/:id/archive', async (r, reply) => {
+    try {
+      return respond(service.view(service.archive(r.params.id)));
+    } catch (e) {
+      return reply.code(404).send({ error: (e as Error).message });
+    }
+  });
   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
     try {
       service.remove(r.params.id);
       return reply.code(204).send();
+    } catch (e) {
+      return reply.code(404).send({ error: (e as Error).message });
+    }
+  });
+  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (r, reply) => {
+    try {
+      return service.history(r.params.id);
     } catch (e) {
       return reply.code(404).send({ error: (e as Error).message });
     }
