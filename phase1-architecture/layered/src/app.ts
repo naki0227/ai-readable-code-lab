@@ -9,6 +9,7 @@ export function buildApp() {
       title?: string;
       description?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
+      category?: string;
       dueDate?: string;
       assigneeId?: string;
     };
@@ -30,6 +31,7 @@ export function buildApp() {
       title?: string;
       description?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
+      category?: string;
       dueDate?: string;
       assigneeId?: string;
     };
@@ -47,6 +49,13 @@ export function buildApp() {
     } catch (e) {
       const message = (e as Error).message;
       return reply.code(message === 'task not found' ? 404 : 409).send({ error: message });
+    }
+  });
+  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (r, reply) => {
+    try {
+      return reply.code(201).send(respond(service.view(service.duplicate(r.params.id))));
+    } catch (e) {
+      return reply.code(404).send({ error: (e as Error).message });
     }
   });
   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {

@@ -14,7 +14,13 @@ export class TaskService {
       warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
     };
   }
-  create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
+  create(input: {
+    title?: string;
+    description?: string;
+    priority?: Priority;
+    category?: string;
+    dueDate?: string;
+  }) {
     if (!input.title?.trim()) throw new Error('title is required');
     const time = this.clock();
     const task = this.repository.save({
@@ -22,6 +28,7 @@ export class TaskService {
       title: input.title.trim(),
       description: input.description,
       priority: input.priority ?? 'MEDIUM',
+      category: input.category,
       dueDate: input.dueDate,
       status: 'TODO',
       createdAt: time,
@@ -43,12 +50,29 @@ export class TaskService {
     task.updatedAt = this.clock();
     return task;
   }
+  duplicate(id: string) {
+    const source = this.get(id);
+    if (!source) throw new Error('task not found');
+    const time = this.clock();
+    return this.repository.save({
+      id: this.repository.nextId(),
+      title: source.title,
+      description: source.description,
+      priority: source.priority,
+      category: source.category,
+      dueDate: source.dueDate,
+      status: 'TODO',
+      createdAt: time,
+      updatedAt: time,
+    });
+  }
   update(
     id: string,
     input: {
       title?: string;
       description?: string;
       priority?: Priority;
+      category?: string;
       dueDate?: string;
       assigneeId?: string;
     },
