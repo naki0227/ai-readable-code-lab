@@ -1,0 +1,40 @@
+{
+  "experimentId": "P1-FEATURE-BASED-T06-R03",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-19T20:51:17+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": true,
+    "typecheck": true,
+    "format": false,
+    "lint": true,
+    "publicTests": { "passed": 8, "total": 9 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 3,
+    "linesAdded": 73,
+    "linesDeleted": 0,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "functionalCorrectness": null,
+    "maintainability": null,
+    "architecture": null,
+    "readability": null,
+    "total": null
+  },
+  "failureClassification": ["formatting"],
+  "evidence": [
+    "Isolated npm run validate failed only on Prettier formatting in feature-based/tests/app.test.ts.",
+    "Task 06 hidden contract passed with HIDDEN_TEST_TARGET=feature-based."
+  ],
+  "notes": "Runner source was not edited by the evaluator."
+}
