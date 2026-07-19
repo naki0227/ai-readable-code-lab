@@ -1,0 +1,40 @@
+{
+  "experimentId": "P1-LAYERED-T06-R02",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-20T00:03:19+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": null,
+    "typecheck": true,
+    "format": false,
+    "lint": null,
+    "publicTests": { "passed": 9, "total": 10 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 5,
+    "linesAdded": 126,
+    "linesDeleted": 1,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "functionalCorrectness": null,
+    "maintainability": null,
+    "architecture": null,
+    "readability": null,
+    "total": null
+  },
+  "failureClassification": ["formatting failure"],
+  "evidence": [
+    "Public validation stopped at Prettier because layered/tests/app.test.ts is unformatted; separate test execution passed 10/10.",
+    "Task 06 hidden contract passed with HIDDEN_TEST_TARGET=layered."
+  ],
+  "notes": "Runner source was not edited by the evaluator."
+}
