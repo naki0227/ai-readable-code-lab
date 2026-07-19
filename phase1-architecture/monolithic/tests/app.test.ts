@@ -18,4 +18,37 @@ describe('monolithic baseline', () => {
     ).toBe(409);
     await app.close();
   });
+
+  it('creates, updates, and returns an optional category', async () => {
+    const app = buildApp();
+    const created = await app.inject({
+      method: 'POST',
+      url: '/tasks',
+      payload: { title: 'Plan release', category: 'work' },
+    });
+    expect(created.statusCode).toBe(201);
+    const task = created.json() as { id: string; category?: string };
+    expect(task.category).toBe('work');
+
+    const updatedWithoutCategory = await app.inject({
+      method: 'PATCH',
+      url: `/tasks/${task.id}`,
+      payload: { priority: 'HIGH' },
+    });
+    expect(updatedWithoutCategory.json()).toMatchObject({ category: 'work', priority: 'HIGH' });
+
+    const updated = await app.inject({
+      method: 'PATCH',
+      url: `/tasks/${task.id}`,
+      payload: { category: 'personal' },
+    });
+    expect(updated.json()).toMatchObject({ category: 'personal' });
+    expect((await app.inject({ method: 'GET', url: `/tasks/${task.id}` })).json()).toMatchObject({
+      category: 'personal',
+    });
+    expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toMatchObject([
+      { category: 'personal' },
+    ]);
+    await app.close();
+  });
 });
