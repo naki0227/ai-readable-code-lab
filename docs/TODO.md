@@ -74,13 +74,14 @@
 - 本実験 P1-FEATURE-BASED-T03-R02 を独立Runner/Evaluatorで完了（Run 53）
 - 本実験 P1-FEATURE-BASED-T06-R01 を独立Runner/Evaluatorで完了（Run 54、型検査失敗・公開検証5/9・隠し評価0/1を証跡として保存）
 - 本実験54 Runの再現可能なJSON/CSV集計と初期分析を完了
+- 構成別・課題別の比較SVGとQiita記事の下書きを作成
 
 ## 未着手
 
-- 構成別・課題別グラフを作成し、代表例を選定する
-- Qiita記事の下書きを作成する
+- Qiita投稿前に著者情報、タグ、代表PRリンクを最終確認する
+- 人間またはブラインド評価者による設計品質評価を実施する
 - Task 05の共有公開契約不整合を次回実験前に解消する
 
 ## 次回最初に着手するタスク
 
-- `results/summaries/main-experiment-summary.json` と `docs/reports/2026-07-20-phase1-main-experiment-analysis-report.md` を確認する
+- `docs/articles/phase1-qiita-draft.md` と `results/summaries/main-experiment-validation-rates.svg` を確認する

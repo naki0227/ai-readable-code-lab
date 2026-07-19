@@ -7,6 +7,7 @@ import { format } from 'prettier';
 const manifestPath = 'experiments/manifest.json';
 const jsonOutputPath = 'results/summaries/main-experiment-summary.json';
 const csvOutputPath = 'results/summaries/main-experiment-runs.csv';
+const chartOutputPath = 'results/summaries/main-experiment-validation-rates.svg';
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const mainRuns = manifest.experiments.filter(
@@ -175,11 +176,64 @@ const toCsvRow = (run) => ({
   pullRequest: run.pullRequest,
 });
 
+const escapeXml = (value) =>
+  String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+
+const percentage = (value) => `${(value * 100).toFixed(1)}%`;
+
+const chartRows = (entries, top, title) => {
+  const left = 240;
+  const width = 520;
+  const rowHeight = 34;
+  const bars = Object.entries(entries)
+    .map(([label, values], index) => {
+      const y = top + 36 + index * rowHeight;
+      const fullyValidatedWidth = width * values.fullyValidatedRate;
+      const hiddenTestWidth = width * values.hiddenTestPassRate;
+      return `
+        <text x="${left - 12}" y="${y + 13}" text-anchor="end">${escapeXml(label)}</text>
+        <rect x="${left}" y="${y}" width="${width}" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="${left}" y="${y}" width="${fullyValidatedWidth}" height="12" fill="#2563eb" rx="2" />
+        <rect x="${left}" y="${y + 15}" width="${width}" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="${left}" y="${y + 15}" width="${hiddenTestWidth}" height="12" fill="#059669" rx="2" />
+        <text x="${left + width + 12}" y="${y + 11}">${percentage(values.fullyValidatedRate)}</text>
+        <text x="${left + width + 12}" y="${y + 26}">${percentage(values.hiddenTestPassRate)}</text>`;
+    })
+    .join('\n');
+
+  return `<text class="section-title" x="40" y="${top}">${escapeXml(title)}</text>${bars}`;
+};
+
+const chart = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="760" viewBox="0 0 960 760" role="img" aria-labelledby="title description">
+  <title id="title">Phase 1 main experiment validation rates</title>
+  <desc id="description">54 Runの構成別および課題別の完全検証通過率と隠しテスト通過率。</desc>
+  <style>
+    text { fill: #111827; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; }
+    .title { font-size: 22px; font-weight: 600; }
+    .section-title { font-size: 17px; font-weight: 600; }
+    .legend { font-size: 13px; }
+  </style>
+  <text class="title" x="40" y="40">Phase 1 main experiment: validation rates</text>
+  <rect x="520" y="57" width="14" height="14" fill="#2563eb" rx="2" />
+  <text class="legend" x="542" y="69">Fully validated</text>
+  <rect x="680" y="57" width="14" height="14" fill="#059669" rx="2" />
+  <text class="legend" x="702" y="69">Hidden test passed</text>
+  ${chartRows(summary.byTarget, 112, 'By architecture (18 runs each)')}
+  ${chartRows(summary.byTask, 290, 'By task (9 runs each)')}
+  <text x="40" y="735" fill="#4b5563">Fully validated = build, typecheck, format, lint, public tests, and hidden tests all passed.</text>
+</svg>`;
+
 await mkdir(dirname(jsonOutputPath), { recursive: true });
 await writeFile(
   jsonOutputPath,
   await format(JSON.stringify(summary), { parser: 'json', filepath: jsonOutputPath }),
 );
+await writeFile(chartOutputPath, chart);
 await writeFile(
   csvOutputPath,
   `${csvColumns.join(',')}\n${runs

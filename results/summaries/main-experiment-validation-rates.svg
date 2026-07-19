@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="760" viewBox="0 0 960 760" role="img" aria-labelledby="title description">
+  <title id="title">Phase 1 main experiment validation rates</title>
+  <desc id="description">54 Runの構成別および課題別の完全検証通過率と隠しテスト通過率。</desc>
+  <style>
+    text { fill: #111827; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; }
+    .title { font-size: 22px; font-weight: 600; }
+    .section-title { font-size: 17px; font-weight: 600; }
+    .legend { font-size: 13px; }
+  </style>
+  <text class="title" x="40" y="40">Phase 1 main experiment: validation rates</text>
+  <rect x="520" y="57" width="14" height="14" fill="#2563eb" rx="2" />
+  <text class="legend" x="542" y="69">Fully validated</text>
+  <rect x="680" y="57" width="14" height="14" fill="#059669" rx="2" />
+  <text class="legend" x="702" y="69">Hidden test passed</text>
+  <text class="section-title" x="40" y="112">By architecture (18 runs each)</text>
+        <text x="228" y="161" text-anchor="end">feature-based</text>
+        <rect x="240" y="148" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="148" width="375.55555555555554" height="12" fill="#2563eb" rx="2" />
+        <rect x="240" y="163" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="163" width="462.2222222222222" height="12" fill="#059669" rx="2" />
+        <text x="772" y="159">72.2%</text>
+        <text x="772" y="174">88.9%</text>
+
+        <text x="228" y="195" text-anchor="end">layered</text>
+        <rect x="240" y="182" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="182" width="346.66666666666663" height="12" fill="#2563eb" rx="2" />
+        <rect x="240" y="197" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="197" width="520" height="12" fill="#059669" rx="2" />
+        <text x="772" y="193">66.7%</text>
+        <text x="772" y="208">100.0%</text>
+
+        <text x="228" y="229" text-anchor="end">monolithic</text>
+        <rect x="240" y="216" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="216" width="433.33333333333337" height="12" fill="#2563eb" rx="2" />
+        <rect x="240" y="231" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="231" width="520" height="12" fill="#059669" rx="2" />
+        <text x="772" y="227">83.3%</text>
+        <text x="772" y="242">100.0%</text>
+  <text class="section-title" x="40" y="290">By task (9 runs each)</text>
+        <text x="228" y="339" text-anchor="end">task-01</text>
+        <rect x="240" y="326" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="326" width="462.2222222222222" height="12" fill="#2563eb" rx="2" />
+        <rect x="240" y="341" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="341" width="520" height="12" fill="#059669" rx="2" />
+        <text x="772" y="337">88.9%</text>
+        <text x="772" y="352">100.0%</text>
+
+        <text x="228" y="373" text-anchor="end">task-02</text>
+        <rect x="240" y="360" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="360" width="520" height="12" fill="#2563eb" rx="2" />
+        <rect x="240" y="375" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="375" width="520" height="12" fill="#059669" rx="2" />
+        <text x="772" y="371">100.0%</text>
+        <text x="772" y="386">100.0%</text>
+
+        <text x="228" y="407" text-anchor="end">task-03</text>
+        <rect x="240" y="394" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="394" width="520" height="12" fill="#2563eb" rx="2" />
+        <rect x="240" y="409" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="409" width="520" height="12" fill="#059669" rx="2" />
+        <text x="772" y="405">100.0%</text>
+        <text x="772" y="420">100.0%</text>
+
+        <text x="228" y="441" text-anchor="end">task-04</text>
+        <rect x="240" y="428" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="428" width="462.2222222222222" height="12" fill="#2563eb" rx="2" />
+        <rect x="240" y="443" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="443" width="520" height="12" fill="#059669" rx="2" />
+        <text x="772" y="439">88.9%</text>
+        <text x="772" y="454">100.0%</text>
+
+        <text x="228" y="475" text-anchor="end">task-05</text>
+        <rect x="240" y="462" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="462" width="0" height="12" fill="#2563eb" rx="2" />
+        <rect x="240" y="477" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="477" width="462.2222222222222" height="12" fill="#059669" rx="2" />
+        <text x="772" y="473">0.0%</text>
+        <text x="772" y="488">88.9%</text>
+
+        <text x="228" y="509" text-anchor="end">task-06</text>
+        <rect x="240" y="496" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="496" width="346.66666666666663" height="12" fill="#2563eb" rx="2" />
+        <rect x="240" y="511" width="520" height="12" fill="#e5e7eb" rx="2" />
+        <rect x="240" y="511" width="462.2222222222222" height="12" fill="#059669" rx="2" />
+        <text x="772" y="507">66.7%</text>
+        <text x="772" y="522">88.9%</text>
+  <text x="40" y="735" fill="#4b5563">Fully validated = build, typecheck, format, lint, public tests, and hidden tests all passed.</text>
+</svg>
