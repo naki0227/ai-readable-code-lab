@@ -1,0 +1,3 @@
+ phase1-architecture/monolithic/src/app.ts        | 27 ++++++++++
+ phase1-architecture/monolithic/tests/app.test.ts | 63 ++++++++++++++++++++++++
+ 2 files changed, 90 insertions(+)
