@@ -14,12 +14,15 @@ Phase 1本実験の集計結果、比較グラフ、Qiita記事下書き。
 
 ## 変更内容
 
-集計スクリプトから構成別・課題別の完全検証通過率と隠しテスト通過率を描くSVGを生成するようにした。Qiita向けのMarkdown下書きには、結果表、成功例・失敗例、Task 05の契約不整合、限界、再現手順を含めた。
+集計スクリプトから構成別・課題別の完全検証通過率と隠しテスト通過率、および構成別の平均変更ファイル数を描くSVGを生成するようにした。Qiita向けのMarkdown下書きは、タイトルを条件付きの比較表現へ変更し、実装能力（隠しテスト）と開発品質（完全検証）の二軸を先に定義した。
+
+Task 05の契約不整合は結果の前に記載し、構成差として解釈しないことを明示した。成功例にはTask 03の公開PRと責務配置の差分を、失敗例にはTask 06の公開Evaluatorログと実際の型・重複ルートエラーを追加した。実行環境を偽装したスクリーンショットは作らず、追跡可能な公開ログを一次証跡としてリンクしている。
 
 ## 変更したファイル
 
 - `scripts/summarize-main-experiment.mjs`
 - `results/summaries/main-experiment-validation-rates.svg`
+- `results/summaries/main-experiment-change-scope.svg`
 - `docs/articles/phase1-qiita-draft.md`
 - `docs/TODO.md`
 - `docs/reports/2026-07-20-phase1-visualization-article-report.md`

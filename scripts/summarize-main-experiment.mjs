@@ -8,6 +8,7 @@ const manifestPath = 'experiments/manifest.json';
 const jsonOutputPath = 'results/summaries/main-experiment-summary.json';
 const csvOutputPath = 'results/summaries/main-experiment-runs.csv';
 const chartOutputPath = 'results/summaries/main-experiment-validation-rates.svg';
+const changeScopeChartOutputPath = 'results/summaries/main-experiment-change-scope.svg';
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const mainRuns = manifest.experiments.filter(
@@ -228,12 +229,44 @@ const chart = `<?xml version="1.0" encoding="UTF-8"?>
   <text x="40" y="735" fill="#4b5563">Fully validated = build, typecheck, format, lint, public tests, and hidden tests all passed.</text>
 </svg>`;
 
+const scopeValues = Object.entries(summary.byTarget).map(([target, values]) => ({
+  target,
+  value: values.averageFilesChanged,
+}));
+const scopeMaximum = Math.max(...scopeValues.map((item) => item.value));
+const scopeBars = scopeValues
+  .map((item, index) => {
+    const y = 130 + index * 70;
+    const width = (item.value / scopeMaximum) * 540;
+    return `
+      <text x="230" y="${y + 17}" text-anchor="end">${escapeXml(item.target)}</text>
+      <rect x="250" y="${y}" width="540" height="28" fill="#e5e7eb" rx="3" />
+      <rect x="250" y="${y}" width="${width}" height="28" fill="#7c3aed" rx="3" />
+      <text x="805" y="${y + 19}">${item.value.toFixed(2)} files</text>`;
+  })
+  .join('\n');
+const changeScopeChart = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="410" viewBox="0 0 960 410" role="img" aria-labelledby="title description">
+  <title id="title">Phase 1 main experiment change scope</title>
+  <desc id="description">54 Runにおける構成別の平均変更ファイル数。</desc>
+  <style>
+    text { fill: #111827; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 15px; }
+    .title { font-size: 22px; font-weight: 600; }
+    .caption { fill: #4b5563; font-size: 13px; }
+  </style>
+  <text class="title" x="40" y="45">Phase 1 main experiment: average changed files</text>
+  <text class="caption" x="40" y="75">A proxy for change scope, not a direct measure of exploration time.</text>
+  ${scopeBars}
+  <text class="caption" x="40" y="370">Each architecture has 18 runs. Higher values indicate that a completed task touched more files on average.</text>
+</svg>`;
+
 await mkdir(dirname(jsonOutputPath), { recursive: true });
 await writeFile(
   jsonOutputPath,
   await format(JSON.stringify(summary), { parser: 'json', filepath: jsonOutputPath }),
 );
 await writeFile(chartOutputPath, chart);
+await writeFile(changeScopeChartOutputPath, changeScopeChart);
 await writeFile(
   csvOutputPath,
   `${csvColumns.join(',')}\n${runs
