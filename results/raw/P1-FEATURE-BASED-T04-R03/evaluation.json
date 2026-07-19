@@ -1,0 +1,40 @@
+{
+  "experimentId": "P1-FEATURE-BASED-T04-R03",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-19T23:57:32+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": true,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 8, "total": 8 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 2,
+    "linesAdded": 65,
+    "linesDeleted": 1,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "functionalCorrectness": null,
+    "maintainability": null,
+    "architecture": null,
+    "readability": null,
+    "total": null
+  },
+  "failureClassification": [],
+  "evidence": [
+    "Public validation passed (8/8 tests).",
+    "Task 04 hidden contract passed with HIDDEN_TEST_TARGET=feature-based."
+  ],
+  "notes": "Runner source was not edited by the evaluator."
+}
