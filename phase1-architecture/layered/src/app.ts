@@ -1,8 +1,7 @@
 import Fastify from 'fastify';
 import { TaskService } from './service.js';
-export function buildApp() {
+export function buildApp(service = new TaskService()) {
   const app = Fastify();
-  const service = new TaskService();
   const respond = (task: ReturnType<TaskService['view']>) => task;
   app.post<{
     Body: {
@@ -10,6 +9,7 @@ export function buildApp() {
       description?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       dueDate?: string;
+      category?: string;
       assigneeId?: string;
     };
   }>('/tasks', async (r, reply) => {
@@ -24,6 +24,13 @@ export function buildApp() {
     const task = service.get(r.params.id);
     return task ? respond(service.view(task)) : reply.code(404).send({ error: 'task not found' });
   });
+  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (r, reply) => {
+    try {
+      return reply.code(201).send(respond(service.view(service.duplicate(r.params.id))));
+    } catch (e) {
+      return reply.code(404).send({ error: (e as Error).message });
+    }
+  });
   app.patch<{
     Params: { id: string };
     Body: {
@@ -31,6 +38,7 @@ export function buildApp() {
       description?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       dueDate?: string;
+      category?: string;
       assigneeId?: string;
     };
   }>('/tasks/:id', async (r, reply) => {
