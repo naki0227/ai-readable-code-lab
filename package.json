@@ -12,6 +12,7 @@
     "test": "vitest run",
     "build": "tsc -p tsconfig.build.json",
     "summarize:dry-runs": "node scripts/summarize-dry-runs.mjs",
+    "summarize:main-experiment": "node scripts/summarize-main-experiment.mjs",
     "plan:main-experiment": "node scripts/generate-main-run-order.mjs",
     "validate": "npm run typecheck && npm run format:check && npm run lint && npm run test && npm run build"
   },

@@ -73,11 +73,14 @@
 - 本実験 P1-LAYERED-T06-R02 を独立Runner/Evaluatorで完了（Run 52、Runnerの整形不備により公開検証9/10、隠し評価1/1）
 - 本実験 P1-FEATURE-BASED-T03-R02 を独立Runner/Evaluatorで完了（Run 53）
 - 本実験 P1-FEATURE-BASED-T06-R01 を独立Runner/Evaluatorで完了（Run 54、型検査失敗・公開検証5/9・隠し評価0/1を証跡として保存）
+- 本実験54 Runの再現可能なJSON/CSV集計と初期分析を完了
 
 ## 未着手
 
-- なし（本実験54 RunをすべてRunner/Evaluator分離で完了）
+- 構成別・課題別グラフを作成し、代表例を選定する
+- Qiita記事の下書きを作成する
+- Task 05の共有公開契約不整合を次回実験前に解消する
 
 ## 次回最初に着手するタスク
 
-- `results/summaries/main-experiment-progress.json` と `experiments/manifest.json` を確認する
+- `results/summaries/main-experiment-summary.json` と `docs/reports/2026-07-20-phase1-main-experiment-analysis-report.md` を確認する
