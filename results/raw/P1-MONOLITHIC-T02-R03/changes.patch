@@ -1,0 +1,76 @@
+diff --git a/phase1-architecture/monolithic/src/app.ts b/phase1-architecture/monolithic/src/app.ts
+index 7ab6ec6..636bd32 100644
+--- a/phase1-architecture/monolithic/src/app.ts
++++ b/phase1-architecture/monolithic/src/app.ts
+@@ -57,6 +57,8 @@ export function buildApp() {
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+     if (request.body.title !== undefined && !request.body.title.trim())
+       return reply.code(400).send({ error: 'title is required' });
++    if (request.body.assigneeId !== undefined && task.status === 'COMPLETED')
++      return reply.code(409).send({ error: 'completed task cannot be assigned' });
+     if (request.body.assigneeId !== undefined && !hasUser(request.body.assigneeId))
+       return reply.code(404).send({ error: 'assignee not found' });
+     Object.assign(task, request.body, {
+diff --git a/phase1-architecture/monolithic/tests/app.test.ts b/phase1-architecture/monolithic/tests/app.test.ts
+index 2a21723..72b6efa 100644
+--- a/phase1-architecture/monolithic/tests/app.test.ts
++++ b/phase1-architecture/monolithic/tests/app.test.ts
+@@ -18,4 +18,58 @@ describe('monolithic baseline', () => {
+     ).toBe(409);
+     await app.close();
+   });
++
++  it('rejects reassignment of a completed task while retaining its assignee', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Keep completed task assignee' },
++    });
++    const { id } = created.json() as { id: string };
++
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${id}`,
++          payload: { assigneeId: 'user-1' },
++        })
++      ).statusCode,
++    ).toBe(200);
++    await app.inject({ method: 'POST', url: `/tasks/${id}/complete` });
++    const assignment = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${id}`,
++      payload: { assigneeId: 'user-2' },
++    });
++
++    expect(assignment.statusCode).toBe(409);
++    expect(assignment.json()).toEqual({ error: 'completed task cannot be assigned' });
++    expect((await app.inject({ method: 'GET', url: `/tasks/${id}` })).json()).toMatchObject({
++      assigneeId: 'user-1',
++      status: 'COMPLETED',
++    });
++    await app.close();
++  });
++
++  it('keeps unknown assignee updates as not found', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Reject missing assignee' },
++    });
++    const { id } = created.json() as { id: string };
++
++    const assignment = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${id}`,
++      payload: { assigneeId: 'missing-user' },
++    });
++
++    expect(assignment.statusCode).toBe(404);
++    expect(assignment.json()).toEqual({ error: 'assignee not found' });
++    await app.close();
++  });
+ });
