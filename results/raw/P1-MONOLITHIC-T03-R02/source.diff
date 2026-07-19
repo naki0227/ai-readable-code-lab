@@ -1,0 +1,143 @@
+diff --git a/phase1-architecture/monolithic/src/app.ts b/phase1-architecture/monolithic/src/app.ts
+index 7ab6ec6..db24c13 100644
+--- a/phase1-architecture/monolithic/src/app.ts
++++ b/phase1-architecture/monolithic/src/app.ts
+@@ -15,12 +15,30 @@ type Task = {
+ };
+ type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
+ type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
++type HistoryAction = 'CREATED' | 'UPDATED' | 'ASSIGNEE_CHANGED' | 'COMPLETED' | 'ARCHIVED';
++type TaskHistory = {
++  id: string;
++  taskId: string;
++  action: HistoryAction;
++  createdAt: string;
++};
+ 
+ export function buildApp() {
+   const app = Fastify();
+   const tasks = new Map<string, Task>();
++  const history = new Map<string, TaskHistory[]>();
+   let sequence = 0;
++  let historySequence = 0;
+   const now = () => new Date().toISOString();
++  const recordHistory = (taskId: string, action: HistoryAction) => {
++    const event: TaskHistory = {
++      id: String(++historySequence),
++      taskId,
++      action,
++      createdAt: now(),
++    };
++    history.set(taskId, [...(history.get(taskId) ?? []), event]);
++  };
+   const isOverdue = (task: Task) => Boolean(task.dueDate && task.dueDate < now().slice(0, 10));
+   const response = (task: Task) => ({
+     ...task,
+@@ -43,6 +61,7 @@ export function buildApp() {
+       updatedAt: timestamp,
+     };
+     tasks.set(task.id, task);
++    recordHistory(task.id, 'CREATED');
+     return reply.code(201).send(response(task));
+   });
+   app.get('/tasks', async () =>
+@@ -59,10 +78,13 @@ export function buildApp() {
+       return reply.code(400).send({ error: 'title is required' });
+     if (request.body.assigneeId !== undefined && !hasUser(request.body.assigneeId))
+       return reply.code(404).send({ error: 'assignee not found' });
++    const assigneeChanged =
++      request.body.assigneeId !== undefined && request.body.assigneeId !== task.assigneeId;
+     Object.assign(task, request.body, {
+       title: request.body.title?.trim() ?? task.title,
+       updatedAt: now(),
+     });
++    recordHistory(task.id, assigneeChanged ? 'ASSIGNEE_CHANGED' : 'UPDATED');
+     return response(task);
+   });
+   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (request, reply) => {
+@@ -72,8 +94,13 @@ export function buildApp() {
+       return reply.code(409).send({ error: 'task is already completed' });
+     task.status = 'COMPLETED';
+     task.updatedAt = now();
++    recordHistory(task.id, 'COMPLETED');
+     return response(task);
+   });
++  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (request, reply) => {
++    const task = tasks.get(request.params.id);
++    return task ? (history.get(task.id) ?? []) : reply.code(404).send({ error: 'task not found' });
++  });
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (request, reply) => {
+     const task = tasks.get(request.params.id);
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+diff --git a/phase1-architecture/monolithic/tests/app.test.ts b/phase1-architecture/monolithic/tests/app.test.ts
+index 2a21723..0d67e91 100644
+--- a/phase1-architecture/monolithic/tests/app.test.ts
++++ b/phase1-architecture/monolithic/tests/app.test.ts
+@@ -18,4 +18,67 @@ describe('monolithic baseline', () => {
+     ).toBe(409);
+     await app.close();
+   });
++
++  it('records task operation history in chronological order', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Write experiment' },
++    });
++    const task = created.json() as { id: string };
++
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${task.id}`,
++          payload: { title: 'Revise experiment' },
++        })
++      ).statusCode,
++    ).toBe(200);
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${task.id}`,
++          payload: { assigneeId: 'user-1' },
++        })
++      ).statusCode,
++    ).toBe(200);
++    expect(
++      (await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` })).statusCode,
++    ).toBe(200);
++
++    const history = await app.inject({ method: 'GET', url: `/tasks/${task.id}/history` });
++    expect(history.statusCode).toBe(200);
++    expect(history.json()).toEqual(
++      expect.arrayContaining([
++        expect.objectContaining({ taskId: task.id, action: 'CREATED' }),
++        expect.objectContaining({ taskId: task.id, action: 'UPDATED' }),
++        expect.objectContaining({ taskId: task.id, action: 'ASSIGNEE_CHANGED' }),
++        expect.objectContaining({ taskId: task.id, action: 'COMPLETED' }),
++      ]),
++    );
++    expect((history.json() as { action: string }[]).map((event) => event.action)).toEqual([
++      'CREATED',
++      'UPDATED',
++      'ASSIGNEE_CHANGED',
++      'COMPLETED',
++    ]);
++    expect(history.json()).toEqual(
++      expect.arrayContaining([
++        expect.objectContaining({ id: expect.any(String), createdAt: expect.any(String) }),
++      ]),
++    );
++    await app.close();
++  });
++
++  it('returns 404 when a task history is requested for a missing task', async () => {
++    const app = buildApp();
++    const response = await app.inject({ method: 'GET', url: '/tasks/missing/history' });
++    expect(response.statusCode).toBe(404);
++    expect(response.json()).toEqual({ error: 'task not found' });
++    await app.close();
++  });
+ });
