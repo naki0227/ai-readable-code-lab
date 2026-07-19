@@ -58,11 +58,12 @@
 - 本実験 P1-FEATURE-BASED-T01-R03 を独立Runner/Evaluatorで完了（Run 37）
 - 本実験 P1-MONOLITHIC-T03-R03 を独立Runner/Evaluatorで完了（Run 38）
 - 本実験 P1-MONOLITHIC-T01-R02 を独立Runner/Evaluatorで完了（Run 39）
+- 本実験 P1-MONOLITHIC-T01-R01 を独立Runner/Evaluatorで完了（Run 40）
 
 ## 未着手
 
-- 固定順序で残り15件の本実験をRunner/Evaluator分離で実行する
+- 固定順序で残り14件の本実験をRunner/Evaluator分離で実行する
 
 ## 次回最初に着手するタスク
 
-- `experiments/phase1-main-run-order.json` の sequence 40 から実行する
+- `experiments/phase1-main-run-order.json` の sequence 41 から実行する
