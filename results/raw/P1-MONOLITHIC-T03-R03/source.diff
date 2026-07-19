@@ -1,0 +1,114 @@
+diff --git a/phase1-architecture/monolithic/src/app.ts b/phase1-architecture/monolithic/src/app.ts
+index 7ab6ec6..11751d3 100644
+--- a/phase1-architecture/monolithic/src/app.ts
++++ b/phase1-architecture/monolithic/src/app.ts
+@@ -15,11 +15,15 @@ type Task = {
+ };
+ type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
+ type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
++type TaskEventAction = 'CREATED' | 'UPDATED' | 'ASSIGNEE_CHANGED' | 'COMPLETED' | 'ARCHIVED';
++type TaskEvent = { id: string; taskId: string; action: TaskEventAction; createdAt: string };
+ 
+ export function buildApp() {
+   const app = Fastify();
+   const tasks = new Map<string, Task>();
++  const history = new Map<string, TaskEvent[]>();
+   let sequence = 0;
++  let eventSequence = 0;
+   const now = () => new Date().toISOString();
+   const isOverdue = (task: Task) => Boolean(task.dueDate && task.dueDate < now().slice(0, 10));
+   const response = (task: Task) => ({
+@@ -28,6 +32,10 @@ export function buildApp() {
+     warnings: task.dueDate && task.dueDate < now().slice(0, 10) ? ['due date is in the past'] : [],
+   });
+   const hasUser = (id: string) => id === 'user-1' || id === 'user-2';
++  const record = (taskId: string, action: TaskEventAction) => {
++    const event: TaskEvent = { id: String(++eventSequence), taskId, action, createdAt: now() };
++    history.set(taskId, [...(history.get(taskId) ?? []), event]);
++  };
+ 
+   app.post<{ Body: CreateTask }>('/tasks', async (request, reply) => {
+     if (!request.body?.title?.trim()) return reply.code(400).send({ error: 'title is required' });
+@@ -43,6 +51,7 @@ export function buildApp() {
+       updatedAt: timestamp,
+     };
+     tasks.set(task.id, task);
++    record(task.id, 'CREATED');
+     return reply.code(201).send(response(task));
+   });
+   app.get('/tasks', async () =>
+@@ -52,6 +61,10 @@ export function buildApp() {
+     const task = tasks.get(request.params.id);
+     return task ? response(task) : reply.code(404).send({ error: 'task not found' });
+   });
++  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (request, reply) => {
++    if (!tasks.has(request.params.id)) return reply.code(404).send({ error: 'task not found' });
++    return history.get(request.params.id) ?? [];
++  });
+   app.patch<{ Params: { id: string }; Body: UpdateTask }>('/tasks/:id', async (request, reply) => {
+     const task = tasks.get(request.params.id);
+     if (!task) return reply.code(404).send({ error: 'task not found' });
+@@ -63,6 +76,7 @@ export function buildApp() {
+       title: request.body.title?.trim() ?? task.title,
+       updatedAt: now(),
+     });
++    record(task.id, request.body.assigneeId === undefined ? 'UPDATED' : 'ASSIGNEE_CHANGED');
+     return response(task);
+   });
+   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (request, reply) => {
+@@ -72,6 +86,7 @@ export function buildApp() {
+       return reply.code(409).send({ error: 'task is already completed' });
+     task.status = 'COMPLETED';
+     task.updatedAt = now();
++    record(task.id, 'COMPLETED');
+     return response(task);
+   });
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (request, reply) => {
+diff --git a/phase1-architecture/monolithic/tests/app.test.ts b/phase1-architecture/monolithic/tests/app.test.ts
+index 2a21723..d7f7af9 100644
+--- a/phase1-architecture/monolithic/tests/app.test.ts
++++ b/phase1-architecture/monolithic/tests/app.test.ts
+@@ -18,4 +18,43 @@ describe('monolithic baseline', () => {
+     ).toBe(409);
+     await app.close();
+   });
++
++  it('records chronological task events and returns 404 for an unknown task history', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Record changes' },
++    });
++    const task = created.json() as { id: string };
++
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { title: 'Record events' },
++    });
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++    await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
++
++    const history = await app.inject({ method: 'GET', url: `/tasks/${task.id}/history` });
++    expect(history.statusCode).toBe(200);
++    expect(history.json()).toMatchObject([
++      { id: '1', taskId: task.id, action: 'CREATED' },
++      { id: '2', taskId: task.id, action: 'UPDATED' },
++      { id: '3', taskId: task.id, action: 'ASSIGNEE_CHANGED' },
++      { id: '4', taskId: task.id, action: 'COMPLETED' },
++    ]);
++    expect(
++      (history.json() as Array<{ createdAt: string }>).every((event) => Boolean(event.createdAt)),
++    ).toBe(true);
++
++    const missing = await app.inject({ method: 'GET', url: '/tasks/missing/history' });
++    expect(missing.statusCode).toBe(404);
++    expect(missing.json()).toEqual({ error: 'task not found' });
++    await app.close();
++  });
+ });
