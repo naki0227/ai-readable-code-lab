@@ -8,12 +8,19 @@ type Task = {
   description?: string;
   status: Status;
   priority: Priority;
+  category?: string;
   dueDate?: string;
   assigneeId?: string;
   createdAt: string;
   updatedAt: string;
 };
-type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
+type CreateTask = {
+  title: string;
+  description?: string;
+  priority?: Priority;
+  category?: string;
+  dueDate?: string;
+};
 type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
 type TaskEvent = { id: string; taskId: string; action: string; createdAt: string };
 
@@ -50,6 +57,7 @@ export function buildApp() {
       title: request.body.title.trim(),
       description: request.body.description,
       priority: request.body.priority ?? 'MEDIUM',
+      category: request.body.category,
       dueDate: request.body.dueDate,
       status: 'TODO',
       createdAt: timestamp,

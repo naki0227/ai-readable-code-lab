@@ -1,0 +1,42 @@
+
+> ai-readable-code-lab@0.1.0 validate
+> npm run typecheck && npm run format:check && npm run lint && npm run test && npm run build
+
+
+> ai-readable-code-lab@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ai-readable-code-lab@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ai-readable-code-lab@0.1.0 lint
+> eslint .
+
+
+> ai-readable-code-lab@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /private/tmp/ai-readable-evaluator-p1-monolithic-t01-r02
+
+ ✓ phase1-architecture/ci-health.test.ts (1 test) 1ms
+ ✓ phase1-architecture/feature-based/tests/app.test.ts (1 test) 51ms
+ ✓ phase1-architecture/layered/tests/app.test.ts (1 test) 51ms
+ ✓ phase1-architecture/monolithic/tests/app.test.ts (2 tests) 62ms
+ ✓ phase1-architecture/contracts/monolithic.contract.test.ts (1 test) 64ms
+ ✓ phase1-architecture/contracts/layered.contract.test.ts (1 test) 60ms
+ ✓ phase1-architecture/contracts/feature-based.contract.test.ts (1 test) 72ms
+
+ Test Files  7 passed (7)
+      Tests  8 passed (8)
+   Start at  20:40:57
+   Duration  354ms (transform 115ms, setup 0ms, collect 385ms, tests 361ms, environment 0ms, prepare 292ms)
+
+
+> ai-readable-code-lab@0.1.0 build
+> tsc -p tsconfig.build.json
+

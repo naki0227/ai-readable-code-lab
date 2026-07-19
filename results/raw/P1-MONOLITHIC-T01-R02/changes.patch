@@ -1,0 +1,72 @@
+diff --git a/phase1-architecture/monolithic/src/app.ts b/phase1-architecture/monolithic/src/app.ts
+index 9e912a2..c18c2e9 100644
+--- a/phase1-architecture/monolithic/src/app.ts
++++ b/phase1-architecture/monolithic/src/app.ts
+@@ -8,12 +8,19 @@ type Task = {
+   description?: string;
+   status: Status;
+   priority: Priority;
++  category?: string;
+   dueDate?: string;
+   assigneeId?: string;
+   createdAt: string;
+   updatedAt: string;
+ };
+-type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
++type CreateTask = {
++  title: string;
++  description?: string;
++  priority?: Priority;
++  category?: string;
++  dueDate?: string;
++};
+ type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
+ type TaskEvent = { id: string; taskId: string; action: string; createdAt: string };
+ 
+@@ -50,6 +57,7 @@ export function buildApp() {
+       title: request.body.title.trim(),
+       description: request.body.description,
+       priority: request.body.priority ?? 'MEDIUM',
++      category: request.body.category,
+       dueDate: request.body.dueDate,
+       status: 'TODO',
+       createdAt: timestamp,
+diff --git a/phase1-architecture/monolithic/tests/app.test.ts b/phase1-architecture/monolithic/tests/app.test.ts
+index 2a21723..712c126 100644
+--- a/phase1-architecture/monolithic/tests/app.test.ts
++++ b/phase1-architecture/monolithic/tests/app.test.ts
+@@ -2,6 +2,34 @@ import { describe, expect, it } from 'vitest';
+ import { buildApp } from '../src/app.js';
+ 
+ describe('monolithic baseline', () => {
++  it('preserves an optional category when creating, updating, and retrieving tasks', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Plan release', category: 'Planning' },
++    });
++
++    expect(created.statusCode).toBe(201);
++    const task = created.json() as { id: string; category?: string };
++    expect(task.category).toBe('Planning');
++
++    const updated = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { category: 'Release' },
++    });
++    expect(updated.json()).toMatchObject({ category: 'Release' });
++
++    expect((await app.inject({ method: 'GET', url: `/tasks/${task.id}` })).json()).toMatchObject({
++      category: 'Release',
++    });
++    expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toMatchObject([
++      { id: task.id, category: 'Release' },
++    ]);
++    await app.close();
++  });
++
+   it('creates, completes, and excludes archived behavior through its API', async () => {
+     const app = buildApp();
+     const created = await app.inject({
