@@ -4,6 +4,7 @@ export type Task = {
   id: string;
   title: string;
   description?: string;
+  category?: string;
   status: Status;
   priority: Priority;
   dueDate?: string;
