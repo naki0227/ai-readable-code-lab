@@ -696,6 +696,18 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/59",
       "taskId": "task-06",
       "target": "feature-based"
+    },
+    {
+      "experimentId": "P1-MONOLITHIC-T05-R02",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "baselineTag": "p1-monolithic-v1.0.1",
+      "branch": "experiment/p1/monolithic/task-05/r02",
+      "runnerResultCommit": "546bb201b7b447448d6b714627a3a411755b2239",
+      "resultCommit": "cd6ffd7",
+      "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/60",
+      "taskId": "task-05",
+      "target": "monolithic"
     }
   ]
 }
