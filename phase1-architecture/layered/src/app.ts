@@ -38,7 +38,15 @@ export function buildApp() {
       return respond(service.view(service.update(r.params.id, r.body)));
     } catch (e) {
       const message = (e as Error).message;
-      return reply.code(message === 'title is required' ? 400 : 404).send({ error: message });
+      return reply
+        .code(
+          message === 'title is required'
+            ? 400
+            : message === 'cannot change assignee of completed task'
+              ? 409
+              : 404,
+        )
+        .send({ error: message });
     }
   });
   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (r, reply) => {
