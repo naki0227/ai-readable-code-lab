@@ -12,7 +12,10 @@ export type Task = {
 export const asResponse = (task: Task) => ({
   ...task,
   isOverdue:
-    Boolean(task.dueDate) && (task.dueDate as string) < new Date().toISOString().slice(0, 10),
+    task.status !== 'COMPLETED' &&
+    task.status !== 'ARCHIVED' &&
+    Boolean(task.dueDate) &&
+    (task.dueDate as string) < new Date().toISOString().slice(0, 10),
   warnings:
     task.dueDate && task.dueDate < new Date().toISOString().slice(0, 10)
       ? ['due date is in the past']
