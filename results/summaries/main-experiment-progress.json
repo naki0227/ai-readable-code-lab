@@ -1,7 +1,7 @@
 {
   "phase": "p1",
   "plannedRunCount": 54,
-  "completedRunCount": 25,
+  "completedRunCount": 26,
   "includedInMainResults": true,
   "runs": [
     {
@@ -203,6 +203,14 @@
       "score": null,
       "runnerResultCommit": "7eb4a43178848e1bda4188744482655ad6edce12",
       "evaluatorResultCommit": "f2051e9"
+    },
+    {
+      "experimentId": "P1-MONOLITHIC-T01-R03",
+      "publicTests": "8/8",
+      "hiddenTests": "1/1",
+      "score": null,
+      "runnerResultCommit": "b313ea84ce2c5bed2f660afe60a0591378cda6fb",
+      "evaluatorResultCommit": "d5627b5"
     }
   ]
 }

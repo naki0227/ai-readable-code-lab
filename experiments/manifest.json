@@ -504,6 +504,18 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/43",
       "taskId": "task-04",
       "target": "layered"
+    },
+    {
+      "experimentId": "P1-MONOLITHIC-T01-R03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "baselineTag": "p1-monolithic-v1.0.0",
+      "branch": "experiment/p1/monolithic/task-01/r03",
+      "runnerResultCommit": "b313ea84ce2c5bed2f660afe60a0591378cda6fb",
+      "resultCommit": "d5627b5",
+      "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/44",
+      "taskId": "task-01",
+      "target": "monolithic"
     }
   ]
 }
