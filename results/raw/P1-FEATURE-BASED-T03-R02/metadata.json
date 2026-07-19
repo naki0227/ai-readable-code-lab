@@ -1,0 +1,13 @@
+{
+  "experimentId": "P1-FEATURE-BASED-T03-R02",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "target": "feature-based",
+  "taskId": "task-03",
+  "run": 2,
+  "model": "gpt-5.6-terra",
+  "reasoningLevel": "medium",
+  "baselineTag": "p1-feature-based-v1.0.1",
+  "resultCommit": "c9a1018a8abdf492a2b68de78b5eaeb6bdc02144",
+  "humanCodeCorrections": false
+}
