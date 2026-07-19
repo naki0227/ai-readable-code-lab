@@ -1,4 +1,4 @@
-import type { Priority, Task } from './domain.js';
+import type { Priority, Task, TaskHistoryAction } from './domain.js';
 import { isOverdue } from './domain.js';
 import { TaskRepository } from './repository.js';
 export class TaskService {
@@ -27,6 +27,7 @@ export class TaskService {
       createdAt: time,
       updatedAt: time,
     });
+    this.recordHistory(task.id, 'CREATED', time);
     return task;
   }
   get(id: string) {
@@ -39,8 +40,10 @@ export class TaskService {
     const task = this.get(id);
     if (!task) throw new Error('task not found');
     if (task.status === 'COMPLETED') throw new Error('task is already completed');
+    const time = this.clock();
     task.status = 'COMPLETED';
-    task.updatedAt = this.clock();
+    task.updatedAt = time;
+    this.recordHistory(task.id, 'COMPLETED', time);
     return task;
   }
   update(
@@ -58,16 +61,29 @@ export class TaskService {
     if (input.title !== undefined && !input.title.trim()) throw new Error('title is required');
     if (input.assigneeId !== undefined && !this.hasUser(input.assigneeId))
       throw new Error('assignee not found');
+    const action: TaskHistoryAction =
+      input.assigneeId !== undefined && input.assigneeId !== task.assigneeId
+        ? 'ASSIGNEE_CHANGED'
+        : 'UPDATED';
+    const time = this.clock();
     Object.assign(task, input, {
       title: input.title?.trim() ?? task.title,
-      updatedAt: this.clock(),
+      updatedAt: time,
     });
+    this.recordHistory(task.id, action, time);
     return task;
+  }
+  history(id: string) {
+    if (!this.get(id)) throw new Error('task not found');
+    return this.repository.listHistory(id);
   }
   remove(id: string) {
     if (!this.repository.remove(id)) throw new Error('task not found');
   }
   private hasUser(id: string) {
     return id === 'user-1' || id === 'user-2';
+  }
+  private recordHistory(taskId: string, action: TaskHistoryAction, createdAt: string) {
+    this.repository.saveHistory({ taskId, action, createdAt });
   }
 }

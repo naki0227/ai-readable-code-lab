@@ -1,0 +1,203 @@
+diff --git a/phase1-architecture/layered/src/app.ts b/phase1-architecture/layered/src/app.ts
+index 924240b..e2ea867 100644
+--- a/phase1-architecture/layered/src/app.ts
++++ b/phase1-architecture/layered/src/app.ts
+@@ -24,6 +24,13 @@ export function buildApp() {
+     const task = service.get(r.params.id);
+     return task ? respond(service.view(task)) : reply.code(404).send({ error: 'task not found' });
+   });
++  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (r, reply) => {
++    try {
++      return service.history(r.params.id);
++    } catch (e) {
++      return reply.code(404).send({ error: (e as Error).message });
++    }
++  });
+   app.patch<{
+     Params: { id: string };
+     Body: {
+diff --git a/phase1-architecture/layered/src/domain.ts b/phase1-architecture/layered/src/domain.ts
+index 3d3c739..019d8ce 100644
+--- a/phase1-architecture/layered/src/domain.ts
++++ b/phase1-architecture/layered/src/domain.ts
+@@ -1,5 +1,13 @@
+ export type Status = 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
+ export type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
++export const taskHistoryActions = [
++  'CREATED',
++  'UPDATED',
++  'ASSIGNEE_CHANGED',
++  'COMPLETED',
++  'ARCHIVED',
++] as const;
++export type TaskHistoryAction = (typeof taskHistoryActions)[number];
+ export type Task = {
+   id: string;
+   title: string;
+@@ -11,5 +19,11 @@ export type Task = {
+   createdAt: string;
+   updatedAt: string;
+ };
++export type TaskHistoryItem = {
++  id: string;
++  taskId: string;
++  action: TaskHistoryAction;
++  createdAt: string;
++};
+ export const isOverdue = (task: Task, today: string) =>
+   Boolean(task.dueDate && task.dueDate < today);
+diff --git a/phase1-architecture/layered/src/repository.ts b/phase1-architecture/layered/src/repository.ts
+index 0c4e9b7..ecc6923 100644
+--- a/phase1-architecture/layered/src/repository.ts
++++ b/phase1-architecture/layered/src/repository.ts
+@@ -1,7 +1,9 @@
+-import type { Task } from './domain.js';
++import type { Task, TaskHistoryItem } from './domain.js';
+ export class TaskRepository {
+   private readonly tasks = new Map<string, Task>();
++  private readonly histories = new Map<string, TaskHistoryItem[]>();
+   private sequence = 0;
++  private historySequence = 0;
+   nextId() {
+     return String(++this.sequence);
+   }
+@@ -16,6 +18,18 @@ export class TaskRepository {
+     return [...this.tasks.values()];
+   }
+   remove(id: string) {
+-    return this.tasks.delete(id);
++    const removed = this.tasks.delete(id);
++    if (removed) this.histories.delete(id);
++    return removed;
++  }
++  saveHistory(item: Omit<TaskHistoryItem, 'id'>) {
++    const history = this.histories.get(item.taskId) ?? [];
++    const saved = { ...item, id: String(++this.historySequence) };
++    history.push(saved);
++    this.histories.set(item.taskId, history);
++    return saved;
++  }
++  listHistory(taskId: string) {
++    return this.histories.get(taskId) ?? [];
+   }
+ }
+diff --git a/phase1-architecture/layered/src/service.ts b/phase1-architecture/layered/src/service.ts
+index 124fc11..1b64c69 100644
+--- a/phase1-architecture/layered/src/service.ts
++++ b/phase1-architecture/layered/src/service.ts
+@@ -1,4 +1,4 @@
+-import type { Priority, Task } from './domain.js';
++import type { Priority, Task, TaskHistoryAction } from './domain.js';
+ import { isOverdue } from './domain.js';
+ import { TaskRepository } from './repository.js';
+ export class TaskService {
+@@ -27,6 +27,7 @@ export class TaskService {
+       createdAt: time,
+       updatedAt: time,
+     });
++    this.recordHistory(task.id, 'CREATED', time);
+     return task;
+   }
+   get(id: string) {
+@@ -39,8 +40,10 @@ export class TaskService {
+     const task = this.get(id);
+     if (!task) throw new Error('task not found');
+     if (task.status === 'COMPLETED') throw new Error('task is already completed');
++    const time = this.clock();
+     task.status = 'COMPLETED';
+-    task.updatedAt = this.clock();
++    task.updatedAt = time;
++    this.recordHistory(task.id, 'COMPLETED', time);
+     return task;
+   }
+   update(
+@@ -58,16 +61,29 @@ export class TaskService {
+     if (input.title !== undefined && !input.title.trim()) throw new Error('title is required');
+     if (input.assigneeId !== undefined && !this.hasUser(input.assigneeId))
+       throw new Error('assignee not found');
++    const action: TaskHistoryAction =
++      input.assigneeId !== undefined && input.assigneeId !== task.assigneeId
++        ? 'ASSIGNEE_CHANGED'
++        : 'UPDATED';
++    const time = this.clock();
+     Object.assign(task, input, {
+       title: input.title?.trim() ?? task.title,
+-      updatedAt: this.clock(),
++      updatedAt: time,
+     });
++    this.recordHistory(task.id, action, time);
+     return task;
+   }
++  history(id: string) {
++    if (!this.get(id)) throw new Error('task not found');
++    return this.repository.listHistory(id);
++  }
+   remove(id: string) {
+     if (!this.repository.remove(id)) throw new Error('task not found');
+   }
+   private hasUser(id: string) {
+     return id === 'user-1' || id === 'user-2';
+   }
++  private recordHistory(taskId: string, action: TaskHistoryAction, createdAt: string) {
++    this.repository.saveHistory({ taskId, action, createdAt });
++  }
+ }
+diff --git a/phase1-architecture/layered/tests/app.test.ts b/phase1-architecture/layered/tests/app.test.ts
+index 3528c99..19e3cb5 100644
+--- a/phase1-architecture/layered/tests/app.test.ts
++++ b/phase1-architecture/layered/tests/app.test.ts
+@@ -11,4 +11,54 @@ describe('layered baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it('returns each task operation history in creation order', async () => {
++    const app = buildApp();
++    const task = (
++      await app.inject({ method: 'POST', url: '/tasks', payload: { title: 'Test' } })
++    ).json() as { id: string };
++
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { title: 'Updated task' },
++    });
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++    await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
++
++    const response = await app.inject({ method: 'GET', url: `/tasks/${task.id}/history` });
++    expect(response.statusCode).toBe(200);
++    expect(response.json()).toEqual(
++      expect.arrayContaining([
++        expect.objectContaining({ taskId: task.id, action: 'CREATED' }),
++        expect.objectContaining({ taskId: task.id, action: 'UPDATED' }),
++        expect.objectContaining({ taskId: task.id, action: 'ASSIGNEE_CHANGED' }),
++        expect.objectContaining({ taskId: task.id, action: 'COMPLETED' }),
++      ]),
++    );
++    expect((response.json() as { action: string }[]).map((item) => item.action)).toEqual([
++      'CREATED',
++      'UPDATED',
++      'ASSIGNEE_CHANGED',
++      'COMPLETED',
++    ]);
++    expect(response.json()).toEqual(
++      expect.arrayContaining([
++        expect.objectContaining({ id: expect.any(String), createdAt: expect.any(String) }),
++      ]),
++    );
++    await app.close();
++  });
++
++  it('returns 404 for history of an unknown task', async () => {
++    const app = buildApp();
++    const response = await app.inject({ method: 'GET', url: '/tasks/missing/history' });
++    expect(response.statusCode).toBe(404);
++    expect(response.json()).toEqual({ error: 'task not found' });
++    await app.close();
++  });
+ });

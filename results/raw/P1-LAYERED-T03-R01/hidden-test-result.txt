@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /private/tmp/ai-readable-evaluator-p1-layered-t03-r01
+
+ ✓ hidden-tests/phase1/task-03-history.test.ts (1 test) 100ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:55:46
+   Duration  295ms (transform 25ms, setup 0ms, collect 11ms, tests 100ms, environment 0ms, prepare 32ms)
+

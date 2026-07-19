@@ -24,6 +24,13 @@ export function buildApp() {
     const task = service.get(r.params.id);
     return task ? respond(service.view(task)) : reply.code(404).send({ error: 'task not found' });
   });
+  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (r, reply) => {
+    try {
+      return service.history(r.params.id);
+    } catch (e) {
+      return reply.code(404).send({ error: (e as Error).message });
+    }
+  });
   app.patch<{
     Params: { id: string };
     Body: {
