@@ -1,0 +1,62 @@
+
+> ai-readable-code-lab@0.1.0 validate
+> npm run typecheck && npm run format:check && npm run lint && npm run test && npm run build
+
+
+> ai-readable-code-lab@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ai-readable-code-lab@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ai-readable-code-lab@0.1.0 lint
+> eslint .
+
+
+> ai-readable-code-lab@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /private/tmp/ai-readable-evaluator-p1-feature-based-t05-r03
+
+ ✓ phase1-architecture/ci-health.test.ts (1 test) 1ms
+ ✓ phase1-architecture/monolithic/tests/app.test.ts (1 test) 44ms
+ ✓ phase1-architecture/contracts/monolithic.contract.test.ts (1 test) 56ms
+ ❯ phase1-architecture/contracts/feature-based.contract.test.ts (1 test | 1 failed) 60ms
+   × feature-based task API contract > supports the same task lifecycle and error responses 59ms
+     → expected 200 to be 204 // Object.is equality
+ ✓ phase1-architecture/layered/tests/app.test.ts (1 test) 59ms
+ ✓ phase1-architecture/contracts/layered.contract.test.ts (1 test) 63ms
+ ✓ phase1-architecture/feature-based/tests/app.test.ts (2 tests) 68ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  phase1-architecture/contracts/feature-based.contract.test.ts > feature-based task API contract > supports the same task lifecycle and error responses
+AssertionError: expected 200 to be 204 // Object.is equality
+
+- Expected
++ Received
+
+- 204
++ 200
+
+ ❯ phase1-architecture/contracts/task-api-contract.ts:68:93
+     66|       ).toBe(409);
+     67| 
+     68|       expect((await app.inject({ method: 'DELETE', url: `/tasks/${task…
+       |                                                                                             ^
+     69|         204,
+     70|       );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  1 failed | 7 passed (8)
+   Start at  16:27:57
+   Duration  323ms (transform 130ms, setup 0ms, collect 359ms, tests 351ms, environment 1ms, prepare 291ms)
+
