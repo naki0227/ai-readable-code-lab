@@ -1,7 +1,7 @@
 {
   "phase": "p1",
   "plannedRunCount": 54,
-  "completedRunCount": 40,
+  "completedRunCount": 41,
   "includedInMainResults": true,
   "runs": [
     {
@@ -323,6 +323,14 @@
       "score": null,
       "runnerResultCommit": "cccab7295c2bf75382da4f1652fc03f86fec0af0",
       "evaluatorResultCommit": "29565e0"
+    },
+    {
+      "experimentId": "P1-FEATURE-BASED-T06-R03",
+      "publicTests": "8/9",
+      "hiddenTests": "1/1",
+      "score": null,
+      "runnerResultCommit": "37664df00d00894578bcb8b1ed804a8b6aefaeb3",
+      "evaluatorResultCommit": "9a75859"
     }
   ]
 }
