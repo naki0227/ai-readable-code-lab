@@ -1,4 +1,4 @@
-import type { Priority, Task } from './domain.js';
+import type { Priority, Task, TaskHistoryEntry } from './domain.js';
 import { isOverdue } from './domain.js';
 import { TaskRepository } from './repository.js';
 export class TaskService {
@@ -27,6 +27,7 @@ export class TaskService {
       createdAt: time,
       updatedAt: time,
     });
+    this.repository.addHistory(task.id, 'CREATED', time);
     return task;
   }
   get(id: string) {
@@ -41,6 +42,7 @@ export class TaskService {
     if (task.status === 'COMPLETED') throw new Error('task is already completed');
     task.status = 'COMPLETED';
     task.updatedAt = this.clock();
+    this.repository.addHistory(task.id, 'COMPLETED', task.updatedAt);
     return task;
   }
   update(
@@ -58,14 +60,24 @@ export class TaskService {
     if (input.title !== undefined && !input.title.trim()) throw new Error('title is required');
     if (input.assigneeId !== undefined && !this.hasUser(input.assigneeId))
       throw new Error('assignee not found');
+    const assigneeChanged = input.assigneeId !== undefined && input.assigneeId !== task.assigneeId;
     Object.assign(task, input, {
       title: input.title?.trim() ?? task.title,
       updatedAt: this.clock(),
     });
+    this.repository.addHistory(
+      task.id,
+      assigneeChanged ? 'ASSIGNEE_CHANGED' : 'UPDATED',
+      task.updatedAt,
+    );
     return task;
   }
   remove(id: string) {
     if (!this.repository.remove(id)) throw new Error('task not found');
+  }
+  history(id: string): TaskHistoryEntry[] {
+    if (!this.get(id)) throw new Error('task not found');
+    return this.repository.historyFor(id);
   }
   private hasUser(id: string) {
     return id === 'user-1' || id === 'user-2';
