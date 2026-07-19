@@ -1,0 +1,116 @@
+diff --git a/phase1-architecture/feature-based/src/tasks/task.ts b/phase1-architecture/feature-based/src/tasks/task.ts
+index 63c4b80..ab1a32b 100644
+--- a/phase1-architecture/feature-based/src/tasks/task.ts
++++ b/phase1-architecture/feature-based/src/tasks/task.ts
+@@ -9,12 +9,15 @@ export type Task = {
+   createdAt: string;
+   updatedAt: string;
+ };
+-export const asResponse = (task: Task) => ({
+-  ...task,
+-  isOverdue:
+-    Boolean(task.dueDate) && (task.dueDate as string) < new Date().toISOString().slice(0, 10),
+-  warnings:
+-    task.dueDate && task.dueDate < new Date().toISOString().slice(0, 10)
+-      ? ['due date is in the past']
+-      : [],
+-});
++export const asResponse = (task: Task) => {
++  const isOverdue =
++    (task.status === 'TODO' || task.status === 'IN_PROGRESS') &&
++    Boolean(task.dueDate) &&
++    (task.dueDate as string) < new Date().toISOString().slice(0, 10);
++
++  return {
++    ...task,
++    isOverdue,
++    warnings: isOverdue ? ['due date is in the past'] : [],
++  };
++};
+diff --git a/phase1-architecture/feature-based/tests/app.test.ts b/phase1-architecture/feature-based/tests/app.test.ts
+index 835e2ee..a06aca2 100644
+--- a/phase1-architecture/feature-based/tests/app.test.ts
++++ b/phase1-architecture/feature-based/tests/app.test.ts
+@@ -1,5 +1,6 @@
+ import { describe, expect, it } from 'vitest';
+ import { buildApp } from '../src/app.js';
++import { asResponse, type Task } from '../src/tasks/task.js';
+ describe('feature baseline', () => {
+   it('uses the same public completion contract', async () => {
+     const app = buildApp();
+@@ -11,4 +12,38 @@ describe('feature baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it('clears overdue state and warnings when a past-due task is completed', async () => {
++    const app = buildApp();
++    const task = (
++      await app.inject({
++        method: 'POST',
++        url: '/tasks',
++        payload: { title: 'Past-due task', dueDate: '2000-01-01' },
++      })
++    ).json() as { id: string; isOverdue: boolean; warnings: string[] };
++
++    expect(task).toMatchObject({ isOverdue: true, warnings: ['due date is in the past'] });
++
++    const completed = (
++      await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` })
++    ).json() as { status: string; isOverdue: boolean; warnings: string[] };
++
++    expect(completed).toMatchObject({ status: 'COMPLETED', isOverdue: false, warnings: [] });
++    await app.close();
++  });
++
++  it('clears overdue state and warnings for archived past-due tasks', () => {
++    const archivedTask: Task = {
++      id: 'archived-task',
++      title: 'Archived past-due task',
++      status: 'ARCHIVED',
++      priority: 'MEDIUM',
++      dueDate: '2000-01-01',
++      createdAt: '2000-01-01T00:00:00.000Z',
++      updatedAt: '2000-01-01T00:00:00.000Z',
++    };
++
++    expect(asResponse(archivedTask)).toMatchObject({ isOverdue: false, warnings: [] });
++  });
+ });
+diff --git a/phase1-architecture/feature-based/tests/task.test.ts b/phase1-architecture/feature-based/tests/task.test.ts
+new file mode 100644
+index 0000000..0c8bed2
+--- /dev/null
++++ b/phase1-architecture/feature-based/tests/task.test.ts
+@@ -0,0 +1,31 @@
++import { describe, expect, it } from 'vitest';
++import { asResponse, type Task } from '../src/tasks/task.js';
++
++const pastDueTask = (status: Task['status']): Task => ({
++  id: 'task-1',
++  title: 'Past-due task',
++  status,
++  priority: 'MEDIUM',
++  dueDate: '2000-01-01',
++  createdAt: '2000-01-01T00:00:00.000Z',
++  updatedAt: '2000-01-01T00:00:00.000Z',
++});
++
++describe('asResponse', () => {
++  it.each(['TODO', 'IN_PROGRESS'] as const)('marks a past-due %s task as overdue', (status) => {
++    expect(asResponse(pastDueTask(status))).toMatchObject({
++      isOverdue: true,
++      warnings: ['due date is in the past'],
++    });
++  });
++
++  it.each(['COMPLETED', 'ARCHIVED'] as const)(
++    'does not mark a past-due %s task as overdue',
++    (status) => {
++      expect(asResponse(pastDueTask(status))).toMatchObject({
++        isOverdue: false,
++        warnings: [],
++      });
++    },
++  );
++});
