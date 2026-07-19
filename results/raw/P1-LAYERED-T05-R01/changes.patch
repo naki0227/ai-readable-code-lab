@@ -1,0 +1,107 @@
+diff --git a/phase1-architecture/layered/src/app.ts b/phase1-architecture/layered/src/app.ts
+index 924240b..7a40c34 100644
+--- a/phase1-architecture/layered/src/app.ts
++++ b/phase1-architecture/layered/src/app.ts
+@@ -51,8 +51,7 @@ export function buildApp() {
+   });
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
+     try {
+-      service.remove(r.params.id);
+-      return reply.code(204).send();
++      return reply.code(200).send(respond(service.view(service.archive(r.params.id))));
+     } catch (e) {
+       return reply.code(404).send({ error: (e as Error).message });
+     }
+diff --git a/phase1-architecture/layered/src/domain.ts b/phase1-architecture/layered/src/domain.ts
+index 3d3c739..d42dce9 100644
+--- a/phase1-architecture/layered/src/domain.ts
++++ b/phase1-architecture/layered/src/domain.ts
+@@ -12,4 +12,4 @@ export type Task = {
+   updatedAt: string;
+ };
+ export const isOverdue = (task: Task, today: string) =>
+-  Boolean(task.dueDate && task.dueDate < today);
++  task.status !== 'ARCHIVED' && Boolean(task.dueDate && task.dueDate < today);
+diff --git a/phase1-architecture/layered/src/repository.ts b/phase1-architecture/layered/src/repository.ts
+index 0c4e9b7..eb3e89a 100644
+--- a/phase1-architecture/layered/src/repository.ts
++++ b/phase1-architecture/layered/src/repository.ts
+@@ -15,7 +15,4 @@ export class TaskRepository {
+   list() {
+     return [...this.tasks.values()];
+   }
+-  remove(id: string) {
+-    return this.tasks.delete(id);
+-  }
+ }
+diff --git a/phase1-architecture/layered/src/service.ts b/phase1-architecture/layered/src/service.ts
+index 124fc11..345742a 100644
+--- a/phase1-architecture/layered/src/service.ts
++++ b/phase1-architecture/layered/src/service.ts
+@@ -8,10 +8,11 @@ export class TaskService {
+   ) {}
+   view(task: Task) {
+     const today = this.clock().slice(0, 10);
++    const overdue = isOverdue(task, today);
+     return {
+       ...task,
+-      isOverdue: isOverdue(task, today),
+-      warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
++      isOverdue: overdue,
++      warnings: overdue ? ['due date is in the past'] : [],
+     };
+   }
+   create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
+@@ -64,8 +65,12 @@ export class TaskService {
+     });
+     return task;
+   }
+-  remove(id: string) {
+-    if (!this.repository.remove(id)) throw new Error('task not found');
++  archive(id: string) {
++    const task = this.get(id);
++    if (!task) throw new Error('task not found');
++    task.status = 'ARCHIVED';
++    task.updatedAt = this.clock();
++    return task;
+   }
+   private hasUser(id: string) {
+     return id === 'user-1' || id === 'user-2';
+diff --git a/phase1-architecture/layered/tests/app.test.ts b/phase1-architecture/layered/tests/app.test.ts
+index 3528c99..0a852a1 100644
+--- a/phase1-architecture/layered/tests/app.test.ts
++++ b/phase1-architecture/layered/tests/app.test.ts
+@@ -11,4 +11,33 @@ describe('layered baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it('archives a task through DELETE while preserving it for detail lookup', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Past due task', dueDate: '2000-01-01' },
++    });
++    const task = created.json() as { id: string };
++
++    const archived = await app.inject({ method: 'DELETE', url: `/tasks/${task.id}` });
++    expect(archived.statusCode).toBe(200);
++    expect(archived.json()).toMatchObject({
++      id: task.id,
++      status: 'ARCHIVED',
++      isOverdue: false,
++      warnings: [],
++    });
++    expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual([]);
++    expect((await app.inject({ method: 'GET', url: `/tasks/${task.id}` })).json()).toMatchObject({
++      id: task.id,
++      status: 'ARCHIVED',
++      isOverdue: false,
++      warnings: [],
++    });
++    expect((await app.inject({ method: 'GET', url: '/tasks/missing' })).statusCode).toBe(404);
++    expect((await app.inject({ method: 'DELETE', url: '/tasks/missing' })).statusCode).toBe(404);
++    await app.close();
++  });
+ });

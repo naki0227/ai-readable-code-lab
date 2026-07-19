@@ -1,0 +1,40 @@
+{
+  "experimentId": "P1-LAYERED-T05-R01",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-19T21:12:48+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": true,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 7, "total": 8 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 5,
+    "linesAdded": 40,
+    "linesDeleted": 10,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "functionalCorrectness": null,
+    "maintainability": null,
+    "architecture": null,
+    "readability": null,
+    "total": null
+  },
+  "failureClassification": ["shared contract mismatch"],
+  "evidence": [
+    "Public validation failed because the baseline shared contract expects DELETE 204 while Task 05 requires 200 ARCHIVED.",
+    "Task 05 hidden contract passed with HIDDEN_TEST_TARGET=layered."
+  ],
+  "notes": "The runner source required a parent formatting correction before its result commit; the evaluator made no source edits."
+}
