@@ -1,0 +1,74 @@
+diff --git a/phase1-architecture/layered/src/app.ts b/phase1-architecture/layered/src/app.ts
+index 924240b..616b15b 100644
+--- a/phase1-architecture/layered/src/app.ts
++++ b/phase1-architecture/layered/src/app.ts
+@@ -38,7 +38,15 @@ export function buildApp() {
+       return respond(service.view(service.update(r.params.id, r.body)));
+     } catch (e) {
+       const message = (e as Error).message;
+-      return reply.code(message === 'title is required' ? 400 : 404).send({ error: message });
++      return reply
++        .code(
++          message === 'title is required'
++            ? 400
++            : message === 'cannot change assignee of completed task'
++              ? 409
++              : 404,
++        )
++        .send({ error: message });
+     }
+   });
+   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (r, reply) => {
+diff --git a/phase1-architecture/layered/src/service.ts b/phase1-architecture/layered/src/service.ts
+index 124fc11..c5299be 100644
+--- a/phase1-architecture/layered/src/service.ts
++++ b/phase1-architecture/layered/src/service.ts
+@@ -56,6 +56,12 @@ export class TaskService {
+     const task = this.get(id);
+     if (!task) throw new Error('task not found');
+     if (input.title !== undefined && !input.title.trim()) throw new Error('title is required');
++    if (
++      task.status === 'COMPLETED' &&
++      input.assigneeId !== undefined &&
++      input.assigneeId !== task.assigneeId
++    )
++      throw new Error('cannot change assignee of completed task');
+     if (input.assigneeId !== undefined && !this.hasUser(input.assigneeId))
+       throw new Error('assignee not found');
+     Object.assign(task, input, {
+diff --git a/phase1-architecture/layered/tests/app.test.ts b/phase1-architecture/layered/tests/app.test.ts
+index 3528c99..efb6196 100644
+--- a/phase1-architecture/layered/tests/app.test.ts
++++ b/phase1-architecture/layered/tests/app.test.ts
+@@ -11,4 +11,31 @@ describe('layered baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it('rejects changing an assignee after completion without mutating the task', async () => {
++    const app = buildApp();
++    const task = (
++      await app.inject({ method: 'POST', url: '/tasks', payload: { title: 'Test' } })
++    ).json() as { id: string };
++
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++    await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
++
++    const response = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { assigneeId: 'user-2' },
++    });
++
++    expect(response.statusCode).toBe(409);
++    expect(response.json()).toEqual({ error: 'cannot change assignee of completed task' });
++    expect((await app.inject({ method: 'GET', url: `/tasks/${task.id}` })).json()).toMatchObject({
++      assigneeId: 'user-1',
++    });
++    await app.close();
++  });
+ });
