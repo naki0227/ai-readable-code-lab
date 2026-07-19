@@ -1,0 +1,101 @@
+diff --git a/phase1-architecture/feature-based/src/tasks/routes.ts b/phase1-architecture/feature-based/src/tasks/routes.ts
+index 806526c..19d9f42 100644
+--- a/phase1-architecture/feature-based/src/tasks/routes.ts
++++ b/phase1-architecture/feature-based/src/tasks/routes.ts
+@@ -8,6 +8,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
+     Body: {
+       title?: string;
+       description?: string;
++      category?: string;
+       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
+       dueDate?: string;
+     };
+@@ -17,6 +18,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
+     const task = repository.create({
+       title: r.body.title.trim(),
+       description: r.body.description,
++      category: r.body.category,
+       priority: r.body.priority ?? 'MEDIUM',
+       dueDate: r.body.dueDate,
+       status: 'TODO',
+@@ -41,6 +43,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
+     Body: {
+       title?: string;
+       description?: string;
++      category?: string;
+       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
+       dueDate?: string;
+       assigneeId?: string;
+diff --git a/phase1-architecture/feature-based/src/tasks/task.ts b/phase1-architecture/feature-based/src/tasks/task.ts
+index 373456a..1aa170c 100644
+--- a/phase1-architecture/feature-based/src/tasks/task.ts
++++ b/phase1-architecture/feature-based/src/tasks/task.ts
+@@ -2,6 +2,7 @@ export type Task = {
+   id: string;
+   title: string;
+   description?: string;
++  category?: string;
+   status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
+   priority: 'LOW' | 'MEDIUM' | 'HIGH';
+   dueDate?: string;
+diff --git a/phase1-architecture/feature-based/tests/category.test.ts b/phase1-architecture/feature-based/tests/category.test.ts
+new file mode 100644
+index 0000000..206f38a
+--- /dev/null
++++ b/phase1-architecture/feature-based/tests/category.test.ts
+@@ -0,0 +1,55 @@
++import { describe, expect, it } from 'vitest';
++import { buildApp } from '../src/app.js';
++
++describe('task category', () => {
++  it('persists an optional category through create, detail, and list responses', async () => {
++    const app = buildApp();
++
++    const created = (
++      await app.inject({
++        method: 'POST',
++        url: '/tasks',
++        payload: { title: 'Plan launch', category: 'work' },
++      })
++    ).json() as { id: string; category?: string };
++
++    expect(created).toMatchObject({ category: 'work' });
++    expect((await app.inject({ method: 'GET', url: `/tasks/${created.id}` })).json()).toMatchObject(
++      {
++        category: 'work',
++      },
++    );
++    expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual(
++      expect.arrayContaining([expect.objectContaining({ id: created.id, category: 'work' })]),
++    );
++
++    await app.close();
++  });
++
++  it('updates and preserves a category in detail and list responses', async () => {
++    const app = buildApp();
++    const created = (
++      await app.inject({ method: 'POST', url: '/tasks', payload: { title: 'Plan launch' } })
++    ).json() as { id: string };
++
++    expect(
++      (
++        await app.inject({
++          method: 'PATCH',
++          url: `/tasks/${created.id}`,
++          payload: { category: 'personal' },
++        })
++      ).json(),
++    ).toMatchObject({ category: 'personal' });
++    expect((await app.inject({ method: 'GET', url: `/tasks/${created.id}` })).json()).toMatchObject(
++      {
++        category: 'personal',
++      },
++    );
++    expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toEqual(
++      expect.arrayContaining([expect.objectContaining({ id: created.id, category: 'personal' })]),
++    );
++
++    await app.close();
++  });
++});
