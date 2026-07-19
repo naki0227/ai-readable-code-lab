@@ -72,11 +72,12 @@
 - 本実験 P1-LAYERED-T01-R03 を独立Runner/Evaluatorで完了（Run 51）
 - 本実験 P1-LAYERED-T06-R02 を独立Runner/Evaluatorで完了（Run 52、Runnerの整形不備により公開検証9/10、隠し評価1/1）
 - 本実験 P1-FEATURE-BASED-T03-R02 を独立Runner/Evaluatorで完了（Run 53）
+- 本実験 P1-FEATURE-BASED-T06-R01 を独立Runner/Evaluatorで完了（Run 54、型検査失敗・公開検証5/9・隠し評価0/1を証跡として保存）
 
 ## 未着手
 
-- 固定順序で残り1件の本実験をRunner/Evaluator分離で実行する
+- なし（本実験54 RunをすべてRunner/Evaluator分離で完了）
 
 ## 次回最初に着手するタスク
 
-- `experiments/phase1-main-run-order.json` の sequence 54 から実行する
+- `results/summaries/main-experiment-progress.json` と `experiments/manifest.json` を確認する
