@@ -1,0 +1,69 @@
+diff --git a/phase1-architecture/feature-based/src/tasks/task.ts b/phase1-architecture/feature-based/src/tasks/task.ts
+index 63c4b80..1edea83 100644
+--- a/phase1-architecture/feature-based/src/tasks/task.ts
++++ b/phase1-architecture/feature-based/src/tasks/task.ts
+@@ -9,12 +9,17 @@ export type Task = {
+   createdAt: string;
+   updatedAt: string;
+ };
++
++const isClosed = (task: Task) => task.status === 'COMPLETED' || task.status === 'ARCHIVED';
++
+ export const asResponse = (task: Task) => ({
+   ...task,
+   isOverdue:
+-    Boolean(task.dueDate) && (task.dueDate as string) < new Date().toISOString().slice(0, 10),
++    !isClosed(task) &&
++    Boolean(task.dueDate) &&
++    (task.dueDate as string) < new Date().toISOString().slice(0, 10),
+   warnings:
+-    task.dueDate && task.dueDate < new Date().toISOString().slice(0, 10)
++    !isClosed(task) && task.dueDate && task.dueDate < new Date().toISOString().slice(0, 10)
+       ? ['due date is in the past']
+       : [],
+ });
+diff --git a/phase1-architecture/feature-based/tests/app.test.ts b/phase1-architecture/feature-based/tests/app.test.ts
+index 835e2ee..019686b 100644
+--- a/phase1-architecture/feature-based/tests/app.test.ts
++++ b/phase1-architecture/feature-based/tests/app.test.ts
+@@ -1,5 +1,17 @@
+ import { describe, expect, it } from 'vitest';
+ import { buildApp } from '../src/app.js';
++import { asResponse, type Task } from '../src/tasks/task.js';
++
++const pastDueTask = (status: Task['status']): Task => ({
++  id: 'task-1',
++  title: 'Past due task',
++  status,
++  priority: 'MEDIUM',
++  dueDate: '2000-01-01',
++  createdAt: '2000-01-01T00:00:00.000Z',
++  updatedAt: '2000-01-01T00:00:00.000Z',
++});
++
+ describe('feature baseline', () => {
+   it('uses the same public completion contract', async () => {
+     const app = buildApp();
+@@ -11,4 +23,22 @@ describe('feature baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it.each(['COMPLETED', 'ARCHIVED'] as const)(
++    'does not mark %s past-due tasks as overdue or warn about them',
++    (status) => {
++      const response = asResponse(pastDueTask(status));
++
++      expect(response).toMatchObject({ isOverdue: false, warnings: [] });
++    },
++  );
++
++  it('keeps overdue warnings for active past-due tasks', () => {
++    const response = asResponse(pastDueTask('IN_PROGRESS'));
++
++    expect(response).toMatchObject({
++      isOverdue: true,
++      warnings: ['due date is in the past'],
++    });
++  });
+ });
