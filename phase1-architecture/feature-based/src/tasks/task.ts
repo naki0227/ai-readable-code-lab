@@ -9,12 +9,17 @@ export type Task = {
   createdAt: string;
   updatedAt: string;
 };
+
+const isClosed = (task: Task) => task.status === 'COMPLETED' || task.status === 'ARCHIVED';
+
 export const asResponse = (task: Task) => ({
   ...task,
   isOverdue:
-    Boolean(task.dueDate) && (task.dueDate as string) < new Date().toISOString().slice(0, 10),
+    !isClosed(task) &&
+    Boolean(task.dueDate) &&
+    (task.dueDate as string) < new Date().toISOString().slice(0, 10),
   warnings:
-    task.dueDate && task.dueDate < new Date().toISOString().slice(0, 10)
+    !isClosed(task) && task.dueDate && task.dueDate < new Date().toISOString().slice(0, 10)
       ? ['due date is in the past']
       : [],
 });

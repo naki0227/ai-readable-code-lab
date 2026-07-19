@@ -1,0 +1,2 @@
+phase1-architecture/feature-based/src/tasks/task.ts
+phase1-architecture/feature-based/tests/app.test.ts
