@@ -1,0 +1,88 @@
+diff --git a/phase1-architecture/layered/src/domain.ts b/phase1-architecture/layered/src/domain.ts
+index 3d3c739..5a570db 100644
+--- a/phase1-architecture/layered/src/domain.ts
++++ b/phase1-architecture/layered/src/domain.ts
+@@ -12,4 +12,6 @@ export type Task = {
+   updatedAt: string;
+ };
+ export const isOverdue = (task: Task, today: string) =>
+-  Boolean(task.dueDate && task.dueDate < today);
++  Boolean(task.dueDate && task.dueDate < today && !isClosed(task));
++
++const isClosed = (task: Task) => task.status === 'COMPLETED' || task.status === 'ARCHIVED';
+diff --git a/phase1-architecture/layered/src/service.ts b/phase1-architecture/layered/src/service.ts
+index 124fc11..065d394 100644
+--- a/phase1-architecture/layered/src/service.ts
++++ b/phase1-architecture/layered/src/service.ts
+@@ -8,10 +8,11 @@ export class TaskService {
+   ) {}
+   view(task: Task) {
+     const today = this.clock().slice(0, 10);
++    const overdue = isOverdue(task, today);
+     return {
+       ...task,
+-      isOverdue: isOverdue(task, today),
+-      warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
++      isOverdue: overdue,
++      warnings: overdue ? ['due date is in the past'] : [],
+     };
+   }
+   create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
+diff --git a/phase1-architecture/layered/tests/app.test.ts b/phase1-architecture/layered/tests/app.test.ts
+index 3528c99..0a16eaa 100644
+--- a/phase1-architecture/layered/tests/app.test.ts
++++ b/phase1-architecture/layered/tests/app.test.ts
+@@ -1,5 +1,19 @@
+ import { describe, expect, it } from 'vitest';
+ import { buildApp } from '../src/app.js';
++import type { Task } from '../src/domain.js';
++import { TaskRepository } from '../src/repository.js';
++import { TaskService } from '../src/service.js';
++
++const pastDueTask = (status: Task['status']): Task => ({
++  id: 'past-due',
++  title: 'Past due task',
++  status,
++  priority: 'MEDIUM',
++  dueDate: '2026-07-17',
++  createdAt: '2026-07-01T00:00:00.000Z',
++  updatedAt: '2026-07-01T00:00:00.000Z',
++});
++
+ describe('layered baseline', () => {
+   it('uses the same public completion contract', async () => {
+     const app = buildApp();
+@@ -11,4 +25,33 @@ describe('layered baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it('clears overdue metadata when a past-due task is completed', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Past due task', dueDate: '2020-01-01' },
++    });
++    const task = created.json() as { id: string; isOverdue: boolean; warnings: string[] };
++    expect(task).toMatchObject({ isOverdue: true, warnings: ['due date is in the past'] });
++
++    const completed = await app.inject({ method: 'POST', url: `/tasks/${task.id}/complete` });
++    expect(completed.json()).toMatchObject({
++      status: 'COMPLETED',
++      isOverdue: false,
++      warnings: [],
++    });
++    await app.close();
++  });
++
++  it('clears overdue metadata for archived past-due tasks', () => {
++    const repository = new TaskRepository();
++    const service = new TaskService(repository, () => '2026-07-19T00:00:00.000Z');
++
++    expect(service.view(pastDueTask('ARCHIVED'))).toMatchObject({
++      isOverdue: false,
++      warnings: [],
++    });
++  });
+ });

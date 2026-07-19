@@ -8,10 +8,11 @@ export class TaskService {
   ) {}
   view(task: Task) {
     const today = this.clock().slice(0, 10);
+    const overdue = isOverdue(task, today);
     return {
       ...task,
-      isOverdue: isOverdue(task, today),
-      warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
+      isOverdue: overdue,
+      warnings: overdue ? ['due date is in the past'] : [],
     };
   }
   create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
