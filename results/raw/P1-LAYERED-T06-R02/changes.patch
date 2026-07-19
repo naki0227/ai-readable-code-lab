@@ -1,0 +1,209 @@
+diff --git a/phase1-architecture/layered/src/app.ts b/phase1-architecture/layered/src/app.ts
+index 924240b..8e827c7 100644
+--- a/phase1-architecture/layered/src/app.ts
++++ b/phase1-architecture/layered/src/app.ts
+@@ -9,6 +9,7 @@ export function buildApp() {
+       title?: string;
+       description?: string;
+       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
++      category?: string;
+       dueDate?: string;
+       assigneeId?: string;
+     };
+@@ -30,6 +31,7 @@ export function buildApp() {
+       title?: string;
+       description?: string;
+       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
++      category?: string;
+       dueDate?: string;
+       assigneeId?: string;
+     };
+@@ -49,6 +51,13 @@ export function buildApp() {
+       return reply.code(message === 'task not found' ? 404 : 409).send({ error: message });
+     }
+   });
++  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (r, reply) => {
++    try {
++      return reply.code(201).send(respond(service.view(service.duplicate(r.params.id))));
++    } catch (e) {
++      return reply.code(404).send({ error: (e as Error).message });
++    }
++  });
+   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
+     try {
+       service.remove(r.params.id);
+diff --git a/phase1-architecture/layered/src/domain.ts b/phase1-architecture/layered/src/domain.ts
+index 3d3c739..9f09888 100644
+--- a/phase1-architecture/layered/src/domain.ts
++++ b/phase1-architecture/layered/src/domain.ts
+@@ -6,6 +6,7 @@ export type Task = {
+   description?: string;
+   status: Status;
+   priority: Priority;
++  category?: string;
+   dueDate?: string;
+   assigneeId?: string;
+   createdAt: string;
+diff --git a/phase1-architecture/layered/src/service.ts b/phase1-architecture/layered/src/service.ts
+index 124fc11..6577232 100644
+--- a/phase1-architecture/layered/src/service.ts
++++ b/phase1-architecture/layered/src/service.ts
+@@ -14,7 +14,13 @@ export class TaskService {
+       warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
+     };
+   }
+-  create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
++  create(input: {
++    title?: string;
++    description?: string;
++    priority?: Priority;
++    category?: string;
++    dueDate?: string;
++  }) {
+     if (!input.title?.trim()) throw new Error('title is required');
+     const time = this.clock();
+     const task = this.repository.save({
+@@ -22,6 +28,7 @@ export class TaskService {
+       title: input.title.trim(),
+       description: input.description,
+       priority: input.priority ?? 'MEDIUM',
++      category: input.category,
+       dueDate: input.dueDate,
+       status: 'TODO',
+       createdAt: time,
+@@ -43,12 +50,29 @@ export class TaskService {
+     task.updatedAt = this.clock();
+     return task;
+   }
++  duplicate(id: string) {
++    const source = this.get(id);
++    if (!source) throw new Error('task not found');
++    const time = this.clock();
++    return this.repository.save({
++      id: this.repository.nextId(),
++      title: source.title,
++      description: source.description,
++      priority: source.priority,
++      category: source.category,
++      dueDate: source.dueDate,
++      status: 'TODO',
++      createdAt: time,
++      updatedAt: time,
++    });
++  }
+   update(
+     id: string,
+     input: {
+       title?: string;
+       description?: string;
+       priority?: Priority;
++      category?: string;
+       dueDate?: string;
+       assigneeId?: string;
+     },
+diff --git a/phase1-architecture/layered/tests/app.test.ts b/phase1-architecture/layered/tests/app.test.ts
+index 3528c99..7b7337f 100644
+--- a/phase1-architecture/layered/tests/app.test.ts
++++ b/phase1-architecture/layered/tests/app.test.ts
+@@ -11,4 +11,55 @@ describe('layered baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++  it('duplicates a task with reset workflow fields', async () => {
++    const app = buildApp();
++    const original = (
++      await app.inject({
++        method: 'POST',
++        url: '/tasks',
++        payload: {
++          title: 'Prepare release',
++          description: 'Copy the checklist',
++          priority: 'HIGH',
++          category: 'release',
++          dueDate: '2030-01-01',
++        },
++      })
++    ).json() as { id: string };
++    await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${original.id}`,
++      payload: { assigneeId: 'user-1' },
++    });
++    await app.inject({ method: 'POST', url: `/tasks/${original.id}/complete` });
++
++    const response = await app.inject({ method: 'POST', url: `/tasks/${original.id}/duplicate` });
++    expect(response.statusCode).toBe(201);
++    const duplicate = response.json() as { id: string };
++    expect(duplicate).toMatchObject({
++      title: 'Prepare release',
++      description: 'Copy the checklist',
++      priority: 'HIGH',
++      category: 'release',
++      dueDate: '2030-01-01',
++      status: 'TODO',
++    });
++    expect(duplicate.id).not.toBe(original.id);
++    expect(duplicate).not.toHaveProperty('assigneeId');
++    expect(duplicate).toHaveProperty('createdAt');
++    expect(duplicate).toHaveProperty('updatedAt');
++    expect((await app.inject({ method: 'GET', url: `/tasks/${original.id}` })).json()).toMatchObject({
++      status: 'COMPLETED',
++      assigneeId: 'user-1',
++    });
++    await app.close();
++  });
++
++  it('returns 404 when duplicating an unknown task', async () => {
++    const app = buildApp();
++    const response = await app.inject({ method: 'POST', url: '/tasks/missing/duplicate' });
++    expect(response.statusCode).toBe(404);
++    expect(response.json()).toEqual({ error: 'task not found' });
++    await app.close();
++  });
+ });
+diff --git a/phase1-architecture/layered/tests/service.test.ts b/phase1-architecture/layered/tests/service.test.ts
+new file mode 100644
+index 0000000..b6ceec1
+--- /dev/null
++++ b/phase1-architecture/layered/tests/service.test.ts
+@@ -0,0 +1,40 @@
++import { describe, expect, it } from 'vitest';
++import { TaskRepository } from '../src/repository.js';
++import { TaskService } from '../src/service.js';
++
++describe('TaskService duplicate', () => {
++  it('persists a new TODO task with fresh timestamps and copied task details', () => {
++    const clockValues = [
++      '2030-01-01T00:00:00.000Z',
++      '2030-01-01T01:00:00.000Z',
++      '2030-01-01T02:00:00.000Z',
++      '2030-01-02T00:00:00.000Z',
++    ];
++    const service = new TaskService(new TaskRepository(), () => clockValues.shift() ?? '');
++    const source = service.create({
++      title: 'Source',
++      description: 'Details',
++      priority: 'HIGH',
++      category: 'work',
++      dueDate: '2030-02-01',
++    });
++    service.update(source.id, { assigneeId: 'user-1' });
++    service.complete(source.id);
++
++    const duplicate = service.duplicate(source.id);
++
++    expect(duplicate).toMatchObject({
++      title: source.title,
++      description: source.description,
++      priority: source.priority,
++      category: source.category,
++      dueDate: source.dueDate,
++      status: 'TODO',
++      createdAt: '2030-01-02T00:00:00.000Z',
++      updatedAt: '2030-01-02T00:00:00.000Z',
++    });
++    expect(duplicate.id).not.toBe(source.id);
++    expect(duplicate).not.toHaveProperty('assigneeId');
++    expect(service.get(source.id)).toMatchObject({ status: 'COMPLETED', assigneeId: 'user-1' });
++  });
++});
