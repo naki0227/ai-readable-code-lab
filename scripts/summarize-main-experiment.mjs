@@ -15,8 +15,8 @@ const mainRuns = manifest.experiments.filter(
   (experiment) => experiment.kind === 'main-experiment' && experiment.includedInMainResults,
 );
 
-const readEvaluation = (experiment) => {
-  const artifactPath = `results/raw/${experiment.experimentId}/evaluation.json`;
+const readArtifact = (experiment, filename) => {
+  const artifactPath = `results/raw/${experiment.experimentId}/${filename}`;
   const ref = `origin/${experiment.branch}`;
 
   try {
@@ -31,6 +31,9 @@ const readEvaluation = (experiment) => {
     );
   }
 };
+
+const readEvaluation = (experiment) => readArtifact(experiment, 'evaluation.json');
+const readMetadata = (experiment) => readArtifact(experiment, 'metadata.json');
 
 const asRate = (checks) => ({
   passed: checks.passed,
@@ -53,6 +56,7 @@ const isFullyValidated = (evaluation) => {
 
 const runs = mainRuns.map((experiment) => {
   const evaluation = readEvaluation(experiment);
+  const metadata = readMetadata(experiment);
   const checks = evaluation.automatedChecks;
 
   return {
@@ -63,6 +67,9 @@ const runs = mainRuns.map((experiment) => {
     pullRequest: experiment.pullRequest,
     runnerResultCommit: experiment.runnerResultCommit,
     evaluatorResultCommit: experiment.resultCommit,
+    model: metadata.model,
+    reasoningLevel: metadata.reasoningLevel,
+    evaluatedAt: evaluation.evaluator.evaluatedAt,
     humanCodeCorrections: evaluation.notes?.includes('parent formatting correction') ?? false,
     fullyValidated: isFullyValidated(evaluation),
     automatedChecks: {
@@ -124,6 +131,16 @@ const technicalFailureBreakdown = (items) => ({
 });
 
 const excludingTask05Runs = runs.filter((run) => run.taskId !== 'task-05');
+const evaluatorTimestamps = runs.map((run) => run.evaluatedAt).sort();
+
+const experimentConditions = {
+  models: [...new Set(runs.map((run) => run.model))].sort(),
+  reasoningLevels: [...new Set(runs.map((run) => run.reasoningLevel))].sort(),
+  evaluatorRecordedPeriod: {
+    startedAt: evaluatorTimestamps[0],
+    endedAt: evaluatorTimestamps.at(-1),
+  },
+};
 
 const summary = {
   kind: 'main-experiment-summary',
@@ -131,7 +148,9 @@ const summary = {
   generatedFrom: {
     manifest: manifestPath,
     evaluatorArtifacts: 'origin/<experiment branch>:results/raw/<experiment id>/evaluation.json',
+    runnerMetadata: 'origin/<experiment branch>:results/raw/<experiment id>/metadata.json',
   },
+  experimentConditions,
   runCount: runs.length,
   overall: summarize(runs),
   byTarget: groupBy(runs, (run) => run.target),

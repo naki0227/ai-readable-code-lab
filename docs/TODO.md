@@ -75,6 +75,7 @@
 - 本実験 P1-FEATURE-BASED-T06-R01 を独立Runner/Evaluatorで完了（Run 54、型検査失敗・公開検証5/9・隠し評価0/1を証跡として保存）
 - 本実験54 Runの再現可能なJSON/CSV集計と初期分析を完了
 - 構成別・課題別の比較SVGとQiita記事の下書きを作成
+- Qiita記事の公開前最終校正（Task 05内訳、実験条件、PNG図、絶対URL）を完了
 
 ## 未着手
 
@@ -84,4 +85,4 @@
 
 ## 次回最初に着手するタスク
 
-- `docs/articles/phase1-qiita-draft.md` と `results/summaries/main-experiment-validation-rates.svg` を確認する
+- `docs/articles/phase1-qiita-draft.md` と `results/summaries/main-experiment-summary.json` を確認する

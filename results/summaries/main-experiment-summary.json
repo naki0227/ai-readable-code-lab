@@ -3,7 +3,16 @@
   "phase": "p1",
   "generatedFrom": {
     "manifest": "experiments/manifest.json",
-    "evaluatorArtifacts": "origin/<experiment branch>:results/raw/<experiment id>/evaluation.json"
+    "evaluatorArtifacts": "origin/<experiment branch>:results/raw/<experiment id>/evaluation.json",
+    "runnerMetadata": "origin/<experiment branch>:results/raw/<experiment id>/metadata.json"
+  },
+  "experimentConditions": {
+    "models": ["gpt-5.6-terra"],
+    "reasoningLevels": ["medium"],
+    "evaluatorRecordedPeriod": {
+      "startedAt": "2026-07-17T11:31:02+09:00",
+      "endedAt": "2026-07-20T00:07:25+09:00"
+    }
   },
   "runCount": 54,
   "overall": {
@@ -227,6 +236,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/19",
       "runnerResultCommit": "4323047e9ae77d57b22845e535e248bb50eb01ca",
       "evaluatorResultCommit": "6c9c391",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T11:31:02+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -256,6 +268,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/20",
       "runnerResultCommit": "b72dd331da07d135ffc90d1b69c104e3f1a4b3e6",
       "evaluatorResultCommit": "ee21ea8",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T12:00:38+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -285,6 +300,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/21",
       "runnerResultCommit": "4be8ce0e8bd0ecdbe3168035d289a1ebc1f514b4",
       "evaluatorResultCommit": "7cb4f5a",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T19:39:30+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -314,6 +332,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/22",
       "runnerResultCommit": "28f6f285c896c9825a2deb4640c9a248a680b1ef",
       "evaluatorResultCommit": "e09460d",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T19:49:19+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -343,6 +364,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/23",
       "runnerResultCommit": "d865e1c6f49ee664479b5ce3b65d82961d2bce33",
       "evaluatorResultCommit": "c409860",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T19:59:22+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -372,6 +396,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/26",
       "runnerResultCommit": "2614ea5c1cd03d67758e0b16867067642e8ea692",
       "evaluatorResultCommit": "732606b",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T20:07:30+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -401,6 +428,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/24",
       "runnerResultCommit": "382b10a940b7db4bc1f31384fa7688a7e7c632d3",
       "evaluatorResultCommit": "15d3441",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T20:14:58+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -430,6 +460,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/25",
       "runnerResultCommit": "63c07af8a091d838a38c97c43dbb916b0ca2a9c3",
       "evaluatorResultCommit": "d6c4d1d",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T20:23:04+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -459,6 +492,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/27",
       "runnerResultCommit": "b53b006c3633c3c23769a7f8269082fbc1f3889f",
       "evaluatorResultCommit": "f1e8c47",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T20:30:52+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -488,6 +524,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/28",
       "runnerResultCommit": "6f5fbe43caa3ea769cd6b6331abbebd9c9f77454",
       "evaluatorResultCommit": "c91facc",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T20:42:58+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -517,6 +556,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/29",
       "runnerResultCommit": "efa83200a411d4fbf36a1b4ececd711fc4c6959f",
       "evaluatorResultCommit": "e14e7fb",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T20:56:51+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -546,6 +588,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/30",
       "runnerResultCommit": "bb947e5547d7fa8dad3b32c44a68c68aa7cd7d82",
       "evaluatorResultCommit": "7b7a09b",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T21:23:28+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -575,6 +620,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/31",
       "runnerResultCommit": "1d08377cf659eccd6bfe250bab85973793df8bcc",
       "evaluatorResultCommit": "a738bae",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T21:38:55+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -604,6 +652,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/32",
       "runnerResultCommit": "cd31c10727bd7587aac3a711d3a1cb0b5480a0fe",
       "evaluatorResultCommit": "ab3de96",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T21:55:49+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -633,6 +684,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/33",
       "runnerResultCommit": "0be5076f5a0c071dc9f5ca41eef29024a76d9434",
       "evaluatorResultCommit": "e6ceced",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T22:05:37+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -662,6 +716,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/34",
       "runnerResultCommit": "007ff06ce2d4d7b5766f36ad345d730fdef159a8",
       "evaluatorResultCommit": "1742e0b",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T22:23:40+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -691,6 +748,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/35",
       "runnerResultCommit": "3c4aa82760d033311128ec84ee6c4bcfaa5c4c25",
       "evaluatorResultCommit": "28b6844",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-17T23:04:09+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -720,6 +780,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/36",
       "runnerResultCommit": "2e947148a4c909a5d5aad1eabc3c0f50cdfcf2a1",
       "evaluatorResultCommit": "cacbfc4",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-18T14:59:10+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -749,6 +812,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/37",
       "runnerResultCommit": "7c9e228b4f6048fb61057322a6facca6d873d5f2",
       "evaluatorResultCommit": "2cd13e4",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T15:06:05+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -778,6 +844,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/38",
       "runnerResultCommit": "6aaf21980c1ee7bdc2cdda92ef94760154c8f963",
       "evaluatorResultCommit": "df43df2",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T15:12:11+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -807,6 +876,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/39",
       "runnerResultCommit": "b24304b7b3bec76e1bd13ec649c09860bf27f59c",
       "evaluatorResultCommit": "c889fbe",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T15:33:41+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -836,6 +908,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/40",
       "runnerResultCommit": "cc23aaaaff5541824fd812b151e35228d70f21ec",
       "evaluatorResultCommit": "efc4471",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T15:41:10+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -865,6 +940,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/41",
       "runnerResultCommit": "ce8d98af7a78648845a01beadbf9906413e2edc8",
       "evaluatorResultCommit": "bb90644",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T15:46:53+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -894,6 +972,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/42",
       "runnerResultCommit": "1bb4adc116301b47e4ccd8f39845c73e3cbf9a45",
       "evaluatorResultCommit": "cbb5e74",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T15:52:59+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -923,6 +1004,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/43",
       "runnerResultCommit": "7eb4a43178848e1bda4188744482655ad6edce12",
       "evaluatorResultCommit": "f2051e9",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T15:57:07+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -952,6 +1036,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/44",
       "runnerResultCommit": "b313ea84ce2c5bed2f660afe60a0591378cda6fb",
       "evaluatorResultCommit": "d5627b5",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:01:45+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -981,6 +1068,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/45",
       "runnerResultCommit": "80ee99aad45ffe2ddc83466f2121bbaee0204134",
       "evaluatorResultCommit": "4df07b4",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:07:51+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -1010,6 +1100,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/46",
       "runnerResultCommit": "0ec6d86eadd4f5c7682d4c5e8e89e0bf891d46eb",
       "evaluatorResultCommit": "a301f79",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:14:32+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1039,6 +1132,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/47",
       "runnerResultCommit": "1a1689f0af65127c554b657566399d5256e1fe5d",
       "evaluatorResultCommit": "5cb162a",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:20:39+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1068,6 +1164,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/48",
       "runnerResultCommit": "fca727a2bfe656c87aa52b891264763c22fa0def",
       "evaluatorResultCommit": "6e98297",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:28:40+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -1097,6 +1196,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/49",
       "runnerResultCommit": "a9f92a353adbaea4a0e4cfe7e3f40d6053bf90df",
       "evaluatorResultCommit": "b22f815",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:35:23+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1126,6 +1228,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/50",
       "runnerResultCommit": "304d07d032163eb8ea3748b0858cb69c147509df",
       "evaluatorResultCommit": "561246b",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:41:25+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1155,6 +1260,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/51",
       "runnerResultCommit": "31b79486d552050f94e837184c2447c1d4ed2d59",
       "evaluatorResultCommit": "59357c3",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:45:42+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1184,6 +1292,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/52",
       "runnerResultCommit": "10bec40fd2bdd06f693f1e290c2c38b28f114532",
       "evaluatorResultCommit": "d65e4ab",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:49:42+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1213,6 +1324,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/53",
       "runnerResultCommit": "1f478a9139a2a1d5b1b3d250535d35a0886fcbda",
       "evaluatorResultCommit": "40e8394",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T16:55:00+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1242,6 +1356,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/54",
       "runnerResultCommit": "1636e732bd73793ac3b23c22bb188b5a10abe056",
       "evaluatorResultCommit": "6d071ae",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T20:28:44+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -1271,6 +1388,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/55",
       "runnerResultCommit": "8f4ccd9f460e7c1854833f3a929e19a41d884cb1",
       "evaluatorResultCommit": "c9dafeb",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T20:32:37+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1300,6 +1420,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/56",
       "runnerResultCommit": "9aa084a82bc8953f5f5b6cf2ec03d44014e05f7e",
       "evaluatorResultCommit": "9012adb",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T20:37:24+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1329,6 +1452,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/57",
       "runnerResultCommit": "dd546556a093ef6104f39a6c6d90623c42e371b4",
       "evaluatorResultCommit": "48f78c8",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T20:41:31+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1358,6 +1484,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/58",
       "runnerResultCommit": "cccab7295c2bf75382da4f1652fc03f86fec0af0",
       "evaluatorResultCommit": "29565e0",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T20:46:26+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1387,6 +1516,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/59",
       "runnerResultCommit": "37664df00d00894578bcb8b1ed804a8b6aefaeb3",
       "evaluatorResultCommit": "9a75859",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T20:51:17+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -1416,6 +1548,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/60",
       "runnerResultCommit": "546bb201b7b447448d6b714627a3a411755b2239",
       "evaluatorResultCommit": "cd6ffd7",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T20:55:07+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -1445,6 +1580,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/61",
       "runnerResultCommit": "322c1f47dfc960c9e7f3ea133e8a1b0a3400ebca",
       "evaluatorResultCommit": "f20e76d",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T21:00:29+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1474,6 +1612,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/62",
       "runnerResultCommit": "465f2319bd47e5f8ac9913e349325a50f85cf63a",
       "evaluatorResultCommit": "ea2ed5b",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T21:12:48+09:00",
       "humanCodeCorrections": true,
       "fullyValidated": false,
       "automatedChecks": {
@@ -1503,6 +1644,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/63",
       "runnerResultCommit": "46e109d1715c83907c58177e7b1d6b7fdb68b034",
       "evaluatorResultCommit": "bdd323b",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T21:16:17+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1532,6 +1676,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/64",
       "runnerResultCommit": "b5917cc3bb3da736bd66637dffb2ade5d0d9bda8",
       "evaluatorResultCommit": "3f0e62b",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T21:18:06+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1561,6 +1708,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/65",
       "runnerResultCommit": "193913016afd2480c6f57b3e7ec9cf2f189bc36c",
       "evaluatorResultCommit": "fca34ff",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T21:07:39+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -1594,6 +1744,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/66",
       "runnerResultCommit": "d28323fc12ca59e6c518f15f4990cd8afba9a52b",
       "evaluatorResultCommit": "06bab9d",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T23:54:01+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1623,6 +1776,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/67",
       "runnerResultCommit": "b9f0b1a33d106d96ae987eb51d9cf59ff79fca75",
       "evaluatorResultCommit": "a5a32fc",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T23:55:46+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1652,6 +1808,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/68",
       "runnerResultCommit": "e5e30e55515f0382228340ae4b07e3882bbf4de1",
       "evaluatorResultCommit": "cbc60de",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-19T23:57:32+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1681,6 +1840,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/69",
       "runnerResultCommit": "614776286e935d76ec24bc62074ef0df2d343caf",
       "evaluatorResultCommit": "0f0ac41",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-20T00:01:08+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1710,6 +1872,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/70",
       "runnerResultCommit": "d92cc51cff85953902e765ac31232b56dce15ef3",
       "evaluatorResultCommit": "0345f86",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-20T00:03:19+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
@@ -1739,6 +1904,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/71",
       "runnerResultCommit": "c9a1018a8abdf492a2b68de78b5eaeb6bdc02144",
       "evaluatorResultCommit": "1ad7b6f",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-20T00:05:11+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": true,
       "automatedChecks": {
@@ -1768,6 +1936,9 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/72",
       "runnerResultCommit": "086ca6c148307ec2f4ec5fb0483667d9d4065031",
       "evaluatorResultCommit": "d735527",
+      "model": "gpt-5.6-terra",
+      "reasoningLevel": "medium",
+      "evaluatedAt": "2026-07-20T00:07:25+09:00",
       "humanCodeCorrections": false,
       "fullyValidated": false,
       "automatedChecks": {
