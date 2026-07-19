@@ -1,0 +1,100 @@
+diff --git a/phase1-architecture/layered/src/domain.ts b/phase1-architecture/layered/src/domain.ts
+index 3d3c739..ddd478e 100644
+--- a/phase1-architecture/layered/src/domain.ts
++++ b/phase1-architecture/layered/src/domain.ts
+@@ -12,4 +12,8 @@ export type Task = {
+   updatedAt: string;
+ };
+ export const isOverdue = (task: Task, today: string) =>
+-  Boolean(task.dueDate && task.dueDate < today);
++  Boolean(
++    task.dueDate &&
++      task.dueDate < today.slice(0, 10) &&
++      (task.status === 'TODO' || task.status === 'IN_PROGRESS'),
++  );
+diff --git a/phase1-architecture/layered/tests/app.test.ts b/phase1-architecture/layered/tests/app.test.ts
+index 3528c99..cd8dad3 100644
+--- a/phase1-architecture/layered/tests/app.test.ts
++++ b/phase1-architecture/layered/tests/app.test.ts
+@@ -11,4 +11,49 @@ describe('layered baseline', () => {
+     ).toMatchObject({ status: 'COMPLETED' });
+     await app.close();
+   });
++
++  it('keeps overdue state consistent between list and detail after completion', async () => {
++    const app = buildApp();
++    const created = (
++      await app.inject({
++        method: 'POST',
++        url: '/tasks',
++        payload: { title: 'Past due task', dueDate: '2000-01-01' },
++      })
++    ).json() as { id: string; isOverdue: boolean; warnings: string[] };
++
++    expect(created).toMatchObject({
++      isOverdue: true,
++      warnings: ['due date is in the past'],
++    });
++
++    const listed = (await app.inject({ method: 'GET', url: '/tasks' })).json() as Array<{
++      id: string;
++      isOverdue: boolean;
++    }>;
++    const detail = (await app.inject({ method: 'GET', url: `/tasks/${created.id}` })).json() as {
++      isOverdue: boolean;
++    };
++    expect(listed.find((task) => task.id === created.id)?.isOverdue).toBe(true);
++    expect(detail.isOverdue).toBe(true);
++
++    const completed = (
++      await app.inject({ method: 'POST', url: `/tasks/${created.id}/complete` })
++    ).json() as { isOverdue: boolean; warnings: string[] };
++    expect(completed).toMatchObject({
++      isOverdue: false,
++      warnings: ['due date is in the past'],
++    });
++
++    const completedList = (await app.inject({ method: 'GET', url: '/tasks' })).json() as Array<{
++      id: string;
++      isOverdue: boolean;
++    }>;
++    const completedDetail = (
++      await app.inject({ method: 'GET', url: `/tasks/${created.id}` })
++    ).json() as { isOverdue: boolean };
++    expect(completedList.find((task) => task.id === created.id)?.isOverdue).toBe(false);
++    expect(completedDetail.isOverdue).toBe(false);
++    await app.close();
++  });
+ });
+diff --git a/phase1-architecture/layered/tests/domain.test.ts b/phase1-architecture/layered/tests/domain.test.ts
+new file mode 100644
+index 0000000..34c797a
+--- /dev/null
++++ b/phase1-architecture/layered/tests/domain.test.ts
+@@ -0,0 +1,26 @@
++import { describe, expect, it } from 'vitest';
++import { isOverdue, type Status, type Task } from '../src/domain.js';
++
++const pastDueTask = (status: Status): Task => ({
++  id: 'task-1',
++  title: 'Past due task',
++  status,
++  priority: 'MEDIUM',
++  dueDate: '2000-01-01',
++  createdAt: '2000-01-01T00:00:00.000Z',
++  updatedAt: '2000-01-01T00:00:00.000Z',
++});
++
++describe('isOverdue', () => {
++  it('does not treat a task due today as overdue when today includes a time', () => {
++    expect(isOverdue(pastDueTask('TODO'), '2000-01-01T12:00:00.000Z')).toBe(false);
++  });
++
++  it.each<Status>(['TODO', 'IN_PROGRESS'])('returns true for past due %s tasks', (status) => {
++    expect(isOverdue(pastDueTask(status), '2000-01-02')).toBe(true);
++  });
++
++  it.each<Status>(['COMPLETED', 'ARCHIVED'])('returns false for past due %s tasks', (status) => {
++    expect(isOverdue(pastDueTask(status), '2000-01-02')).toBe(false);
++  });
++});
