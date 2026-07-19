@@ -64,11 +64,12 @@
 - 本実験 P1-LAYERED-T06-R03 を独立Runner/Evaluatorで完了（Run 43）
 - 本実験 P1-LAYERED-T05-R01 を独立Runner/Evaluatorで完了（Run 44、既存共通DELETE契約との不整合により公開検証7/8、隠し評価1/1）
 - 本実験 P1-FEATURE-BASED-T03-R01 を独立Runner/Evaluatorで完了（Run 45）
+- 本実験 P1-LAYERED-T06-R01 を独立Runner/Evaluatorで完了（Run 46）
 
 ## 未着手
 
-- 固定順序で残り9件の本実験をRunner/Evaluator分離で実行する
+- 固定順序で残り8件の本実験をRunner/Evaluator分離で実行する
 
 ## 次回最初に着手するタスク
 
-- `experiments/phase1-main-run-order.json` の sequence 46 から実行する
+- `experiments/phase1-main-run-order.json` の sequence 47 から実行する
