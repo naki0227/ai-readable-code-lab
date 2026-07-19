@@ -11,5 +11,12 @@ export type Task = {
   createdAt: string;
   updatedAt: string;
 };
+export type HistoryAction = 'CREATED' | 'UPDATED' | 'ASSIGNEE_CHANGED' | 'COMPLETED';
+export type TaskHistoryEntry = {
+  id: string;
+  taskId: string;
+  action: HistoryAction;
+  createdAt: string;
+};
 export const isOverdue = (task: Task, today: string) =>
   Boolean(task.dueDate && task.dueDate < today);
