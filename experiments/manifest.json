@@ -732,6 +732,18 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/62",
       "taskId": "task-05",
       "target": "layered"
+    },
+    {
+      "experimentId": "P1-FEATURE-BASED-T03-R01",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "baselineTag": "p1-feature-based-v1.0.1",
+      "branch": "experiment/p1/feature-based/task-03/r01",
+      "runnerResultCommit": "46e109d1715c83907c58177e7b1d6b7fdb68b034",
+      "resultCommit": "bdd323b",
+      "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/63",
+      "taskId": "task-03",
+      "target": "feature-based"
     }
   ]
 }
