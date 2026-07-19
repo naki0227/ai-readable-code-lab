@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /private/tmp/ai-readable-evaluator-p1-layered-t04-r02
+
+ ✓ hidden-tests/phase1/task-04-overdue-bug.test.ts (1 test) 100ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  21:07:39
+   Duration  301ms (transform 23ms, setup 0ms, collect 10ms, tests 100ms, environment 0ms, prepare 29ms)
+
