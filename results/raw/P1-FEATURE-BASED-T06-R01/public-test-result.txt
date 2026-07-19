@@ -1,0 +1,11 @@
+
+> ai-readable-code-lab@0.1.0 validate
+> npm run typecheck && npm run format:check && npm run lint && npm run test && npm run build
+
+
+> ai-readable-code-lab@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+phase1-architecture/feature-based/src/tasks/routes.ts(13,7): error TS2300: Duplicate identifier 'category'.
+phase1-architecture/feature-based/src/tasks/routes.ts(14,7): error TS2300: Duplicate identifier 'category'.
+phase1-architecture/feature-based/src/tasks/routes.ts(25,7): error TS1117: An object literal cannot have multiple properties with the same name.
