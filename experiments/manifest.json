@@ -624,6 +624,18 @@
       "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/53",
       "taskId": "task-02",
       "target": "layered"
+    },
+    {
+      "experimentId": "P1-LAYERED-T05-R03",
+      "kind": "main-experiment",
+      "includedInMainResults": true,
+      "baselineTag": "p1-layered-v1.0.1",
+      "branch": "experiment/p1/layered/task-05/r03",
+      "runnerResultCommit": "1636e732bd73793ac3b23c22bb188b5a10abe056",
+      "resultCommit": "6d071ae",
+      "pullRequest": "https://github.com/naki0227/ai-readable-code-lab/pull/54",
+      "taskId": "task-05",
+      "target": "layered"
     }
   ]
 }
