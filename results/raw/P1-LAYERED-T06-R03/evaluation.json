@@ -1,0 +1,40 @@
+{
+  "experimentId": "P1-LAYERED-T06-R03",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-19T21:00:29+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": true,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 9, "total": 9 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 4,
+    "linesAdded": 107,
+    "linesDeleted": 1,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "functionalCorrectness": null,
+    "maintainability": null,
+    "architecture": null,
+    "readability": null,
+    "total": null
+  },
+  "failureClassification": [],
+  "evidence": [
+    "npm run validate passed in the isolated evaluator clone.",
+    "Task 06 hidden contract passed with HIDDEN_TEST_TARGET=layered."
+  ],
+  "notes": "Runner source was not edited by the evaluator."
+}
