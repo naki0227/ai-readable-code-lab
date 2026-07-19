@@ -1,0 +1,77 @@
+diff --git a/phase1-architecture/monolithic/src/app.ts b/phase1-architecture/monolithic/src/app.ts
+index 9e912a2..213d2dd 100644
+--- a/phase1-architecture/monolithic/src/app.ts
++++ b/phase1-architecture/monolithic/src/app.ts
+@@ -6,6 +6,7 @@ type Task = {
+   id: string;
+   title: string;
+   description?: string;
++  category?: string;
+   status: Status;
+   priority: Priority;
+   dueDate?: string;
+@@ -13,7 +14,13 @@ type Task = {
+   createdAt: string;
+   updatedAt: string;
+ };
+-type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
++type CreateTask = {
++  title: string;
++  description?: string;
++  category?: string;
++  priority?: Priority;
++  dueDate?: string;
++};
+ type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
+ type TaskEvent = { id: string; taskId: string; action: string; createdAt: string };
+ 
+@@ -49,6 +56,7 @@ export function buildApp() {
+       id: String(++sequence),
+       title: request.body.title.trim(),
+       description: request.body.description,
++      category: request.body.category,
+       priority: request.body.priority ?? 'MEDIUM',
+       dueDate: request.body.dueDate,
+       status: 'TODO',
+diff --git a/phase1-architecture/monolithic/tests/app.test.ts b/phase1-architecture/monolithic/tests/app.test.ts
+index 2a21723..37089fb 100644
+--- a/phase1-architecture/monolithic/tests/app.test.ts
++++ b/phase1-architecture/monolithic/tests/app.test.ts
+@@ -18,4 +18,37 @@ describe('monolithic baseline', () => {
+     ).toBe(409);
+     await app.close();
+   });
++
++  it('creates, updates, and returns an optional category', async () => {
++    const app = buildApp();
++    const created = await app.inject({
++      method: 'POST',
++      url: '/tasks',
++      payload: { title: 'Plan release', category: 'work' },
++    });
++    expect(created.statusCode).toBe(201);
++    const task = created.json() as { id: string; category?: string };
++    expect(task.category).toBe('work');
++
++    const updatedWithoutCategory = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { priority: 'HIGH' },
++    });
++    expect(updatedWithoutCategory.json()).toMatchObject({ category: 'work', priority: 'HIGH' });
++
++    const updated = await app.inject({
++      method: 'PATCH',
++      url: `/tasks/${task.id}`,
++      payload: { category: 'personal' },
++    });
++    expect(updated.json()).toMatchObject({ category: 'personal' });
++    expect((await app.inject({ method: 'GET', url: `/tasks/${task.id}` })).json()).toMatchObject({
++      category: 'personal',
++    });
++    expect((await app.inject({ method: 'GET', url: '/tasks' })).json()).toMatchObject([
++      { category: 'personal' },
++    ]);
++    await app.close();
++  });
+ });
