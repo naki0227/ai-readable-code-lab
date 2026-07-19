@@ -9,6 +9,17 @@ export type Task = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TaskHistoryAction =
+  'CREATED' | 'UPDATED' | 'ASSIGNEE_CHANGED' | 'COMPLETED' | 'ARCHIVED';
+
+export type TaskHistory = {
+  id: string;
+  taskId: string;
+  action: TaskHistoryAction;
+  createdAt: string;
+};
+
 export const asResponse = (task: Task) => ({
   ...task,
   isOverdue:

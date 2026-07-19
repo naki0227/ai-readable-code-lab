@@ -35,6 +35,10 @@ export function registerTaskRoutes(app: FastifyInstance) {
     const task = repository.find(r.params.id);
     return task ? asResponse(task) : reply.code(404).send({ error: 'task not found' });
   });
+  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (r, reply) => {
+    const history = repository.findHistory(r.params.id);
+    return history ?? reply.code(404).send({ error: 'task not found' });
+  });
   app.patch<{
     Params: { id: string };
     Body: {
@@ -51,7 +55,14 @@ export function registerTaskRoutes(app: FastifyInstance) {
       return reply.code(400).send({ error: 'title is required' });
     if (r.body.assigneeId !== undefined && !['user-1', 'user-2'].includes(r.body.assigneeId))
       return reply.code(404).send({ error: 'assignee not found' });
-    Object.assign(task, r.body, { title: r.body.title?.trim() ?? task.title, updatedAt: now() });
+    const assigneeChanged =
+      r.body.assigneeId !== undefined && r.body.assigneeId !== task.assigneeId;
+    const timestamp = now();
+    Object.assign(task, r.body, {
+      title: r.body.title?.trim() ?? task.title,
+      updatedAt: timestamp,
+    });
+    repository.record(task.id, assigneeChanged ? 'ASSIGNEE_CHANGED' : 'UPDATED', timestamp);
     return asResponse(task);
   });
   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (r, reply) => {
@@ -61,6 +72,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
       return reply.code(409).send({ error: 'task is already completed' });
     task.status = 'COMPLETED';
     task.updatedAt = now();
+    repository.record(task.id, 'COMPLETED', task.updatedAt);
     return asResponse(task);
   });
   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
