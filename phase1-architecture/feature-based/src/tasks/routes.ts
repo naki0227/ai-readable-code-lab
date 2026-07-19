@@ -10,6 +10,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
       description?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       dueDate?: string;
+      category?: string;
     };
   }>('/tasks', async (r, reply) => {
     if (!r.body?.title?.trim()) return reply.code(400).send({ error: 'title is required' });
@@ -19,6 +20,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
       description: r.body.description,
       priority: r.body.priority ?? 'MEDIUM',
       dueDate: r.body.dueDate,
+      category: r.body.category,
       status: 'TODO',
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -42,6 +44,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
       description?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       dueDate?: string;
+      category?: string;
       assigneeId?: string;
     };
   }>('/tasks/:id', async (r, reply) => {
@@ -53,6 +56,22 @@ export function registerTaskRoutes(app: FastifyInstance) {
       return reply.code(404).send({ error: 'assignee not found' });
     Object.assign(task, r.body, { title: r.body.title?.trim() ?? task.title, updatedAt: now() });
     return asResponse(task);
+  });
+  app.post<{ Params: { id: string } }>('/tasks/:id/duplicate', async (r, reply) => {
+    const original = repository.find(r.params.id);
+    if (!original) return reply.code(404).send({ error: 'task not found' });
+    const timestamp = now();
+    const duplicate = repository.create({
+      title: original.title,
+      description: original.description,
+      priority: original.priority,
+      dueDate: original.dueDate,
+      category: original.category,
+      status: 'TODO',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    });
+    return reply.code(201).send(asResponse(duplicate));
   });
   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (r, reply) => {
     const task = repository.find(r.params.id);
