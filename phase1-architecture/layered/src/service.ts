@@ -11,7 +11,7 @@ export class TaskService {
     return {
       ...task,
       isOverdue: isOverdue(task, today),
-      warnings: task.dueDate && task.dueDate < today ? ['due date is in the past'] : [],
+      warnings: isOverdue(task, today) ? ['due date is in the past'] : [],
     };
   }
   create(input: { title?: string; description?: string; priority?: Priority; dueDate?: string }) {
