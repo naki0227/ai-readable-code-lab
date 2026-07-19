@@ -51,8 +51,7 @@ export function buildApp() {
   });
   app.delete<{ Params: { id: string } }>('/tasks/:id', async (r, reply) => {
     try {
-      service.remove(r.params.id);
-      return reply.code(204).send();
+      return reply.code(200).send(respond(service.view(service.archive(r.params.id))));
     } catch (e) {
       return reply.code(404).send({ error: (e as Error).message });
     }

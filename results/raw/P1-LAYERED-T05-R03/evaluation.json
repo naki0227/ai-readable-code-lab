@@ -1,0 +1,40 @@
+{
+  "experimentId": "P1-LAYERED-T05-R03",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-19T20:28:44+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": true,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 7, "total": 8 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 4,
+    "linesAdded": 38,
+    "linesDeleted": 6,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "functionalCorrectness": null,
+    "maintainability": null,
+    "architecture": null,
+    "readability": null,
+    "total": null
+  },
+  "failureClassification": ["shared contract mismatch"],
+  "evidence": [
+    "Isolated validation has one expected failure: the immutable shared contract expects DELETE 204 while Task 05 specifies 200 archived response.",
+    "Task 05 hidden contract passed with HIDDEN_TEST_TARGET=layered."
+  ],
+  "notes": "Runner source was not edited by the evaluator."
+}
