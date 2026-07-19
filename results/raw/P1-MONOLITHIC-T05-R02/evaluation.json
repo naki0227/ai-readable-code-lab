@@ -1,0 +1,40 @@
+{
+  "experimentId": "P1-MONOLITHIC-T05-R02",
+  "kind": "main-experiment",
+  "includedInMainResults": true,
+  "evaluator": {
+    "identity": "isolated-evaluator-clone",
+    "evaluatedAt": "2026-07-19T20:55:07+09:00",
+    "independentFromRunner": true
+  },
+  "automatedChecks": {
+    "build": true,
+    "typecheck": true,
+    "format": true,
+    "lint": true,
+    "publicTests": { "passed": 7, "total": 8 },
+    "hiddenTests": { "passed": 1, "total": 1 }
+  },
+  "metrics": {
+    "filesChanged": 2,
+    "linesAdded": 42,
+    "linesDeleted": 9,
+    "commandsExecuted": null,
+    "testRuns": null,
+    "correctionLoops": null,
+    "tokensUsed": null
+  },
+  "scores": {
+    "functionalCorrectness": null,
+    "maintainability": null,
+    "architecture": null,
+    "readability": null,
+    "total": null
+  },
+  "failureClassification": ["shared contract mismatch"],
+  "evidence": [
+    "Isolated validation has one expected old shared DELETE=204 contract failure.",
+    "Task 05 hidden contract passed with HIDDEN_TEST_TARGET=monolithic."
+  ],
+  "notes": "Runner source was not edited by the evaluator."
+}
