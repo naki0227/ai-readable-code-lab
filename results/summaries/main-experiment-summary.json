@@ -130,6 +130,86 @@
       "averageLinesDeleted": 1.7777777777777777
     }
   },
+  "excludingTask05": {
+    "overall": {
+      "runCount": 45,
+      "fullyValidatedRunCount": 40,
+      "fullyValidatedRate": 0.8888888888888888,
+      "hiddenTestPassCount": 44,
+      "hiddenTestPassRate": 0.9777777777777777,
+      "publicTestPassCount": 40,
+      "publicTestPassRate": 0.8888888888888888,
+      "averageFilesChanged": 3.088888888888889,
+      "averageLinesAdded": 67.68888888888888,
+      "averageLinesDeleted": 1.5777777777777777
+    },
+    "byTarget": {
+      "feature-based": {
+        "runCount": 15,
+        "fullyValidatedRunCount": 13,
+        "fullyValidatedRate": 0.8666666666666667,
+        "hiddenTestPassCount": 14,
+        "hiddenTestPassRate": 0.9333333333333333,
+        "publicTestPassCount": 13,
+        "publicTestPassRate": 0.8666666666666667,
+        "averageFilesChanged": 2.933333333333333,
+        "averageLinesAdded": 61.333333333333336,
+        "averageLinesDeleted": 1.6666666666666667
+      },
+      "layered": {
+        "runCount": 15,
+        "fullyValidatedRunCount": 12,
+        "fullyValidatedRate": 0.8,
+        "hiddenTestPassCount": 15,
+        "hiddenTestPassRate": 1,
+        "publicTestPassCount": 12,
+        "publicTestPassRate": 0.8,
+        "averageFilesChanged": 4,
+        "averageLinesAdded": 73.53333333333333,
+        "averageLinesDeleted": 1.8
+      },
+      "monolithic": {
+        "runCount": 15,
+        "fullyValidatedRunCount": 15,
+        "fullyValidatedRate": 1,
+        "hiddenTestPassCount": 15,
+        "hiddenTestPassRate": 1,
+        "publicTestPassCount": 15,
+        "publicTestPassRate": 1,
+        "averageFilesChanged": 2.3333333333333335,
+        "averageLinesAdded": 68.2,
+        "averageLinesDeleted": 1.2666666666666666
+      }
+    }
+  },
+  "technicalFailureBreakdown": {
+    "overall": {
+      "formatFailureRunCount": 4,
+      "lintFailureRunCount": 0,
+      "typecheckFailureRunCount": 1,
+      "hiddenTestFailureRunCount": 2
+    },
+    "byTarget": {
+      "feature-based": {
+        "formatFailureRunCount": 1,
+        "lintFailureRunCount": 0,
+        "typecheckFailureRunCount": 1,
+        "hiddenTestFailureRunCount": 2
+      },
+      "layered": {
+        "formatFailureRunCount": 3,
+        "lintFailureRunCount": 0,
+        "typecheckFailureRunCount": 0,
+        "hiddenTestFailureRunCount": 0
+      },
+      "monolithic": {
+        "formatFailureRunCount": 0,
+        "lintFailureRunCount": 0,
+        "typecheckFailureRunCount": 0,
+        "hiddenTestFailureRunCount": 0
+      }
+    }
+  },
   "failureClassifications": {
     "formatting": 2,
     "formatting failure": 2,

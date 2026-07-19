@@ -115,6 +115,16 @@ const failureClassifications = Object.fromEntries(
     ]),
 );
 
+const technicalFailureBreakdown = (items) => ({
+  formatFailureRunCount: items.filter((item) => item.automatedChecks.format === false).length,
+  lintFailureRunCount: items.filter((item) => item.automatedChecks.lint === false).length,
+  typecheckFailureRunCount: items.filter((item) => item.automatedChecks.typecheck === false).length,
+  hiddenTestFailureRunCount: items.filter((item) => !isPassed(item.automatedChecks.hiddenTests))
+    .length,
+});
+
+const excludingTask05Runs = runs.filter((run) => run.taskId !== 'task-05');
+
 const summary = {
   kind: 'main-experiment-summary',
   phase: 'p1',
@@ -126,6 +136,21 @@ const summary = {
   overall: summarize(runs),
   byTarget: groupBy(runs, (run) => run.target),
   byTask: groupBy(runs, (run) => run.taskId),
+  excludingTask05: {
+    overall: summarize(excludingTask05Runs),
+    byTarget: groupBy(excludingTask05Runs, (run) => run.target),
+  },
+  technicalFailureBreakdown: {
+    overall: technicalFailureBreakdown(runs),
+    byTarget: Object.fromEntries(
+      [...new Set(runs.map((run) => run.target))]
+        .sort()
+        .map((target) => [
+          target,
+          technicalFailureBreakdown(runs.filter((run) => run.target === target)),
+        ]),
+    ),
+  },
   failureClassifications,
   runs,
 };
