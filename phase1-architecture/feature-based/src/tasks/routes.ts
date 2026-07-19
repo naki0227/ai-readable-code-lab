@@ -8,6 +8,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
     Body: {
       title?: string;
       description?: string;
+      category?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       dueDate?: string;
     };
@@ -17,6 +18,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
     const task = repository.create({
       title: r.body.title.trim(),
       description: r.body.description,
+      category: r.body.category,
       priority: r.body.priority ?? 'MEDIUM',
       dueDate: r.body.dueDate,
       status: 'TODO',
@@ -41,6 +43,7 @@ export function registerTaskRoutes(app: FastifyInstance) {
     Body: {
       title?: string;
       description?: string;
+      category?: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       dueDate?: string;
       assigneeId?: string;
