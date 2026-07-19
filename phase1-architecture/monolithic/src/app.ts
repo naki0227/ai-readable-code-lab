@@ -13,13 +13,22 @@ type Task = {
   createdAt: string;
   updatedAt: string;
 };
+type TaskHistoryAction = 'CREATED' | 'UPDATED' | 'ASSIGNEE_CHANGED' | 'COMPLETED';
+type TaskHistoryEntry = {
+  id: string;
+  taskId: string;
+  action: TaskHistoryAction;
+  createdAt: string;
+};
 type CreateTask = { title: string; description?: string; priority?: Priority; dueDate?: string };
 type UpdateTask = Partial<CreateTask> & { assigneeId?: string };
 
 export function buildApp() {
   const app = Fastify();
   const tasks = new Map<string, Task>();
+  const taskHistory = new Map<string, TaskHistoryEntry[]>();
   let sequence = 0;
+  let historySequence = 0;
   const now = () => new Date().toISOString();
   const isOverdue = (task: Task) => Boolean(task.dueDate && task.dueDate < now().slice(0, 10));
   const response = (task: Task) => ({
@@ -28,6 +37,17 @@ export function buildApp() {
     warnings: task.dueDate && task.dueDate < now().slice(0, 10) ? ['due date is in the past'] : [],
   });
   const hasUser = (id: string) => id === 'user-1' || id === 'user-2';
+  const recordHistory = (taskId: string, action: TaskHistoryAction) => {
+    const entry: TaskHistoryEntry = {
+      id: String(++historySequence),
+      taskId,
+      action,
+      createdAt: now(),
+    };
+    const entries = taskHistory.get(taskId) ?? [];
+    entries.push(entry);
+    taskHistory.set(taskId, entries);
+  };
 
   app.post<{ Body: CreateTask }>('/tasks', async (request, reply) => {
     if (!request.body?.title?.trim()) return reply.code(400).send({ error: 'title is required' });
@@ -43,11 +63,16 @@ export function buildApp() {
       updatedAt: timestamp,
     };
     tasks.set(task.id, task);
+    recordHistory(task.id, 'CREATED');
     return reply.code(201).send(response(task));
   });
   app.get('/tasks', async () =>
     [...tasks.values()].filter((task) => task.status !== 'ARCHIVED').map(response),
   );
+  app.get<{ Params: { id: string } }>('/tasks/:id/history', async (request, reply) => {
+    if (!tasks.has(request.params.id)) return reply.code(404).send({ error: 'task not found' });
+    return taskHistory.get(request.params.id) ?? [];
+  });
   app.get<{ Params: { id: string } }>('/tasks/:id', async (request, reply) => {
     const task = tasks.get(request.params.id);
     return task ? response(task) : reply.code(404).send({ error: 'task not found' });
@@ -59,10 +84,13 @@ export function buildApp() {
       return reply.code(400).send({ error: 'title is required' });
     if (request.body.assigneeId !== undefined && !hasUser(request.body.assigneeId))
       return reply.code(404).send({ error: 'assignee not found' });
+    const assigneeChanged =
+      request.body.assigneeId !== undefined && request.body.assigneeId !== task.assigneeId;
     Object.assign(task, request.body, {
       title: request.body.title?.trim() ?? task.title,
       updatedAt: now(),
     });
+    recordHistory(task.id, assigneeChanged ? 'ASSIGNEE_CHANGED' : 'UPDATED');
     return response(task);
   });
   app.post<{ Params: { id: string } }>('/tasks/:id/complete', async (request, reply) => {
@@ -72,6 +100,7 @@ export function buildApp() {
       return reply.code(409).send({ error: 'task is already completed' });
     task.status = 'COMPLETED';
     task.updatedAt = now();
+    recordHistory(task.id, 'COMPLETED');
     return response(task);
   });
   app.delete<{ Params: { id: string } }>('/tasks/:id', async (request, reply) => {
