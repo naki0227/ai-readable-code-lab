@@ -1,14 +1,20 @@
+export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+
 export type Task = {
   id: string;
   title: string;
   description?: string;
-  status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
-  priority: 'LOW' | 'MEDIUM' | 'HIGH';
+  status: TaskStatus;
+  priority: TaskPriority;
   dueDate?: string;
+  category?: string;
   assigneeId?: string;
   createdAt: string;
   updatedAt: string;
 };
+
+export type CreateTaskInput = Omit<Task, 'id'>;
 export const asResponse = (task: Task) => ({
   ...task,
   isOverdue:
