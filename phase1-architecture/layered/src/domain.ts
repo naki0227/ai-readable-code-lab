@@ -11,5 +11,11 @@ export type Task = {
   createdAt: string;
   updatedAt: string;
 };
+export type TaskEvent = {
+  id: string;
+  taskId: string;
+  action: 'CREATED' | 'UPDATED' | 'ASSIGNEE_CHANGED' | 'COMPLETED' | 'ARCHIVED';
+  createdAt: string;
+};
 export const isOverdue = (task: Task, today: string) =>
   Boolean(task.dueDate && task.dueDate < today);
