@@ -13,7 +13,4 @@ export class TaskRepository {
   list() {
     return [...this.values.values()];
   }
-  remove(id: string) {
-    return this.values.delete(id);
-  }
 }
